@@ -17,4 +17,4 @@ COPY . /app
 RUN ./gradlew build
 
 # Set the startup command
-CMD ["java", "-jar", "build/libs/message.jar"]
+CMD ["java", "-jar", "build/libs/vrrom-0.0.1-SNAPSHOT.jar"]
