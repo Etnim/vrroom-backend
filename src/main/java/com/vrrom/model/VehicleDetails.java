@@ -1,94 +1,43 @@
 package com.vrrom.model;
 
-import java.util.Date;
-import java.util.Objects;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
+@Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class VehicleDetails {
-    private Vehicle Vehicle;
-    private String make;
+    @Id
+    @Column(name = "id")
+    private long id;
+
+    @Column(name = "brand")
+    private String brand;
+
+    @Column(name = "model")
     private String model;
-    private Date year;
-    private Fuel fuel;
-    private int emission;
 
-    public VehicleDetails(com.vrrom.model.Vehicle vehicle, String make, String model, Date year, Fuel fuel, int emission) {
-        Vehicle = vehicle;
-        this.make = make;
-        this.model = model;
-        this.year = year;
-        this.fuel = fuel;
-        this.emission = emission;
-    }
+    @Column(name = "year")
+    private int year;
 
-    @Override
-    public String toString() {
-        return "VehicleDetails{" +
-                "Vehicle=" + Vehicle +
-                ", make='" + make + '\'' +
-                ", model='" + model + '\'' +
-                ", year=" + year +
-                ", fuel=" + fuel +
-                ", emission=" + emission +
-                '}';
-    }
+    @Column(name = "fuel")
+    @Enumerated(EnumType.STRING)
+    private FuelType fuel;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof VehicleDetails that)) return false;
-        return emission == that.emission && Vehicle == that.Vehicle && Objects.equals(make, that.make) && Objects.equals(model, that.model) && Objects.equals(year, that.year) && fuel == that.fuel;
-    }
+    @Column(name = "emission")
+    @Enumerated(EnumType.STRING)
+    private Emission emission;
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(Vehicle, make, model, year, fuel, emission);
-    }
+    @Column(name = "application")
+    @ManyToOne
+    private Application application;
 
-    public com.vrrom.model.Vehicle getVehicle() {
-        return Vehicle;
-    }
-
-    public void setVehicle(com.vrrom.model.Vehicle vehicle) {
-        Vehicle = vehicle;
-    }
-
-    public String getMake() {
-        return make;
-    }
-
-    public void setMake(String make) {
-        this.make = make;
-    }
-
-    public String getModel() {
-        return model;
-    }
-
-    public void setModel(String model) {
-        this.model = model;
-    }
-
-    public Date getYear() {
-        return year;
-    }
-
-    public void setYear(Date year) {
-        this.year = year;
-    }
-
-    public Fuel getFuel() {
-        return fuel;
-    }
-
-    public void setFuel(Fuel fuel) {
-        this.fuel = fuel;
-    }
-
-    public int getEmission() {
-        return emission;
-    }
-
-    public void setEmission(int emission) {
-        this.emission = emission;
-    }
 }

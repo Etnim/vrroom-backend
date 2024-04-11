@@ -1,4 +1,5 @@
 package com.vrrom.model;
 
-public enum Vehicle {
+
+public enum Emission {
 }

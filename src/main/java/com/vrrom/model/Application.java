@@ -1,150 +1,71 @@
 package com.vrrom.model;
 
-import java.math.BigInteger;
-import java.util.Objects;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
+
+
+@Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Application {
-    private BigInteger amount;
-    private int downPayment;
-    private int residualValue;
-    private int period;
-    private double interestRate;
+    @Id
+    @Column(name = "id")
+    private long id;
 
-    private EmploymentStatus employmentStatus;
-    private BigInteger monthlyIncome;
-    private int dependants;
-    private boolean monthlyObligations;
-    private Vehicle vehicle;
+    @Column(name = "financial_info")
+    @OneToOne
+    private FinancialInfo financialInfo;
+
+    @Column(name = "customer")
+    @OneToOne
     private Customer customer;
 
-    @Override
-    public String toString() {
-        return "Application{" +
-                "amount=" + amount +
-                ", downPayment=" + downPayment +
-                ", residualValue=" + residualValue +
-                ", period=" + period +
-                ", interestRate=" + interestRate +
-                ", employmentStatus=" + employmentStatus +
-                ", monthlyIncome=" + monthlyIncome +
-                ", dependants=" + dependants +
-                ", monthlyObligations=" + monthlyObligations +
-                ", vehicle=" + vehicle +
-                ", customer=" + customer +
-                '}';
-    }
+    @Column(name = "vehicle_details")
+    @OneToMany(mappedBy = "application")
+    private List<VehicleDetails> vehicleDetails;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Application that)) return false;
-        return downPayment == that.downPayment && residualValue == that.residualValue && period == that.period && Double.compare(interestRate, that.interestRate) == 0 && dependants == that.dependants && monthlyObligations == that.monthlyObligations && Objects.equals(amount, that.amount) && employmentStatus == that.employmentStatus && Objects.equals(monthlyIncome, that.monthlyIncome) && vehicle == that.vehicle && Objects.equals(customer, that.customer);
-    }
+    @Column(name = "manager")
+    @ManyToOne
+    private Admin manager;
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(amount, downPayment, residualValue, period, interestRate, employmentStatus, monthlyIncome, dependants, monthlyObligations, vehicle, customer);
-    }
+    @Column(name = "price")
+    private BigDecimal price;
 
-    public BigInteger getAmount() {
-        return amount;
-    }
+    @Column(name = "down_payment")
+    private int downPayment;
 
-    public void setAmount(BigInteger amount) {
-        this.amount = amount;
-    }
+    @Column(name = "residual_value")
+    private int residualValue;
 
-    public int getDownPayment() {
-        return downPayment;
-    }
+    @Column(name = "year_period")
+    private int yearPeriod;
 
-    public void setDownPayment(int downPayment) {
-        this.downPayment = downPayment;
-    }
+    @Column(name = "interest_rate")
+    private double interestRate;
 
-    public int getResidualValue() {
-        return residualValue;
-    }
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private AppStatus status;
 
-    public void setResidualValue(int residualValue) {
-        this.residualValue = residualValue;
-    }
+    @Column(name = "created_at")
+    private Date createdAt;
 
-    public int getPeriod() {
-        return period;
-    }
+    @Column(name = "udated_at")
+    private Date updatedAt;
 
-    public void setPeriod(int period) {
-        this.period = period;
-    }
 
-    public double getInterestRate() {
-        return interestRate;
-    }
-
-    public void setInterestRate(double interestRate) {
-        this.interestRate = interestRate;
-    }
-
-    public EmploymentStatus getEmploymentStatus() {
-        return employmentStatus;
-    }
-
-    public void setEmploymentStatus(EmploymentStatus employmentStatus) {
-        this.employmentStatus = employmentStatus;
-    }
-
-    public BigInteger getMonthlyIncome() {
-        return monthlyIncome;
-    }
-
-    public void setMonthlyIncome(BigInteger monthlyIncome) {
-        this.monthlyIncome = monthlyIncome;
-    }
-
-    public int getDependants() {
-        return dependants;
-    }
-
-    public void setDependants(int dependants) {
-        this.dependants = dependants;
-    }
-
-    public boolean isMonthlyObligations() {
-        return monthlyObligations;
-    }
-
-    public void setMonthlyObligations(boolean monthlyObligations) {
-        this.monthlyObligations = monthlyObligations;
-    }
-
-    public Vehicle getVehicle() {
-        return vehicle;
-    }
-
-    public void setVehicle(Vehicle vehicle) {
-        this.vehicle = vehicle;
-    }
-
-    public Customer getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
-
-    public Application(BigInteger amount, int downPayment, int residualValue, int period, double interestRate, EmploymentStatus employmentStatus, BigInteger monthlyIncome, int dependants, boolean monthlyObligations, Vehicle vehicle, Customer customer) {
-        this.amount = amount;
-        this.downPayment = downPayment;
-        this.residualValue = residualValue;
-        this.period = period;
-        this.interestRate = interestRate;
-        this.employmentStatus = employmentStatus;
-        this.monthlyIncome = monthlyIncome;
-        this.dependants = dependants;
-        this.monthlyObligations = monthlyObligations;
-        this.vehicle = vehicle;
-        this.customer = customer;
-    }
 }
