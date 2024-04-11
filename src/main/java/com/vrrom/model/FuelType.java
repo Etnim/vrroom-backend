@@ -1,6 +1,6 @@
 package com.vrrom.model;
 
-import jakarta.persistence.Entity;
-
 public enum FuelType {
+    GASOLINE, DIESEL, ELECTRIC, HYBRID
+
 }

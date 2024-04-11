@@ -31,7 +31,7 @@ public class VehicleDetails {
     @Enumerated(EnumType.STRING)
     private Emission emission;
 
-    @PrimaryKeyJoinColumn(name = "application")
+    @JoinColumn(name = "application_id")
     @ManyToOne
     private Application application;
 
