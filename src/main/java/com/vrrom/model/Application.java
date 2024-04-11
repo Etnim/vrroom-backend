@@ -1,13 +1,6 @@
 package com.vrrom.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -26,11 +19,11 @@ public class Application {
     @Column(name = "id")
     private long id;
 
-    @Column(name = "financial_info")
+    @PrimaryKeyJoinColumn(name = "financial_info")
     @OneToOne
     private FinancialInfo financialInfo;
 
-    @Column(name = "customer")
+    @PrimaryKeyJoinColumn(name = "customer")
     @OneToOne
     private Customer customer;
 
@@ -38,7 +31,7 @@ public class Application {
     @OneToMany(mappedBy = "application")
     private List<VehicleDetails> vehicleDetails;
 
-    @Column(name = "manager")
+    @PrimaryKeyJoinColumn(name = "manager")
     @ManyToOne
     private Admin manager;
 
