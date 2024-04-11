@@ -18,13 +18,13 @@ public class FinancialInfo {
     @Column(name = "id")
     private long id;
 
-    @Column(name = "monthlyIncome")
+    @Column(name = "monthly_income")
     private BigDecimal monthlyIncome;
 
-    @Column(name = "monthlyObligations")
+    @Column(name = "monthly_obligations")
     private BigDecimal monthlyObligations;
 
-    @Column(name = "maritalStatus")
+    @Column(name = "marital_status")
     private MaritalStatus maritalStatus;
 
     @Column(name = "dependants")
