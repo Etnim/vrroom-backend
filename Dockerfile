@@ -16,5 +16,6 @@ COPY . /app
 # Build the project
 RUN ./gradlew build
 
+RUN chmod +x ./gradlew && ./gradlew --version
 # Set the startup command
 CMD ["java", "-jar", "build/libs/vrrom-0.0.1-SNAPSHOT.jar", "--spring.profiles.active=prod"]
