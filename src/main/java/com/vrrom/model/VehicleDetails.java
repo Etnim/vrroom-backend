@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,7 +37,7 @@ public class VehicleDetails {
     @Enumerated(EnumType.STRING)
     private Emission emission;
 
-    @Column(name = "application")
+    @JoinColumn(name = "application_id")
     @ManyToOne
     private Application application;
 
