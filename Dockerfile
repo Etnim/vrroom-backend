@@ -7,11 +7,16 @@ WORKDIR /app
 COPY build.gradle settings.gradle gradlew /app/
 COPY gradle /app/gradle
 
-# Download and install Gradle
-RUN chmod +x ./gradlew && ./gradlew --version
+# Make gradlew executable and check version
+RUN chmod +x ./gradlew
+RUN ls -la /app
+RUN ./gradlew --version
 
 # Copy the project files
 COPY . /app
+
+# Ensure gradlew is still executable
+RUN ls -la /app/gradlew
 
 # Build the project
 RUN ./gradlew build
