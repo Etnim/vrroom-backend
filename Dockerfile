@@ -8,7 +8,7 @@ COPY build.gradle settings.gradle gradlew /app/
 COPY gradle /app/gradle
 
 # Download and install Gradle
-RUN ./gradlew --version
+RUN chmod +x ./gradlew && ./gradlew --version
 
 # Copy the project files
 COPY . /app
@@ -16,6 +16,5 @@ COPY . /app
 # Build the project
 RUN ./gradlew build
 
-RUN chmod +x ./gradlew && ./gradlew --version
 # Set the startup command
 CMD ["java", "-jar", "build/libs/vrrom-0.0.1-SNAPSHOT.jar", "--spring.profiles.active=prod"]
