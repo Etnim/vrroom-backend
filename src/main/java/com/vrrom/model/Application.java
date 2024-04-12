@@ -5,9 +5,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrimaryKeyJoinColumn;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -26,19 +28,19 @@ public class Application {
     @Column(name = "id")
     private long id;
 
-    @Column(name = "financial_info")
     @OneToOne
+    @JoinColumn(name = "financial_info_id")
     private FinancialInfo financialInfo;
 
-    @Column(name = "customer")
     @OneToOne
+    @JoinColumn(name = "customer_id")
     private Customer customer;
 
     @Column(name = "vehicle_details")
     @OneToMany(mappedBy = "application")
     private List<VehicleDetails> vehicleDetails;
 
-    @Column(name = "manager")
+    @JoinColumn(name = "manager_id")
     @ManyToOne
     private Admin manager;
 

@@ -1,11 +1,6 @@
 package com.vrrom.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -36,7 +31,7 @@ public class VehicleDetails {
     @Enumerated(EnumType.STRING)
     private Emission emission;
 
-    @Column(name = "application")
+    @JoinColumn(name = "application_id")
     @ManyToOne
     private Application application;
 

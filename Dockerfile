@@ -7,6 +7,7 @@ WORKDIR /app
 COPY build.gradle settings.gradle gradlew /app/
 COPY gradle /app/gradle
 
+RUN chmod +x ./gradlew
 # Download and install Gradle
 RUN ./gradlew --version
 
