@@ -1,4 +1,4 @@
-package com.vrrom.service;
+package com.vrrom.euribor.service;
 
 import com.vrrom.email.service.NotificationService;
 import org.apache.logging.log4j.LogManager;
