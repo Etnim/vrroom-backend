@@ -1,4 +1,4 @@
-package com.vrrom.service;
+package com.vrrom.euribor.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
@@ -29,5 +29,5 @@ public class EuriborService {
                 .retrieve()
                 .bodyToMono(String.class);
     }
-}
 
+}

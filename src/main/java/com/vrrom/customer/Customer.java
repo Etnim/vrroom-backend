@@ -1,16 +1,20 @@
-package com.vrrom.model;
+package com.vrrom.customer;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Date;
 
 @Entity
 @Builder
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Customer {
@@ -35,5 +39,4 @@ public class Customer {
 
     @Column(name = "address")
     private String address;
-
 }

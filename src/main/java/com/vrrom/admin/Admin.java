@@ -1,5 +1,6 @@
-package com.vrrom.model;
+package com.vrrom.admin;
 
+import com.vrrom.application.model.Application;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

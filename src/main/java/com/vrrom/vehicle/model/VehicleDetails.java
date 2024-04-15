@@ -1,5 +1,8 @@
-package com.vrrom.model;
+package com.vrrom.vehicle.model;
 
+import com.vrrom.application.model.Application;
+import com.vrrom.vehicle.model.Emission;
+import com.vrrom.vehicle.model.FuelType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -9,10 +12,14 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Builder
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class VehicleDetails {
@@ -40,5 +47,4 @@ public class VehicleDetails {
     @JoinColumn(name = "application_id")
     @ManyToOne
     private Application application;
-
 }

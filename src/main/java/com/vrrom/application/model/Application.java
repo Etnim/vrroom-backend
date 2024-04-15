@@ -1,5 +1,9 @@
-package com.vrrom.model;
+package com.vrrom.application.model;
 
+import com.vrrom.customer.Customer;
+import com.vrrom.admin.Admin;
+import com.vrrom.financialInfo.model.FinancialInfo;
+import com.vrrom.vehicle.model.VehicleDetails;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -11,7 +15,9 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -19,6 +25,8 @@ import java.util.List;
 
 
 @Entity
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -67,6 +75,4 @@ public class Application {
 
     @Column(name = "updated_at")
     private Date updatedAt;
-
-
 }

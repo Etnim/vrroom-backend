@@ -1,8 +1,8 @@
 package com.vrrom;
 
-import com.vrrom.controller.EuriborController;
-import com.vrrom.handlers.GlobalExceptionHandler;
-import com.vrrom.service.EuriborService;
+import com.vrrom.euribor.controller.EuriborController;
+import com.vrrom.utils.GlobalExceptionHandler;
+import com.vrrom.euribor.service.EuriborService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

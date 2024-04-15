@@ -1,4 +1,4 @@
-package com.vrrom.handlers;
+package com.vrrom.utils;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

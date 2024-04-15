@@ -1,4 +1,4 @@
-package com.vrrom.model;
+package com.vrrom.application.model;
 
 
 public enum AppStatus {
