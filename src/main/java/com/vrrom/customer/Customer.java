@@ -35,7 +35,7 @@ public class Customer {
     private String email;
 
     @Column(name = "phone")
-    private int phone;
+    private String phone;
 
     @Column(name = "address")
     private String address;
