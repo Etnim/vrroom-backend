@@ -1,7 +1,7 @@
 package com.vrrom.euribor;
 
 import com.vrrom.euribor.controller.EuriborController;
-import com.vrrom.service.EuriborService;
+import com.vrrom.euribor.service.EuriborService;
 import com.vrrom.util.GlobalExceptionHandler;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
