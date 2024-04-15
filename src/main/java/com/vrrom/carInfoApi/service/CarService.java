@@ -53,12 +53,11 @@ public class CarService {
         }
     }
 
-    public String getModels(String make, int year) throws VehicleServiceException {
+    public String getModels(String make) throws VehicleServiceException {
         URI url = UriComponentsBuilder
                 .fromHttpUrl("https://vpic.nhtsa.dot.gov/api/vehicles")
-                .pathSegment("GetModelsForMakeYear")
-                .pathSegment("make", make)
-                .pathSegment("modelyear", Integer.toString(year))
+                .pathSegment("GetModelsForMake")
+                .pathSegment( make)
                 .queryParam("format", "json")
                 .build()
                 .encode()

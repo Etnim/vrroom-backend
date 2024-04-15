@@ -5,7 +5,6 @@ import com.vrrom.carInfoApi.service.CarService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import static com.vrrom.util.SanitizationUtils.sanitizeCarMake;
@@ -25,16 +24,10 @@ public class CarController {
     }
 
     @GetMapping("/models/{make}")
-    public String getCarModels(@PathVariable String make, @RequestParam Integer year) {
-        if (year == null) {
-            throw new IllegalArgumentException("Please provide year");
-        }
-        if (year < 2010 || year > 2024) {
-            throw new IllegalArgumentException("Year must be between 2010 and 2024");
-        }
+    public String getCarModels(@PathVariable String make) {
         make = sanitizeCarMake(make);
         try {
-            return carService.getModels(make, year);
+            return carService.getModels(make);
         } catch (VehicleServiceException e) {
             throw new RuntimeException(e);
         }
