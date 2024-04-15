@@ -57,7 +57,7 @@ public class CarService {
         URI url = UriComponentsBuilder
                 .fromHttpUrl("https://vpic.nhtsa.dot.gov/api/vehicles")
                 .pathSegment("GetModelsForMake")
-                .pathSegment( make)
+                .pathSegment(make)
                 .queryParam("format", "json")
                 .build()
                 .encode()
@@ -66,51 +66,15 @@ public class CarService {
             ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
             return response.getBody();
         } catch (HttpStatusCodeException e) {
-            // Throws custom exception with detailed error information
             throw new VehicleServiceException("HTTP error occurred with status " + e.getStatusCode() + ": " + e.getResponseBodyAsString(), e);
         } catch (RestClientException e) {
-            // General error handling for REST client issues
             throw new VehicleServiceException("Error during REST call to the API: " + e.getMessage(), e);
         } catch (Exception e) {
-            // Fallback for unexpected errors
             throw new VehicleServiceException("An unexpected error occurred: " + e.getMessage(), e);
         }
     }
 }
-//slow approach, but mainstream brands- i do not like i
-//    private static final String BASE_URL = "https://www.carqueryapi.com/api/0.3/";
-//    public String getMakes(int year) {
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36");
-//        HttpEntity<String> entity = new HttpEntity<>(headers);
-//        String url = UriComponentsBuilder.fromHttpUrl(BASE_URL)
-//                .queryParam("cmd", "getMakes")
-//                .queryParam("year", year)
-//                .toUriString();
-//        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-//        return response.getBody();
-//    }
-//    public Set<String> getMakesFromRange(int startYear, int endYear) {
-//        Set<String> allMakes = new HashSet<>();
-//        ObjectMapper mapper = new ObjectMapper();
-//        for (int year = startYear; year <= endYear; year++) {
-//            String json = getMakes(year);
-//            try {
-//                JsonNode rootNode = mapper.readTree(json);
-//                JsonNode makesArray = rootNode.path("Makes");
-//                if (makesArray.isArray()) {
-//                    for (JsonNode makeNode : makesArray) {
-//                        String makeDisplay = makeNode.path("make_display").asText();
-//                        allMakes.add(makeDisplay);
-//                    }
-//                }
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//                // Handle the exception properly in real scenarios
-//            }
-//        }
-//        return allMakes;
-//    }
+
 
 
 
