@@ -1,4 +1,4 @@
-package com.vrrom;
+package com.vrrom.euribor;
 
 import com.vrrom.euribor.service.EuriborService;
 import org.junit.jupiter.api.Test;
