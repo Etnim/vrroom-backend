@@ -1,6 +1,6 @@
 package com.vrrom.euribor.controller;
 
-import com.vrrom.euribor.service.EuriborService;
+import com.vrrom.service.EuriborService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
