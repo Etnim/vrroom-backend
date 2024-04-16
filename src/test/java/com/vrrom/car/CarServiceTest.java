@@ -3,6 +3,7 @@ package com.vrrom.car;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vrrom.carInfoApi.service.CarService;
+import com.vrrom.email.service.EmailService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -12,22 +13,30 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.net.URI;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.util.AssertionErrors.assertTrue;
 
 @SpringBootTest
+
 class CarServiceTest {
     @Mock
     private RestTemplate restTemplate;
     @InjectMocks
     private CarService carService;
+    @Mock
+    private EmailService emailService;
 
     @BeforeEach
     void setUp() {
@@ -87,5 +96,25 @@ class CarServiceTest {
         assertTrue("Should have 'Make_Name' field", firstResult.has("Make_Name"));
         assertTrue("Should have 'Model_ID' field", firstResult.has("Model_ID"));
         assertTrue("Should have 'Model_Name' field", firstResult.has("Model_Name"));
+    }
+    @Test
+    public void testGetMakes_HandleHttpStatusErrorAndSendEmail() {
+        URI uri = URI.create("https://vpic.nhtsa.dot.gov/api/vehicles/GetMakesForVehicleType/car?format=json");
+        when(restTemplate.exchange(eq(uri), eq(HttpMethod.GET), any(), eq(String.class)))
+                .thenThrow(new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR));
+
+        try {
+            carService.getMakes();
+            fail("Expected an ResponseStatusException to be thrown");
+        } catch (ResponseStatusException e) {
+            assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, e.getStatusCode());
+        }
+
+        // Verify that an email is sent when the API is down
+        verify(emailService).sendEmail(
+                eq("vrroom.leasing@gmail.com"),
+                eq("vrroom.leasing@gmail.com"),
+                eq("API Down Alert"),
+                contains("The API endpoint for vehicle makes is down."));
     }
 }

@@ -18,9 +18,9 @@ public class CacheConfig {
 
     @Bean
     public CaffeineCacheManager cacheManager(Caffeine<Object, Object> caffeine) {
-        CaffeineCacheManager cacheManager = new CaffeineCacheManager();
+        CaffeineCacheManager cacheManager = new CaffeineCacheManager("makesCache", "modelsCache", "euriborRates");
         cacheManager.setCaffeine(caffeine);
-        cacheManager.setAllowNullValues(false);
+        cacheManager.setAllowNullValues(true);
         cacheManager.setAsyncCacheMode(true);
         return cacheManager;
     }
