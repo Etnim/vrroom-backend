@@ -30,7 +30,7 @@ public class CustomerDTO {
     @Past(message = "Birthdate should be in the past")
     private Date birthDate;
 
-    @Pattern(regexp = "^\\\\+370[0-9]{9}$", message = "Phone should contain only numbers")
+    @Pattern(regexp = "^\\+370[0-9]{9}$", message = "Phone should contain only numbers")
     private String phone;
 
     @NotBlank(message = "Address is mandatory")

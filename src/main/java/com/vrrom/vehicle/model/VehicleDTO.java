@@ -17,12 +17,11 @@ public class VehicleDTO {
     private String model;
 
     @Min(value = 1885, message = "Year must be greater than the year the first car was made")
-    @PastOrPresent(message = "Year must be in the past or the current year")
     private int year;
 
     @NotNull(message = "Fuel type must not be null")
     private FuelType fuel;
 
-    @NotNull(message = "Emission status must not be null")
-    private Emission emission;
+    @Min(value = 0, message = "Emission value can not be negative")
+    private int emission;
 }

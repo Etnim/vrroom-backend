@@ -1,8 +1,6 @@
 package com.vrrom.vehicle.model;
 
 import com.vrrom.application.model.Application;
-import com.vrrom.vehicle.model.Emission;
-import com.vrrom.vehicle.model.FuelType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -41,8 +39,7 @@ public class VehicleDetails {
     private FuelType fuel;
 
     @Column(name = "emission")
-    @Enumerated(EnumType.STRING)
-    private Emission emission;
+    private int emission;
 
     @JoinColumn(name = "application_id")
     @ManyToOne
