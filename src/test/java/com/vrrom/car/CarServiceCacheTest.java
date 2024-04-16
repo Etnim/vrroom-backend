@@ -30,7 +30,7 @@ public class CarServiceCacheTest {
     }
 
     @Test
-    void testGetMakesCaching() {
+    void testGetMakesCaching() throws VehicleServiceException {
         URI uri = URI.create("https://vpic.nhtsa.dot.gov/api/vehicles/GetMakesForVehicleType/car?format=json");
         String firstCallResult = carService.getMakes();
         String secondCallResult = carService.getMakes();
