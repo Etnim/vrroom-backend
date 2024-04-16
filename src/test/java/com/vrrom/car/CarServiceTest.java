@@ -1,0 +1,91 @@
+package com.vrrom.car;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vrrom.carInfoApi.service.CarService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.net.URI;
+
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.util.AssertionErrors.assertTrue;
+
+@SpringBootTest
+class CarServiceTest {
+    @Mock
+    private RestTemplate restTemplate;
+    @InjectMocks
+    private CarService carService;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    public void testGetMakes_CheckKeyFields() throws Exception {
+        String jsonResponse = "{\"Count\": 10, \"Message\": \"Response returned successfully\", \"SearchCriteria\": \"Vehicle Type: car\", \"Results\": [{\"MakeName\": \"Test Car\"}]}";
+        URI uri = URI.create("https://vpic.nhtsa.dot.gov/api/vehicles/GetMakesForVehicleType/car?format=json");
+        when(restTemplate.exchange(eq(uri), eq(HttpMethod.GET), any(), eq(String.class)))
+                .thenReturn(new ResponseEntity<>(jsonResponse, HttpStatus.OK));
+        String result = carService.getMakes();
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode rootNode = mapper.readTree(result);
+        assertTrue("Should have 'Count' field", rootNode.has("Count"));
+        assertTrue("Should have 'Message' field", rootNode.has("Message"));
+        assertTrue("Should have 'Results' field", rootNode.has("Results"));
+    }
+
+    @Test
+    public void testGetMakes_HandleHttpStatusError() {
+        URI uri = URI.create("https://vpic.nhtsa.dot.gov/api/vehicles/GetMakesForVehicleType/car?format=json");
+        when(restTemplate.exchange(eq(uri), eq(HttpMethod.GET), any(), eq(String.class)))
+                .thenReturn(new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
+        try {
+            carService.getMakes();
+        } catch (ResponseStatusException e) {
+            assertTrue("Should handle HTTP 500 Internal Server Error", e.getStatusCode() == HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Test
+    void getModels_Success_CheckKeyFields() throws Exception {
+        String make = "Toyota";
+        String jsonResponse = "{\n" +
+                "  \"Count\": 56,\n" +
+                "  \"Message\": \"Response returned successfully\",\n" +
+                "  \"SearchCriteria\": \"Make:toyota\",\n" +
+                "  \"Results\": [\n" +
+                "    {\"Make_ID\": 448, \"Make_Name\": \"Toyota\", \"Model_ID\": 2206, \"Model_Name\": \"Scion xA\"}\n" +
+                "  ]\n" +
+                "}";
+        URI uri = URI.create("https://vpic.nhtsa.dot.gov/api/vehicles/GetModelsForMake/Toyota?format=json");
+        when(restTemplate.getForEntity(uri, String.class))
+                .thenReturn(new ResponseEntity<>(jsonResponse, HttpStatus.OK));
+        String response = carService.getModels(make);
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode rootNode = mapper.readTree(response);
+        assertTrue("Should have 'Count' field", rootNode.has("Count"));
+        assertTrue("Should have 'Message' field", rootNode.has("Message"));
+        assertTrue("Should have 'SearchCriteria' field", rootNode.has("SearchCriteria"));
+        assertTrue("Should have 'Results' field", rootNode.has("Results"));
+        assertTrue("Results should not be empty", rootNode.path("Results").isArray() && rootNode.path("Results").size() > 0);
+        JsonNode firstResult = rootNode.path("Results").get(0);
+        assertTrue("Should have 'Make_ID' field", firstResult.has("Make_ID"));
+        assertTrue("Should have 'Make_Name' field", firstResult.has("Make_Name"));
+        assertTrue("Should have 'Model_ID' field", firstResult.has("Model_ID"));
+        assertTrue("Should have 'Model_Name' field", firstResult.has("Model_Name"));
+    }
+}
