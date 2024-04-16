@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vrrom.exception.VehicleServiceException;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,7 @@ public class CarService {
         this.restTemplate = new RestTemplate();
     }
 
+    @Cacheable(cacheNames = "makesCache")
     public String getMakes() {
         URI url = UriComponentsBuilder
                 .fromHttpUrl("https://vpic.nhtsa.dot.gov/api/vehicles")
@@ -53,6 +55,7 @@ public class CarService {
         }
     }
 
+    @Cacheable(cacheNames = "modelsCache", key = "#make")
     public String getModels(String make) throws VehicleServiceException {
         URI url = UriComponentsBuilder
                 .fromHttpUrl("https://vpic.nhtsa.dot.gov/api/vehicles")
