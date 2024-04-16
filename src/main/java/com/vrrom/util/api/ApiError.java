@@ -1,4 +1,4 @@
-package com.vrrom.api;
+package com.vrrom.util.api;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;

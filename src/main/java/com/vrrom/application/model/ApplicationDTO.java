@@ -37,4 +37,5 @@ public class ApplicationDTO {
 
     @Min(value = 1, message = "Year period must be at least 1 year")
     private int yearPeriod;
+
 }
