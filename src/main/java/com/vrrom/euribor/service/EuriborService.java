@@ -27,7 +27,7 @@ public class EuriborService {
         this.notificationService = notificationService;
     }
 
-    @Cacheable(value = "euriborRates", key = "#term", sync = true)
+    @Cacheable(value = "euriborRates", key = "#term")
     public Mono<String> fetchEuriborRates(String term) {
         return webClient.get()
                 .uri(baseUrl + "/" + term)

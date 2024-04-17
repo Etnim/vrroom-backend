@@ -21,7 +21,6 @@ public class EuriborServiceTest {
 
     @Test
     public void testFetchEuriborRates_Caching() {
-
         String term = "6m";
         String firstResult = euriborService.fetchEuriborRates(term).block();
         String cachedResult = cacheManager.getCache("euriborRates").get(term, String.class);

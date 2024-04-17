@@ -1,14 +1,14 @@
 package com.vrrom.carInfoApi.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vrrom.email.service.EmailService;
 import com.vrrom.exception.VehicleServiceException;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -20,12 +20,14 @@ import java.net.URI;
 @Service
 public class CarService {
     private final RestTemplate restTemplate;
+    private final EmailService emailService;
 
-    public CarService() {
-        this.restTemplate = new RestTemplate();
+    public CarService(RestTemplate restTemplate, EmailService emailService) {
+        this.emailService = emailService;
+        this.restTemplate = restTemplate;
     }
 
-    @Cacheable(cacheNames = "makesCache")
+    @Cacheable(cacheNames = "makesCache", unless = "#result == null")
     public String getMakes() {
         URI url = UriComponentsBuilder
                 .fromHttpUrl("https://vpic.nhtsa.dot.gov/api/vehicles")
@@ -35,23 +37,18 @@ public class CarService {
                 .build()
                 .encode()
                 .toUri();
-        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, null, String.class);
-        if (response.getStatusCode().is2xxSuccessful() && response.hasBody()) {
-            String responseBody = response.getBody();
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode rootNode;
-            try {
-                rootNode = mapper.readTree(responseBody);
-            } catch (JsonProcessingException e) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid JSON format in response.", e);
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, null, String.class);
+            if (!response.getStatusCode().is2xxSuccessful()) {
+                throw new ResponseStatusException(response.getStatusCode(), "API is currently down.");
             }
-            JsonNode resultsNode = rootNode.path("Results");
-            if (resultsNode.isArray() && resultsNode.isEmpty()) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No results found for car makes.");
-            }
-            return responseBody;
-        } else {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to fetch data from the API.");
+            return response.getBody();
+        } catch (HttpClientErrorException | HttpServerErrorException e) {
+            handleApiDown("The API endpoint for vehicle makes is down. ", e.getResponseBodyAsString());
+            throw new ResponseStatusException(e.getStatusCode(), "API failure: " + e.getMessage(), e);
+        } catch (Exception e) {
+            handleApiDown("The API endpoint for vehicle makes is down. ", e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "API failure: " + e.getMessage(), e);
         }
     }
 
@@ -69,12 +66,23 @@ public class CarService {
             ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
             return response.getBody();
         } catch (HttpStatusCodeException e) {
+            handleApiDown("The API endpoint for vehicle models is down. Error message: ", "HTTP error occurred with status " + e.getStatusCode() + ": " + e.getResponseBodyAsString());
             throw new VehicleServiceException("HTTP error occurred with status " + e.getStatusCode() + ": " + e.getResponseBodyAsString(), e);
         } catch (RestClientException e) {
+            handleApiDown("The API endpoint for vehicle models is down. Error message: ", "Error during REST call to the API: " + e.getMessage());
             throw new VehicleServiceException("Error during REST call to the API: " + e.getMessage(), e);
         } catch (Exception e) {
+            handleApiDown("The API endpoint for vehicle models is down. Error message:", "An unexpected error occurred: " + e.getMessage());
             throw new VehicleServiceException("An unexpected error occurred: " + e.getMessage(), e);
         }
+    }
+
+    private void handleApiDown(String endpointMessage, String errorMessage) {
+        String from = "vrroom.leasing@gmail.com";
+        String to = "vrroom.leasing@gmail.com";
+        String subject = "API Down Alert";
+        String text = endpointMessage + errorMessage;
+        emailService.sendEmail(from, to, subject, text);
     }
 }
 
