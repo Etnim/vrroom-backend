@@ -1,6 +1,6 @@
 package com.vrrom.util;
 
-import com.vrrom.carInfoApi.service.CarService;
+import com.vrrom.vehicle.carInfoApi.service.CarService;
 import com.vrrom.email.service.EmailService;
 import com.vrrom.euribor.service.EuriborService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,7 +1,7 @@
-package com.vrrom.carInfoApi.service;
+package com.vrrom.vehicle.carInfoApi.service;
 
 import com.vrrom.email.service.EmailService;
-import com.vrrom.exception.VehicleServiceException;
+import com.vrrom.util.exception.VehicleServiceException;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;

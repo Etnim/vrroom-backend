@@ -1,4 +1,4 @@
-package com.vrrom.util;
+package com.vrrom.util.exception;
 
 import com.vrrom.util.api.ApiError;
 import org.slf4j.Logger;

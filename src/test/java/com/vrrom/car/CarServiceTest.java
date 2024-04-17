@@ -2,9 +2,9 @@ package com.vrrom.car;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vrrom.carInfoApi.service.CarService;
+import com.vrrom.vehicle.carInfoApi.service.CarService;
 import com.vrrom.email.service.EmailService;
-import com.vrrom.exception.VehicleServiceException;
+import com.vrrom.util.exception.VehicleServiceException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
