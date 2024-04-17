@@ -4,10 +4,14 @@ import com.vrrom.customer.Customer;
 import com.vrrom.admin.Admin;
 import com.vrrom.financialInfo.model.FinancialInfo;
 import com.vrrom.vehicle.model.VehicleDetails;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -20,6 +24,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -33,22 +38,22 @@ import java.util.List;
 public class Application {
     @Id
     @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "financial_info_id")
     private FinancialInfo financialInfo;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    @Column(name = "vehicle_details")
-    @OneToMany(mappedBy = "application")
+    @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<VehicleDetails> vehicleDetails;
 
-    @JoinColumn(name = "manager_id")
     @ManyToOne
+    @JoinColumn(name = "manager_id")
     private Admin manager;
 
     @Column(name = "price")
@@ -71,8 +76,13 @@ public class Application {
     private AppStatus status;
 
     @Column(name = "created_at")
-    private Date createdAt;
+    private LocalDate createdAt;
 
     @Column(name = "updated_at")
-    private Date updatedAt;
+    private LocalDate updatedAt;
+
+    public double calculateInterestRate(){
+        return 2.0 + (customer.getCreditRating() - 1) * 1.5;
+    }
+
 }

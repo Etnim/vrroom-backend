@@ -1,7 +1,7 @@
 package com.vrrom.car;
 
-import com.vrrom.carInfoApi.service.CarService;
-import com.vrrom.exception.VehicleServiceException;
+import com.vrrom.vehicle.carInfoApi.service.CarService;
+import com.vrrom.vehicle.exceptions.VehicleServiceException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

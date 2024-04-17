@@ -1,10 +1,10 @@
 package com.vrrom.api;
 
-import com.vrrom.carInfoApi.service.CarService;
+import com.vrrom.vehicle.carInfoApi.service.CarService;
 import com.vrrom.email.service.EmailService;
 import com.vrrom.euribor.service.EuriborService;
-import com.vrrom.exception.VehicleServiceException;
 import com.vrrom.util.ApiHealthChecker;
+import com.vrrom.vehicle.exceptions.VehicleServiceException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

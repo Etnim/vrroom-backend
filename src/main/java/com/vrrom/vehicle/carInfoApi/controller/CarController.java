@@ -1,7 +1,7 @@
-package com.vrrom.carInfoApi.controller;
+package com.vrrom.vehicle.carInfoApi.controller;
 
-import com.vrrom.carInfoApi.service.CarService;
-import com.vrrom.exception.VehicleServiceException;
+import com.vrrom.vehicle.carInfoApi.service.CarService;
+import com.vrrom.vehicle.exceptions.VehicleServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,9 +1,9 @@
 package com.vrrom.car;
 
-import com.vrrom.carInfoApi.controller.CarController;
-import com.vrrom.carInfoApi.service.CarService;
-import com.vrrom.exception.VehicleServiceException;
-import com.vrrom.util.GlobalExceptionHandler;
+import com.vrrom.vehicle.carInfoApi.controller.CarController;
+import com.vrrom.vehicle.carInfoApi.service.CarService;
+import com.vrrom.util.exceptions.GlobalExceptionHandler;
+import com.vrrom.vehicle.exceptions.VehicleServiceException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
