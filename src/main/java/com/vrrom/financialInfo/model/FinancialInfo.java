@@ -42,6 +42,6 @@ public class FinancialInfo {
     @Column(name = "dependants")
     private int dependants;
 
-    @OneToOne(mappedBy = "financialInfo", cascade = CascadeType.ALL, fetch = FetchType.LAZY)  // Correct mappedBy spelling
+    @OneToOne(mappedBy = "financialInfo", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Application application;
 }
