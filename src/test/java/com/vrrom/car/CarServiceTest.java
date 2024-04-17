@@ -123,7 +123,7 @@ class CarServiceTest {
         when(restTemplate.getForEntity(uri, String.class)).thenThrow(new HttpClientErrorException(HttpStatus.BAD_REQUEST));
         try {
             carService.getModels(make);
-            fail("Expected a com.vrrom.vehicle.exceptions.VehicleServiceException to be thrown");
+            fail("Expected a VehicleServiceException to be thrown");
         } catch (VehicleServiceException e) {
             assertNotNull(e.getMessage());
         }

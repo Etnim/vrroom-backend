@@ -16,23 +16,31 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + ex.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body("Error: " + ex.getMessage());
     }
 
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<ApiException> handleResponseStatusException(ResponseStatusException ex, WebRequest request) {
         logger.error("ResponseStatusException: {}", ex.getMessage(), ex);
         ApiException error = new ApiException(ex.getStatusCode(), "An error occurred", ex.getReason());
-        return ResponseEntity.status(ex.getStatusCode()).body(error);
+        return ResponseEntity
+                .status(ex.getStatusCode())
+                .body(error);
     }
 
     @ExceptionHandler(RestClientException.class)
     public ResponseEntity<Object> handleRestClientException(RestClientException ex, WebRequest request) {
-        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("Service unavailable or request timed out.");
+        return ResponseEntity
+                .status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body("Service unavailable or request timed out.");
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleException(Exception ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + ex.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("An error occurred: " + ex.getMessage());
     }
 }

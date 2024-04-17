@@ -6,6 +6,7 @@ import com.vrrom.application.model.ApplicationDTO;
 import com.vrrom.application.repository.ApplicationRepository;
 import com.vrrom.customer.Customer;
 import com.vrrom.customer.CustomerDTO;
+import com.vrrom.email.service.EmailService;
 import com.vrrom.financialInfo.model.FinancialInfo;
 import com.vrrom.financialInfo.model.FinancialInfoDTO;
 import com.vrrom.vehicle.model.VehicleDTO;
@@ -22,14 +23,16 @@ import java.util.List;
 @Service
 public class ApplicationService {
     private final ApplicationRepository applicationRepository;
+    private final EmailService emailService;
 
     @Autowired
-    public ApplicationService(ApplicationRepository applicationRepository) {
+    public ApplicationService(ApplicationRepository applicationRepository, EmailService emailService) {
         this.applicationRepository = applicationRepository;
+        this.emailService = emailService;
     }
 
     @Transactional
-    public Application createApplication(ApplicationDTO applicationDTO) {
+    public void createApplication(ApplicationDTO applicationDTO) {
         Application application = new Application();
 
         Customer customer = convertToEntity(applicationDTO.getCustomer(), application);
@@ -46,8 +49,13 @@ public class ApplicationService {
         application.setUpdatedAt(LocalDate.now());
         application.setInterestRate(application.calculateInterestRate());
         application.setStatus(AppStatus.SUBMITTED);
-
-        return applicationRepository.save(application);
+//
+//       try{
+//           applicationRepository.save(application);
+//           emailService.sendEmail("", "","","");
+//       }catch (Exception e){
+//
+//       }
     }
 
     private List<VehicleDetails> convertToEntity(List<VehicleDTO> vehicleDTOS, Application application) {
