@@ -13,6 +13,7 @@ public class EmailService {
     private String domain;
     private final RestTemplate restTemplate;
 
+
     public EmailService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
@@ -28,4 +29,6 @@ public class EmailService {
         ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
         return response.getBody();
     }
+
+
 }
