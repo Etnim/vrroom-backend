@@ -16,22 +16,14 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body("Error: " + ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + ex.getMessage());
     }
 
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<ApiException> handleResponseStatusException(ResponseStatusException ex, WebRequest request) {
         logger.error("ResponseStatusException: {}", ex.getMessage(), ex);
-        ApiException error = new ApiException(
-                ex.getStatusCode(),
-                "An error occurred",
-                ex.getReason()
-        );
-        return ResponseEntity
-                .status(ex.getStatusCode())
-                .body(error);
+        ApiException error = new ApiException(ex.getStatusCode(), "An error occurred", ex.getReason());
+        return ResponseEntity.status(ex.getStatusCode()).body(error);
     }
 
     @ExceptionHandler(RestClientException.class)
@@ -41,8 +33,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleException(Exception ex) {
-        return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("An error occurred: " + ex.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + ex.getMessage());
     }
 }
