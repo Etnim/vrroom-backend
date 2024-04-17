@@ -1,6 +1,5 @@
-package com.vrrom.util;
+package com.vrrom.util.exceptions;
 
-import com.vrrom.util.api.ApiError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -23,9 +22,9 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(ResponseStatusException.class)
-    public ResponseEntity<ApiError> handleResponseStatusException(ResponseStatusException ex, WebRequest request) {
+    public ResponseEntity<ApiException> handleResponseStatusException(ResponseStatusException ex, WebRequest request) {
         logger.error("ResponseStatusException: {}", ex.getMessage(), ex);
-        ApiError error = new ApiError(
+        ApiException error = new ApiException(
                 ex.getStatusCode(),
                 "An error occurred",
                 ex.getReason()
@@ -39,7 +38,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Object> handleRestClientException(RestClientException ex, WebRequest request) {
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("Service unavailable or request timed out.");
     }
-
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleException(Exception ex) {

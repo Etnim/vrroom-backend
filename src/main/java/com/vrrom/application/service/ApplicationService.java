@@ -1,5 +1,6 @@
 package com.vrrom.application.service;
 
+import com.vrrom.application.model.AppStatus;
 import com.vrrom.application.model.Application;
 import com.vrrom.application.model.ApplicationDTO;
 import com.vrrom.application.repository.ApplicationRepository;
@@ -13,12 +14,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
 public class ApplicationService {
     private final ApplicationRepository applicationRepository;
+
     @Autowired
     public ApplicationService(ApplicationRepository applicationRepository) {
         this.applicationRepository = applicationRepository;
@@ -26,59 +30,65 @@ public class ApplicationService {
 
     @Transactional
     public Application createApplication(ApplicationDTO applicationDTO) {
-        Customer customer = convertToEntity(applicationDTO.getCustomer());
-        FinancialInfo financialInfo = convertToEntity(applicationDTO.getFinancialInfo());
-        List<VehicleDetails> vehicleDetails = convertToEntity(applicationDTO.getVehicleDetails());
-
         Application application = new Application();
+
+        Customer customer = convertToEntity(applicationDTO.getCustomer(), application);
+        FinancialInfo financialInfo = convertToEntity(applicationDTO.getFinancialInfo(), application);
+        List<VehicleDetails> vehicleDetails = convertToEntity(applicationDTO.getVehicleDetails(), application);
+
         application.setCustomer(customer);
         application.setFinancialInfo(financialInfo);
         application.setVehicleDetails(vehicleDetails);
         application.setPrice(applicationDTO.getPrice());
         application.setResidualValue(applicationDTO.getResidualValue());
         application.setYearPeriod(applicationDTO.getYearPeriod());
+        application.setCreatedAt(LocalDate.now());
+        application.setUpdatedAt(LocalDate.now());
+        application.setInterestRate(application.calculateInterestRate());
+        application.setStatus(AppStatus.SUBMITTED);
 
         return applicationRepository.save(application);
     }
 
-    private List<VehicleDetails> convertToEntity(List<VehicleDTO> vehicleDTOS) {
+    private List<VehicleDetails> convertToEntity(List<VehicleDTO> vehicleDTOS, Application application) {
         List<VehicleDetails> vehicles = new ArrayList<>();
 
         for (VehicleDTO vehicleDTO : vehicleDTOS) {
             VehicleDetails vehicleDetails = new VehicleDetails();
-
             vehicleDetails.setEmission(vehicleDTO.getEmission());
             vehicleDetails.setFuel(vehicleDTO.getFuel());
             vehicleDetails.setYear(vehicleDTO.getYear());
             vehicleDetails.setBrand(vehicleDTO.getBrand());
             vehicleDetails.setModel(vehicleDTO.getModel());
+            vehicleDetails.setApplication(application);
 
             vehicles.add(vehicleDetails);
         }
         return vehicles;
     }
 
-    private FinancialInfo convertToEntity(FinancialInfoDTO financialInfoDTO) {
+    private FinancialInfo convertToEntity(FinancialInfoDTO financialInfoDTO, Application application) {
         FinancialInfo financialInfo = new FinancialInfo();
 
         financialInfo.setMonthlyIncome(financialInfoDTO.getMonthlyIncome());
         financialInfo.setDependants(financialInfoDTO.getDependants());
         financialInfo.setMaritalStatus(financialInfoDTO.getMaritalStatus());
         financialInfo.setMonthlyObligations(financialInfoDTO.getMonthlyObligations());
+        financialInfo.setApplication(application);
 
         return financialInfo;
     }
 
-    private Customer convertToEntity(CustomerDTO customerDTO) {
-        Customer customer = new Customer();
+    private Customer convertToEntity(CustomerDTO customerDTO, Application application) {
+        String name = customerDTO.getName();
+        String surname = customerDTO.getSurname();
+        String email = customerDTO.getEmail();
+        Date birthDate = customerDTO.getBirthDate();
+        String phone = customerDTO.getPhone();
+        String address = customerDTO.getAddress();
 
-        customer.setName(customerDTO.getName());
-        customer.setSurname(customerDTO.getSurname());
-        customer.setEmail(customerDTO.getEmail());
-        customer.setBirthDate(customerDTO.getBirthDate());
-        customer.setPhone(customerDTO.getPhone());
-        customer.setAddress(customerDTO.getAddress());
-
+        Customer customer = new Customer(name, surname, birthDate, email, phone, address);
+        customer.setApplication(application);
         return customer;
     }
 }

@@ -1,10 +1,14 @@
 package com.vrrom.vehicle.model;
 
 import com.vrrom.application.model.Application;
+import com.vrrom.financialInfo.model.MaritalStatus;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -23,6 +27,7 @@ import lombok.Setter;
 public class VehicleDetails {
     @Id
     @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(name = "brand")
@@ -41,7 +46,7 @@ public class VehicleDetails {
     @Column(name = "emission")
     private int emission;
 
-    @JoinColumn(name = "application_id")
     @ManyToOne
+    @JoinColumn(name = "application_id")
     private Application application;
 }

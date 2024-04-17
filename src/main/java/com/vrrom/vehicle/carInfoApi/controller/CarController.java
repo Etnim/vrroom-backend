@@ -1,19 +1,21 @@
-package com.vrrom.carInfoApi.controller;
+package com.vrrom.vehicle.carInfoApi.controller;
 
-import com.vrrom.exception.VehicleServiceException;
-import com.vrrom.carInfoApi.service.CarService;
+import com.vrrom.vehicle.carInfoApi.service.CarService;
+import com.vrrom.vehicle.exceptions.VehicleServiceException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import static com.vrrom.util.SanitizationUtils.sanitizeCarMake;
 
 @RestController
 @RequestMapping("/cars")
 public class CarController {
     private final CarService carService;
 
+    @Autowired
     public CarController(CarService carService) {
         this.carService = carService;
     }
@@ -24,12 +26,12 @@ public class CarController {
     }
 
     @GetMapping("/models/{make}")
-    public String getCarModels(@PathVariable String make) {
-        make = sanitizeCarMake(make);
+    public ResponseEntity<String> getCarModels(@PathVariable String make) {
         try {
-            return carService.getModels(make);
+            String result = carService.getModels(make);
+            return ResponseEntity.ok(result);
         } catch (VehicleServiceException e) {
-            throw new RuntimeException(e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 }
