@@ -43,8 +43,11 @@ public class VehicleDetails {
     @Enumerated(EnumType.STRING)
     private FuelType fuel;
 
-    @Column(name = "emission")
-    private int emission;
+    @Column(name = "emission_start")
+    private int emissionStart;
+
+    @Column(name = "emission_end")
+    private int emissionEnd;
 
     @ManyToOne
     @JoinColumn(name = "application_id")
