@@ -1,18 +1,50 @@
 package com.vrrom.util.exceptions;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.vrrom.application.exception.ApplicationException;
+import jakarta.validation.ConstraintViolationException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.stream.Collectors;
+
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+    final Logger logger = LogManager.getLogger(GlobalExceptionHandler.class);
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<String> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
+        String cause = ex.getRootCause() != null ? ex.getRootCause().getMessage() : "";
+        return new ResponseEntity<>("Unable to complete request due to data integrity issues.  " + cause, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(MailException.class)
+    public ResponseEntity<String> handleMailException(MailException ex) {
+        String cause = ex.getCause() != null ? ex.getCause().getMessage() : "";
+        return new ResponseEntity<>("Email sending failed " + cause, HttpStatus.SERVICE_UNAVAILABLE);
+    }
+
+    @ExceptionHandler(ApplicationException.class)
+    public ResponseEntity<String> handleApplicationException(ApplicationException ex) {
+        String cause = ex.getCause() != null ? ex.getCause().getMessage() : "";
+        return new ResponseEntity<>("Application processing error " + cause, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<String> handleConstraintViolation(ConstraintViolationException ex) {
+        String details = ex.getConstraintViolations().stream()
+                .map(cv -> cv.getPropertyPath() + ": " + cv.getMessage())
+                .collect(Collectors.joining("; "));
+        return new ResponseEntity<>("Constraint violation error " + details, HttpStatus.BAD_REQUEST);
+    }
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {

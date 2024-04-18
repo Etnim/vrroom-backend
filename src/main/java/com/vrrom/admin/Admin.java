@@ -25,5 +25,5 @@ public class Admin {
 
     @Column(name = "applications")
     @OneToMany(mappedBy = "manager")
-    private List<Application> applications;
+    private List<Application> assignedApplications;
 }
