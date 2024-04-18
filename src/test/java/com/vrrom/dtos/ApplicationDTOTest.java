@@ -114,7 +114,8 @@ public class ApplicationDTOTest {
         vehicle.setModel("Camry");
         vehicle.setYear(2020);
         vehicle.setFuel(FuelType.HYBRID);
-        vehicle.setEmission(10);
+        vehicle.setEmissionStart(0);
+        vehicle.setEmissionEnd(129);
         vehicles.add(vehicle);
 
         application.setVehicleDetails(vehicles);
