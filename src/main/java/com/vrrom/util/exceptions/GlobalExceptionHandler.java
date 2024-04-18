@@ -1,33 +1,27 @@
 package com.vrrom.util.exceptions;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.vrrom.vehicle.carInfoApi.exception.CarAPIException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.server.ResponseStatusException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+    final Logger logger = LogManager.getLogger(GlobalExceptionHandler.class);
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body("Error: " + ex.getMessage());
-    }
-
-    @ExceptionHandler(ResponseStatusException.class)
-    public ResponseEntity<ApiException> handleResponseStatusException(ResponseStatusException ex, WebRequest request) {
-        logger.error("ResponseStatusException: {}", ex.getMessage(), ex);
-        ApiException error = new ApiException(ex.getStatusCode(), "An error occurred", ex.getReason());
-        return ResponseEntity
-                .status(ex.getStatusCode())
-                .body(error);
+    @ExceptionHandler(CarAPIException.class)
+    public ResponseEntity<String> handleApiException(CarAPIException ex) {
+        HttpStatusCode status = ex.getStatusCode();
+        if (ex.getStatusCode() == null) {
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+        return new ResponseEntity<>(ex.getMessage(), status);
     }
 
     @ExceptionHandler(RestClientException.class)
