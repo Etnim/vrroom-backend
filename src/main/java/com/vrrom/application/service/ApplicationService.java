@@ -63,7 +63,8 @@ public class ApplicationService {
 
         for (VehicleDTO vehicleDTO : vehicleDTOS) {
             VehicleDetails vehicleDetails = new VehicleDetails();
-            vehicleDetails.setEmission(vehicleDTO.getEmission());
+            vehicleDetails.setEmissionStart(vehicleDTO.getEmissionStart());
+            vehicleDetails.setEmissionEnd(vehicleDTO.getEmissionEnd());
             vehicleDetails.setFuel(vehicleDTO.getFuel());
             vehicleDetails.setYear(vehicleDTO.getYear());
             vehicleDetails.setBrand(vehicleDTO.getBrand());

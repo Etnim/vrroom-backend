@@ -75,7 +75,7 @@ public class Customer {
         } else if (randomValue <= 0.95) {
             this.creditRating = 4; // Rating D
         } else {
-            this.creditRating = 5; // Rating E
+            this.creditRating = 5;
         }
     }
 }

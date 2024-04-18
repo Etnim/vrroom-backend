@@ -88,10 +88,18 @@ public class VehicleDTOTest {
     }
 
     @Test
-    public void testEmissionInvalid() {
+    public void testEmissionStartInvalid() {
         VehicleDTO vehicle = new VehicleDTO();
-        vehicle.setEmission(-1);
-        Set<ConstraintViolation<VehicleDTO>> violations = validator.validateProperty(vehicle, "emission");
+        vehicle.setEmissionStart(-2);
+        Set<ConstraintViolation<VehicleDTO>> violations = validator.validateProperty(vehicle, "emissionStart");
+        assertEquals(1, violations.size());
+    }
+
+    @Test
+    public void testEmissionEndInvalid() {
+        VehicleDTO vehicle = new VehicleDTO();
+        vehicle.setEmissionEnd(131);
+        Set<ConstraintViolation<VehicleDTO>> violations = validator.validateProperty(vehicle, "emissionEnd");
         assertEquals(1, violations.size());
     }
 }

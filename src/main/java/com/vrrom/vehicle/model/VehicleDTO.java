@@ -1,5 +1,6 @@
 package com.vrrom.vehicle.model;
 
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -23,5 +24,8 @@ public class VehicleDTO {
     private FuelType fuel;
 
     @Min(value = 0, message = "Emission value can not be negative")
-    private int emission;
+    private int emissionStart;
+
+    @Max(value = 130, message = "Emission value can not be more than 130")
+    private int emissionEnd;
 }
