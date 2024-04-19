@@ -41,6 +41,27 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     steps:
+      - name: Set branch name
+        run: echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+      - name: Update Render service branch
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+        run: |
+          if [ "${{ github.ref_name }}" == "main" ]; then
+            SERVICE_ID=${{ secrets.RENDER_SERVICE_ID_MAIN }}
+          elif [ "${{ github.ref_name }}" == "dev-new" ]; then
+            SERVICE_ID=${{ secrets.RENDER_SERVICE_ID_DEV }}
+          else
+            SERVICE_ID=${{ secrets.RENDER_SERVICE_ID_FEATURE }}
+          fi
+
+          curl --request PATCH \
+            --url https://api.render.com/v1/services/$SERVICE_ID \
+            --header 'accept: application/json' \
+            --header 'content-type: application/json' \
+            --header "Authorization: Bearer $RENDER_API_KEY" \
+            --data '{"branch":"${{ github.ref_name }}"}'
+
       - uses: actions/checkout@v3
       - name: Deploy to Render (Main)
         if: github.ref_name == 'main'
