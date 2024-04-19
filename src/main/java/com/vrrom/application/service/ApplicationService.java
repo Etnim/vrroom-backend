@@ -1,6 +1,7 @@
 package com.vrrom.application.service;
 
 import com.vrrom.application.exception.ApplicationException;
+import com.vrrom.application.mapper.ApplicationMapper;
 import com.vrrom.application.model.AppStatus;
 import com.vrrom.application.model.Application;
 import com.vrrom.application.model.ApplicationDTO;
@@ -46,16 +47,12 @@ public class ApplicationService {
             FinancialInfo financialInfo = FinancialInfoMapper.toEntity(applicationDTO.getFinancialInfo(), application);
             List<VehicleDetails> vehicleDetails = VehicleMapper.toEntityList(applicationDTO.getVehicleDetails(), application);
 
-            application.setCustomer(customer);
-            application.setFinancialInfo(financialInfo);
-            application.setVehicleDetails(vehicleDetails);
-            application.setPrice(applicationDTO.getPrice());
-            application.setResidualValue(applicationDTO.getResidualValue());
-            application.setYearPeriod(applicationDTO.getYearPeriod());
-            application.setCreatedAt(LocalDate.now());
-            application.setUpdatedAt(LocalDate.now());
-            application.setInterestRate(application.calculateInterestRate());
-            application.setStatus(AppStatus.SUBMITTED);
+            ApplicationMapper.toEntity(
+                    application,
+                    applicationDTO,
+                    customer,
+                    financialInfo,
+                    vehicleDetails);
 
             applicationRepository.save(application);
             emailService.sendEmail("vrroom.leasing@gmail.com", application.getCustomer().getEmail(), "Application", "Your application has been created successfully.");
