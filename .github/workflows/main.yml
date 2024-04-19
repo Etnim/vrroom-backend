@@ -49,7 +49,7 @@ jobs:
             BRANCH="dev-new"
           else
             SERVICE_ID=${{ secrets.RENDER_SERVICE_ID_FEATURE }}
-            BRANCH="${{ github.ref_name }}"
+            BRANCH="${{ github.head_ref }}"
           fi
 
           curl --request PATCH \
