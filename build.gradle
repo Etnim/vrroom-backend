@@ -28,6 +28,8 @@ dependencies {
     implementation 'com.github.ben-manes.caffeine:caffeine'
     implementation 'com.fasterxml.jackson.core:jackson-databind'
     implementation 'com.sun.mail:javax.mail:1.6.2'
+    implementation 'org.flywaydb:flyway-core'
+
 
     configurations {
         configureEach { exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging' }

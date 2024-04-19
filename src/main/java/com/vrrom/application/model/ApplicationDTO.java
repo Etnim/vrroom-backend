@@ -1,13 +1,15 @@
 package com.vrrom.application.model;
 
-import com.vrrom.customer.CustomerDTO;
+import com.vrrom.customer.dtos.CustomerDTO;
 import com.vrrom.financialInfo.model.FinancialInfoDTO;
 import com.vrrom.vehicle.model.VehicleDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
@@ -15,6 +17,8 @@ import java.util.List;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class ApplicationDTO {
     @Valid
     private CustomerDTO customer;

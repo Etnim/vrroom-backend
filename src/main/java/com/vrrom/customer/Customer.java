@@ -1,12 +1,12 @@
 package com.vrrom.customer;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.vrrom.application.model.Application;
+import com.vrrom.customer.dtos.CustomerDTO;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
@@ -27,7 +27,6 @@ import java.util.Random;
 public class Customer {
     @Id
     @Column(name = "pid")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long pid;
 
     @Column(name = "name")
@@ -36,7 +35,7 @@ public class Customer {
     @Column(name = "surname")
     private String surname;
 
-    @Column(name = "birthDate")
+    @Column(name = "birth_date")
     private Date birthDate;
 
     @Column(name = "email")
@@ -51,6 +50,7 @@ public class Customer {
     @Column(name = "credit_rating")
     private int creditRating;
 
+    @JsonBackReference
     @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Application application;
 
@@ -62,6 +62,43 @@ public class Customer {
         this.phone = phone;
         this.address = address;
         assignRandomCreditRating();
+    }
+
+    public static class Builder {
+        private String name;
+        private String surname;
+        private String email;
+        private Date birthDate;
+        private String phone;
+        private String address;
+        private Application application;
+
+        public Builder withCustomerDTO(CustomerDTO customerDTO) {
+            this.name = customerDTO.getName();
+            this.surname = customerDTO.getSurname();
+            this.email = customerDTO.getEmail();
+            this.birthDate = customerDTO.getBirthDate();
+            this.phone = customerDTO.getPhone();
+            this.address = customerDTO.getAddress();
+            return this;
+        }
+
+        public Builder withApplication(Application application) {
+            this.application = application;
+            return this;
+        }
+
+        public Customer build() {
+            Customer customer = new Customer();
+            customer.setName(this.name);
+            customer.setSurname(this.surname);
+            customer.setEmail(this.email);
+            customer.setBirthDate(this.birthDate);
+            customer.setPhone(this.phone);
+            customer.setAddress(this.address);
+            customer.setApplication(this.application);
+            return customer;
+        }
     }
 
     public void assignRandomCreditRating() {

@@ -1,10 +1,11 @@
-package com.vrrom.customer;
+package com.vrrom.customer.dtos;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,7 +14,12 @@ import java.util.Date;
 
 @Getter
 @Setter
+@AllArgsConstructor
 public class CustomerDTO {
+
+    @NotBlank(message = "Name is mandatory")
+    private long pid;
+
     @NotBlank(message = "Name is mandatory")
     @Pattern(regexp = "^[A-Za-z]+$", message = "Name should contain only letters")
     @Size(max = 25, message = "Name must not be longer than 25 characters")
