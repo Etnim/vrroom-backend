@@ -1,5 +1,6 @@
 package com.vrrom.application.model;
 
+import com.vrrom.application.dtos.ApplicationRequest;
 import com.vrrom.customer.Customer;
 import com.vrrom.admin.Admin;
 import com.vrrom.financialInfo.model.FinancialInfo;
@@ -26,7 +27,6 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 
@@ -61,7 +61,7 @@ public class Application {
     private BigDecimal price;
 
     @Column(name = "down_payment")
-    private int downPayment;
+    private BigDecimal downPayment;
 
     @Column(name = "residual_value")
     private int residualValue;
@@ -74,7 +74,7 @@ public class Application {
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
-    private AppStatus status;
+    private ApplicationStatus status;
 
     @Column(name = "created_at")
     private LocalDate createdAt;
@@ -84,6 +84,10 @@ public class Application {
 
     public double calculateInterestRate(){
         return 2.0 + (customer.getCreditRating() - 1) * 1.5;
+    }
+    public BigDecimal calculateDownPayment(){
+        BigDecimal value = price.divide(BigDecimal.valueOf(100.0));
+        return value.compareTo(BigDecimal.valueOf(200)) == 1  ? value: BigDecimal.valueOf(200);
     }
 
     public static class ApplicationBuilder {
@@ -107,11 +111,11 @@ public class Application {
         }
 
         public ApplicationBuilder setStatusSubmitted() {
-            this.status = AppStatus.SUBMITTED;
+            this.status = ApplicationStatus.SUBMITTED;
             return this;
         }
 
-        public ApplicationBuilder fromDto(ApplicationDTO dto) {
+        public ApplicationBuilder fromDto(ApplicationRequest dto) {
             this.price = dto.getPrice();
             this.residualValue = dto.getResidualValue();
             this.yearPeriod = dto.getYearPeriod();

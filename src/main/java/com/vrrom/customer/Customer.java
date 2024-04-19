@@ -1,7 +1,8 @@
 package com.vrrom.customer;
 
 import com.vrrom.application.model.Application;
-import com.vrrom.customer.dtos.CustomerDTO;
+import com.vrrom.customer.dtos.CustomerRequest;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,6 +15,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Random;
 
@@ -35,12 +37,12 @@ public class Customer {
     private String surname;
 
     @Column(name = "birthDate")
-    private Date birthDate;
+    private LocalDate birthDate;
 
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
     private String email;
 
-    @Column(name = "phone")
+    @Column(name = "phone", unique = true)
     private String phone;
 
     @Column(name = "address")
@@ -52,32 +54,24 @@ public class Customer {
     @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Application application;
 
-    public Customer(String name, String surname, Date birthDate, String email, String phone, String address) {
-        this.name = name;
-        this.surname = surname;
-        this.birthDate = birthDate;
-        this.email = email;
-        this.phone = phone;
-        this.address = address;
-        assignRandomCreditRating();
-    }
-
     public static class Builder {
+        private long pid;
         private String name;
         private String surname;
         private String email;
-        private Date birthDate;
+        private LocalDate birthDate;
         private String phone;
         private String address;
         private Application application;
 
-        public Builder withCustomerDTO(CustomerDTO customerDTO) {
-            this.name = customerDTO.getName();
-            this.surname = customerDTO.getSurname();
-            this.email = customerDTO.getEmail();
-            this.birthDate = customerDTO.getBirthDate();
-            this.phone = customerDTO.getPhone();
-            this.address = customerDTO.getAddress();
+        public Builder withCustomerDTO(CustomerRequest customerRequest) {
+            this.pid = customerRequest.getPid();
+            this.name = customerRequest.getName();
+            this.surname = customerRequest.getSurname();
+            this.email = customerRequest.getEmail();
+            this.birthDate = customerRequest.getBirthDate();
+            this.phone = customerRequest.getPhone();
+            this.address = customerRequest.getAddress();
             return this;
         }
 
@@ -88,6 +82,7 @@ public class Customer {
 
         public Customer build() {
             Customer customer = new Customer();
+            customer.setPid(this.pid);
             customer.setName(this.name);
             customer.setSurname(this.surname);
             customer.setEmail(this.email);
