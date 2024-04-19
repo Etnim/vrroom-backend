@@ -25,6 +25,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -85,4 +86,58 @@ public class Application {
         return 2.0 + (customer.getCreditRating() - 1) * 1.5;
     }
 
+    public static class ApplicationBuilder {
+        private List<VehicleDetails> vehicleDetails = new ArrayList<>();
+
+        public ApplicationBuilder defaultCreatedAtNow() {
+            this.createdAt = LocalDate.now();
+            return this;
+        }
+
+        public ApplicationBuilder defaultUpdatedAtNow() {
+            this.updatedAt = LocalDate.now();
+            return this;
+        }
+
+        public ApplicationBuilder calculateInterestRate() {
+            if (this.customer != null) {
+                this.interestRate = 2.0 + (this.customer.getCreditRating() - 1) * 1.5;
+            }
+            return this;
+        }
+
+        public ApplicationBuilder setStatusSubmitted() {
+            this.status = AppStatus.SUBMITTED;
+            return this;
+        }
+
+        public ApplicationBuilder fromDto(ApplicationDTO dto) {
+            this.price = dto.getPrice();
+            this.residualValue = dto.getResidualValue();
+            this.yearPeriod = dto.getYearPeriod();
+            return this;
+        }
+
+        public Application build() {
+            defaultCreatedAtNow();
+            defaultUpdatedAtNow();
+            calculateInterestRate();
+            setStatusSubmitted();
+            Application application = new Application();
+            application.setId(this.id);
+            application.setCustomer(this.customer);
+            application.setFinancialInfo(this.financialInfo);
+            application.setVehicleDetails(this.vehicleDetails);
+            application.setManager(this.manager);
+            application.setPrice(this.price);
+            application.setDownPayment(this.downPayment);
+            application.setResidualValue(this.residualValue);
+            application.setYearPeriod(this.yearPeriod);
+            application.setInterestRate(this.interestRate);
+            application.setStatus(this.status);
+            application.setCreatedAt(this.createdAt);
+            application.setUpdatedAt(this.updatedAt);
+            return application;
+        }
+    }
 }
