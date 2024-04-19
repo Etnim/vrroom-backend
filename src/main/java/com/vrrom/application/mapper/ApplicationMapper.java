@@ -7,11 +7,6 @@ import com.vrrom.application.model.ApplicationStatus;
 import com.vrrom.customer.Customer;
 import com.vrrom.financialInfo.model.FinancialInfo;
 import com.vrrom.vehicle.model.VehicleDetails;
-import com.vrrom.application.model.Application;
-import com.vrrom.application.model.ApplicationDTO;
-import com.vrrom.customer.Customer;
-import com.vrrom.financialInfo.model.FinancialInfo;
-import com.vrrom.vehicle.model.VehicleDetails;
 import java.time.LocalDate;
 import java.util.List;
 
