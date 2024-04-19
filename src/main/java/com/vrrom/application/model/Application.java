@@ -112,7 +112,7 @@ public class Application {
 
         public ApplicationBuilder setStatusSubmitted() {
             this.status = ApplicationStatus.SUBMITTED;
-            this.status = ApplicationStatus.SUBMITTED;
+       
             return this;
         }
 
