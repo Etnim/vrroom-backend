@@ -40,6 +40,25 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     steps:
+      - name: Update Render service branch
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+        run: |
+          if [ "${{ github.ref_name }}" == "main" ] || [ "${{ github.ref_name }}" == "dev-new" ]; then
+            SERVICE_ID=${{ secrets.RENDER_SERVICE_ID_DEV }}
+            BRANCH="dev-new"
+          else
+            SERVICE_ID=${{ secrets.RENDER_SERVICE_ID_FEATURE }}
+            BRANCH="${{ github.ref_name }}"
+          fi
+
+          curl --request PATCH \
+            --url https://api.render.com/v1/services/$SERVICE_ID \
+            --header 'accept: application/json' \
+            --header 'content-type: application/json' \
+            --header "Authorization: Bearer $RENDER_API_KEY" \
+            --data '{"branch":"'"$BRANCH"'"}'
+
       - uses: actions/checkout@v3
       - name: Deploy to Render (Main)
         if: github.ref_name == 'main'
@@ -48,7 +67,6 @@ jobs:
           service_id: ${{ secrets.RENDER_SERVICE_ID_MAIN }}
           api_key: ${{ secrets.RENDER_API_KEY }}
           wait_deploy: true
-          branch: ${{ github.ref_name }}
       - name: Deploy to Render (Dev)
         if: github.ref_name == 'dev-new'
         uses: JorgeLNJunior/render-deploy@v1.4.4
@@ -56,7 +74,6 @@ jobs:
           service_id: ${{ secrets.RENDER_SERVICE_ID_DEV }}
           api_key: ${{ secrets.RENDER_API_KEY }}
           wait_deploy: true
-          branch: ${{ github.ref_name }}
       - name: Deploy to Render (Feature)
         if: github.ref_name != 'main' && github.ref_name != 'dev-new'
         uses: JorgeLNJunior/render-deploy@v1.4.4
@@ -64,4 +81,3 @@ jobs:
           service_id: ${{ secrets.RENDER_SERVICE_ID_FEATURE }}
           api_key: ${{ secrets.RENDER_API_KEY }}
           wait_deploy: true
-          branch: ${{ github.ref_name }}
