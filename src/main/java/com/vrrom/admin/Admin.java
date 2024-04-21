@@ -9,12 +9,16 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
 @Entity
 @Builder
+@Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Admin {
@@ -22,6 +26,12 @@ public class Admin {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "surname")
+    private String surname;
 
     @Column(name = "applications")
     @OneToMany(mappedBy = "manager")

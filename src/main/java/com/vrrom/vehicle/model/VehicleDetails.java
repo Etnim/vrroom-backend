@@ -1,5 +1,6 @@
 package com.vrrom.vehicle.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.vrrom.application.model.Application;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -47,6 +48,7 @@ public class VehicleDetails {
     @Column(name = "emission_end")
     private int emissionEnd;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "application_id")
     private Application application;

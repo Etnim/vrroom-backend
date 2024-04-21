@@ -1,7 +1,8 @@
 package com.vrrom.application.model;
 
-import com.vrrom.customer.Customer;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.vrrom.admin.Admin;
+import com.vrrom.customer.Customer;
 import com.vrrom.financialInfo.model.FinancialInfo;
 import com.vrrom.vehicle.model.VehicleDetails;
 import jakarta.persistence.CascadeType;
@@ -26,7 +27,6 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 
@@ -42,14 +42,17 @@ public class Application {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @JsonManagedReference
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "financial_info_id")
     private FinancialInfo financialInfo;
 
+    @JsonManagedReference
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<VehicleDetails> vehicleDetails;
 
@@ -74,7 +77,7 @@ public class Application {
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
-    private AppStatus status;
+    private ApplicationStatus status;
 
     @Column(name = "created_at")
     private LocalDate createdAt;
@@ -107,7 +110,8 @@ public class Application {
         }
 
         public ApplicationBuilder setStatusSubmitted() {
-            this.status = AppStatus.SUBMITTED;
+            this.status = ApplicationStatus.SUBMITTED;
+       
             return this;
         }
 

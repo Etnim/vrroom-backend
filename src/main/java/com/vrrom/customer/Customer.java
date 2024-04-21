@@ -1,5 +1,6 @@
 package com.vrrom.customer;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.vrrom.application.model.Application;
 import com.vrrom.customer.dtos.CustomerDTO;
 import jakarta.persistence.CascadeType;
@@ -34,7 +35,7 @@ public class Customer {
     @Column(name = "surname")
     private String surname;
 
-    @Column(name = "birthDate")
+    @Column(name = "birth_date")
     private Date birthDate;
 
     @Column(name = "email")
@@ -49,6 +50,7 @@ public class Customer {
     @Column(name = "credit_rating")
     private int creditRating;
 
+    @JsonBackReference
     @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Application application;
 

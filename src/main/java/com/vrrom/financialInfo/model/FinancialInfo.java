@@ -1,9 +1,12 @@
 package com.vrrom.financialInfo.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.vrrom.application.model.Application;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -36,6 +39,7 @@ public class FinancialInfo {
     private BigDecimal monthlyObligations;
 
     @Column(name = "marital_status")
+    @Enumerated(EnumType.STRING)
     private MaritalStatus maritalStatus;
 
     @Column(name = "employment_status")
@@ -47,6 +51,7 @@ public class FinancialInfo {
     @Column(name = "dependants")
     private int dependants;
 
+    @JsonBackReference
     @OneToOne(mappedBy = "financialInfo", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Application application;
 
