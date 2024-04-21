@@ -1,8 +1,10 @@
 package com.vrrom.application.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.vrrom.admin.Admin;
 import com.vrrom.application.dtos.ApplicationRequest;
 import com.vrrom.customer.Customer;
-import com.vrrom.admin.Admin;
+import com.vrrom.euribor.dto.EuriborRate;
 import com.vrrom.financialInfo.model.FinancialInfo;
 import com.vrrom.vehicle.model.VehicleDetails;
 import jakarta.persistence.CascadeType;
@@ -25,6 +27,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,14 +45,17 @@ public class Application {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @JsonManagedReference
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "financial_info_id")
     private FinancialInfo financialInfo;
 
+    @JsonManagedReference
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<VehicleDetails> vehicleDetails;
 
@@ -82,12 +88,35 @@ public class Application {
     @Column(name = "updated_at")
     private LocalDate updatedAt;
 
-    public double calculateInterestRate(){
+    @Column(name = "monthly_payment")
+    private BigDecimal monthlyPayment;
+
+
+
+
+    public double calculateInterestRate() {
         return 2.0 + (customer.getCreditRating() - 1) * 1.5;
     }
-    public BigDecimal calculateDownPayment(){
-        BigDecimal value = price.divide(BigDecimal.valueOf(100.0));
-        return value.compareTo(BigDecimal.valueOf(200)) == 1  ? value: BigDecimal.valueOf(200);
+
+    public BigDecimal calculateDownPayment() {
+        BigDecimal feeValue = price.divide(BigDecimal.valueOf(100));
+        return feeValue.compareTo(BigDecimal.valueOf(200)) == 1 ? feeValue : BigDecimal.valueOf(200);
+    }
+
+    public BigDecimal calculateMonthlyPayment() {
+        EuriborRate euribor = new EuriborRate();
+        MathContext mc = new MathContext(5);
+
+
+        BigDecimal p = price.subtract(downPayment).subtract(BigDecimal.valueOf(residualValue));
+        int n = yearPeriod * 12;
+        double r = (interestRate / 100 + euribor.getRate()) / 12;
+        BigDecimal interestWithPayment = BigDecimal.valueOf(Math.pow((1 + r), n));
+
+        BigDecimal up = p.multiply(interestWithPayment).multiply(BigDecimal.valueOf(r));
+        BigDecimal down = interestWithPayment.subtract(BigDecimal.ONE);
+
+        return up.divide(down, mc);
     }
 
     public static class ApplicationBuilder {
@@ -112,6 +141,7 @@ public class Application {
 
         public ApplicationBuilder setStatusSubmitted() {
             this.status = ApplicationStatus.SUBMITTED;
+
             return this;
         }
 

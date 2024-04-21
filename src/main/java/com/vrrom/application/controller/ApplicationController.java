@@ -1,5 +1,4 @@
 package com.vrrom.application.controller;
-
 import com.vrrom.application.dtos.ApplicationResponse;
 import com.vrrom.application.dtos.ApplicationRequest;
 import com.vrrom.application.service.ApplicationService;
@@ -20,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Application Controller", description = "To work with application data")
 public class ApplicationController {
     private final ApplicationService applicationService;
+
     @Autowired
     public ApplicationController(ApplicationService applicationService) {
         this.applicationService = applicationService;

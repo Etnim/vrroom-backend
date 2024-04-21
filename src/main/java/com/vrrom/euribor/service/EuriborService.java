@@ -1,6 +1,8 @@
 package com.vrrom.euribor.service;
 
-import com.vrrom.email.service.NotificationService;
+import com.vrrom.email.service.EmailService;
+import com.vrrom.euribor.dto.EuriborRate;
+import com.vrrom.euribor.exception.EuriborAPIException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,35 +16,44 @@ import reactor.core.publisher.Mono;
 public class EuriborService {
     private final WebClient webClient;
     @Value("${api.euribor.url}")
-    private String baseUrl;
+    private String BASE_URL;
     @Value("${api.euribor.key}")
-    private String apiKey;
+    private String API_KEY;
     @Value("${api.euribor.host}")
-    private String apiHost;
-    private final NotificationService notificationService;
+    private String API_HOST;
+    private final EmailService emailService;
     private static final Logger log = LogManager.getLogger(EuriborService.class);
 
-    public EuriborService(WebClient webClient, NotificationService notificationService) {
+    public EuriborService(WebClient webClient, EmailService emailService) {
         this.webClient = webClient;
-        this.notificationService = notificationService;
+        this.emailService = emailService;
     }
 
     @Cacheable(value = "euriborRates", key = "#term")
-    public Mono<String> fetchEuriborRates(String term) {
+    public Mono<Double> fetchEuriborRates(String term) {
         return webClient.get()
-                .uri(baseUrl + "/" + term)
-                .header("X-RapidAPI-Key", apiKey)
-                .header("X-RapidAPI-Host", apiHost)
+                .uri(BASE_URL + "/" + term)
+                .header("X-RapidAPI-Key", API_KEY)
+                .header("X-RapidAPI-Host", API_HOST)
                 .retrieve()
-                .onStatus(HttpStatusCode::isError, response -> response.bodyToMono(String.class)
-                        .flatMap(errorBody -> Mono.error(new RuntimeException("API error: " + errorBody))))
-                .bodyToMono(String.class)
+                .onStatus(HttpStatusCode::isError, response -> response.bodyToMono(EuriborRate.class)
+                        .flatMap(errorBody -> Mono.error(new EuriborAPIException("Euribor APi is down: ", response.statusCode()))))
+                .bodyToMono(EuriborRate.class)
+                .map(EuriborRate::getRate)
                 .onErrorResume(e -> {
-                    log.error("Error retrieving rates for term {}: {}", term, e.getMessage());
-                    notificationService.notify("API Error", "Detected an API failure for term " + term + ": " + e.getMessage(), "vrroom.leasing@gmail.com");
-                    return Mono.just("API is currently down. Please try again later.");
+                    log.error("Error retrieving rates for term {}: {}", term, e.getCause().getMessage());
+                    handleApiDown("Failed to retrieve EURIBOR rates for term " + term + ": ", e.getCause().getMessage());
+                    return Mono.error(new EuriborAPIException("Unable to process request: ", HttpStatusCode.valueOf(502)));
                 })
                 .doOnSuccess(body -> log.info("Successfully retrieved EURIBOR rates for term {}: {}", term, body));
+    }
+
+    private void handleApiDown(String endpointMessage, String errorMessage) {
+        String from = "vrroom.leasing@gmail.com";
+        String to = "vrroom.leasing@gmail.com";
+        String subject = "API Down Alert";
+        String text = endpointMessage + errorMessage;
+        emailService.sendEmail(from, to, subject, text);
     }
 }
 

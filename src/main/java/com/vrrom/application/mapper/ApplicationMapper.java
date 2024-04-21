@@ -7,6 +7,7 @@ import com.vrrom.application.dtos.ApplicationRequest;
 import com.vrrom.customer.Customer;
 import com.vrrom.customer.dtos.CustomerResponse;
 import com.vrrom.customer.mappers.CustomerMapper;
+import com.vrrom.euribor.dto.EuriborRate;
 import com.vrrom.financialInfo.dtos.FinancialInfoResponse;
 import com.vrrom.financialInfo.mapper.FinancialInfoMapper;
 import com.vrrom.financialInfo.model.FinancialInfo;
@@ -38,6 +39,7 @@ public class ApplicationMapper {
         CustomerResponse customer = CustomerMapper.toResponse(application.getCustomer());
         FinancialInfoResponse financialInfo = FinancialInfoMapper.toResponse(application.getFinancialInfo());
         List<VehicleResponse> vehicles = VehicleMapper.toResponseList(application.getVehicleDetails());
+        EuriborRate euriborRate = new EuriborRate();
 
         ApplicationResponse response = new ApplicationResponse();
         response.setApplicationID(application.getId());
@@ -51,7 +53,7 @@ public class ApplicationMapper {
         response.setYearPeriod(application.getYearPeriod());
         response.setResidualValue(application.getResidualValue());
         response.setInterestRate(application.getInterestRate());
-        response.setEuribor(0.0); // replace with euribor later
+        response.setEuribor(euriborRate.getRate());
         response.setAgreementFee(application.calculateDownPayment());
 
         return response;
