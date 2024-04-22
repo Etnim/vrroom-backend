@@ -2,7 +2,6 @@ package com.vrrom.customer;
 
 import com.vrrom.application.model.Application;
 import com.vrrom.customer.dtos.CustomerRequest;
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,7 +15,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.Random;
 
 @Entity
@@ -27,8 +25,8 @@ import java.util.Random;
 @NoArgsConstructor
 public class Customer {
     @Id
-    @Column(name = "pid")
-    private long pid;
+    @Column(name = "personalId")
+    private long personalId;
 
     @Column(name = "name")
     private String name;
@@ -82,7 +80,7 @@ public class Customer {
 
         public Customer build() {
             Customer customer = new Customer();
-            customer.setPid(this.pid);
+            customer.setPersonalId(this.pid);
             customer.setName(this.name);
             customer.setSurname(this.surname);
             customer.setEmail(this.email);
