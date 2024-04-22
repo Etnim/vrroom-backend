@@ -1,7 +1,7 @@
 package com.vrrom.application.mapper;
 
 import com.vrrom.application.model.Application;
-import com.vrrom.application.model.ApplicationListDTO;
+import com.vrrom.application.dto.ApplicationListDTO;
 
 public class ApplicationListDTOMapper {
     public static ApplicationListDTO toApplicationListDTO(Application application) {

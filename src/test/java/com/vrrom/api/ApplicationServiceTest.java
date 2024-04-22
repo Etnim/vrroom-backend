@@ -20,11 +20,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.mail.MailException;
-
-import com.vrrom.application.model.ApplicationDTO;
+import com.vrrom.application.dto.ApplicationDTO;
 import com.vrrom.application.repository.ApplicationRepository;
 import com.vrrom.email.service.EmailService;
 import org.springframework.mail.MailSendException;

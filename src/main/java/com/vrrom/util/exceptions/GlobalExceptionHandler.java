@@ -11,8 +11,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -57,8 +60,18 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>("Constraint violation error " + details, HttpStatus.BAD_REQUEST);
 
     }
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<String> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        StringBuilder errors = new StringBuilder();
+        for (ObjectError error : ex.getBindingResult().getAllErrors()) {
+            errors.append(error.getDefaultMessage()).append(". ");
+        }
+        return ResponseEntity.badRequest().body(errors.toString());
+    }
 
     @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
@@ -67,8 +80,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<String> handleConversionError(MethodArgumentTypeMismatchException ex) {
+        logger.error(ex.getMessage(), ex);
         if (ex.getCause() instanceof ConversionFailedException) {
-            return new ResponseEntity<>("Invalid date format or value: " + ex.getValue(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Invalid value: " + ex.getValue(), HttpStatus.BAD_REQUEST);
         }
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error");
     }
@@ -82,6 +96,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleException(Exception ex) {
+        logger.error(ex.getMessage(), ex);
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("An error occurred: " + ex.getMessage());

@@ -37,7 +37,6 @@ public class Admin {
     private String surname;
 
     @JsonBackReference
-//    @Column(name = "applications")
     @OneToMany(mappedBy = "manager", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Application> assignedApplications;
 }

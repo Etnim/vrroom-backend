@@ -1,4 +1,4 @@
-package com.vrrom.application.model;
+package com.vrrom.application.dto;
 
 import com.vrrom.customer.dtos.CustomerDTO;
 import com.vrrom.financialInfo.model.FinancialInfoDTO;

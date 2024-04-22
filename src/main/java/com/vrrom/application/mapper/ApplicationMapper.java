@@ -1,8 +1,7 @@
 package com.vrrom.application.mapper;
 
-
 import com.vrrom.application.model.Application;
-import com.vrrom.application.model.ApplicationDTO;
+import com.vrrom.application.dto.ApplicationDTO;
 import com.vrrom.application.model.ApplicationStatus;
 import com.vrrom.customer.Customer;
 import com.vrrom.financialInfo.model.FinancialInfo;

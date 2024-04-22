@@ -2,6 +2,7 @@ package com.vrrom.application.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.vrrom.admin.Admin;
+import com.vrrom.application.dto.ApplicationDTO;
 import com.vrrom.customer.Customer;
 import com.vrrom.financialInfo.model.FinancialInfo;
 import com.vrrom.vehicle.model.VehicleDetails;

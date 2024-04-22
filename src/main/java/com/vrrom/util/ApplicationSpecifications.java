@@ -1,6 +1,7 @@
 package com.vrrom.util;
 
 import com.vrrom.application.model.Application;
+import com.vrrom.application.model.ApplicationStatus;
 import org.springframework.data.jpa.domain.Specification;
 import java.time.LocalDate;
 
@@ -14,7 +15,7 @@ public class ApplicationSpecifications {
         };
     }
 
-    public static Specification<Application> hasStatus(String status) {
+    public static Specification<Application> hasStatus(ApplicationStatus status) {
         return (root, query, cb) -> {
             if (status == null) return cb.isTrue(cb.literal(true));
             return cb.equal(root.get("status"), status);
