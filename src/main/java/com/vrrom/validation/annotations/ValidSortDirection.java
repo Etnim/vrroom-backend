@@ -1,7 +1,6 @@
-package com.vrrom.util.annotation;
+package com.vrrom.validation.annotations;
 
-import com.vrrom.util.validator.PageSizeValidator;
-import com.vrrom.util.validator.SortDirectionValidator;
+import com.vrrom.validation.validators.SortDirectionValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 

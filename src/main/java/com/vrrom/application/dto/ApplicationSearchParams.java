@@ -1,6 +1,5 @@
 package com.vrrom.application.dto;
 
-import com.vrrom.application.util.ValidPaginatedApplications;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.Getter;
@@ -10,7 +9,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDate;
 @Setter
 @Getter
-@ValidPaginatedApplications
 public class ApplicationSearchParams {
 
     @Min(0)

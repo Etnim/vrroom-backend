@@ -1,4 +1,4 @@
-package com.vrrom.util.validator;
+package com.vrrom.validation;
 
 import java.time.LocalDate;
 

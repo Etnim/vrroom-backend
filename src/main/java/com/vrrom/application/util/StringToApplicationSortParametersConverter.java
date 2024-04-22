@@ -1,4 +1,4 @@
-package com.vrrom.util;
+package com.vrrom.application.util;
 
 import com.vrrom.application.model.ApplicationSortParameters;
 import org.springframework.core.convert.converter.Converter;

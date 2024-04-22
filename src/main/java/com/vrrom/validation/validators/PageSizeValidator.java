@@ -1,6 +1,6 @@
-package com.vrrom.util.validator;
+package com.vrrom.validation.validators;
 
-import com.vrrom.util.annotation.ValidPageSize;
+import com.vrrom.validation.annotations.ValidPageSize;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 

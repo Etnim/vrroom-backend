@@ -1,6 +1,6 @@
 package com.vrrom.config;
 
-import com.vrrom.util.StringToApplicationSortParametersConverter;
+import com.vrrom.application.util.StringToApplicationSortParametersConverter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

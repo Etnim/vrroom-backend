@@ -1,4 +1,4 @@
-package com.vrrom.util;
+package com.vrrom.application.util;
 
 import com.vrrom.application.model.Application;
 import com.vrrom.application.model.ApplicationStatus;
