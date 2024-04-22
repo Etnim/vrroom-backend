@@ -12,8 +12,8 @@ import java.time.LocalDate;
 @Builder
 public class ApplicationListDTO {
     private long applicationId;
-    private String name;
-    private String surname;
+    private String customerName;
+    private String customerSurname;
     private BigDecimal leasingAmount;
     private LocalDate applicationCreatedDate;
     private ApplicationStatus applicationStatus;

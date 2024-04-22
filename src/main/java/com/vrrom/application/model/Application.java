@@ -56,7 +56,8 @@ public class Application {
     @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<VehicleDetails> vehicleDetails;
 
-    @ManyToOne
+    @JsonManagedReference
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "manager_id")
     private Admin manager;
 

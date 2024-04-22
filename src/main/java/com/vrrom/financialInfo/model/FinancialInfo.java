@@ -43,6 +43,7 @@ public class FinancialInfo {
     private MaritalStatus maritalStatus;
 
     @Column(name = "employment_status")
+    @Enumerated(EnumType.STRING)
     private EmploymentStatus employmentStatus;
 
     @Column(name = "employment_term")

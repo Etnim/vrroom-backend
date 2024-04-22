@@ -27,9 +27,12 @@
 --     id                  BIGSERIAL PRIMARY KEY,
 --     monthly_income      DECIMAL(15, 2),
 --     monthly_obligations DECIMAL(15, 2),
---     marital_status      marital_status,
+--     marital_status      VARCHAR(255),
+--     employment_status   VARCHAR(255),
+--     employment_term     INT,
 --     dependants          INT
 -- );
+--
 --
 --
 --

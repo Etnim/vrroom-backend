@@ -3,12 +3,10 @@ package com.vrrom.util.exceptions;
 import com.vrrom.vehicle.carInfoApi.exception.CarAPIException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import com.vrrom.application.exception.ApplicationException;
 import jakarta.validation.ConstraintViolationException;
-
+import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.dao.DataIntegrityViolationException;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +15,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.stream.Collectors;
 
@@ -66,7 +65,13 @@ public class GlobalExceptionHandler {
                 .body(ex.getCause().getMessage());
     }
 
-
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<String> handleConversionError(MethodArgumentTypeMismatchException ex) {
+        if (ex.getCause() instanceof ConversionFailedException) {
+            return new ResponseEntity<>("Invalid date format or value: " + ex.getValue(), HttpStatus.BAD_REQUEST);
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error");
+    }
 
     @ExceptionHandler(RestClientException.class)
     public ResponseEntity<Object> handleRestClientException(RestClientException ex, WebRequest request) {

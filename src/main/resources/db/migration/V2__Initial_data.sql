@@ -31,22 +31,31 @@
 --
 --
 --
--- INSERT INTO financial_info (id, monthly_income, monthly_obligations, marital_status, dependants)
--- VALUES (1, 5000.00, 200.00, 'SINGLE', 0),
---        (2, 4500.00, 150.00, 'MARRIED', 2),
---        (3, 6200.00, 400.00, 'SINGLE', 1),
---        (4, 3300.00, 600.00, 'DIVORCED', 1),
---        (5, 4700.00, 350.00, 'MARRIED', 3),
---        (6, 3900.00, 500.00, 'SINGLE', 0),
---        (7, 5800.00, 300.00, 'MARRIED', 1),
---        (8, 4700.00, 200.00, 'DIVORCED', 2),
---        (9, 5600.00, 450.00, 'MARRIED', 2),
---        (10, 4200.00, 250.00, 'SINGLE', 1),
---        (11, 4500.00, 450.00, 'DIVORCED', 0),
---        (12, 3200.00, 800.00, 'MARRIED', 1),
---        (13, 5400.00, 250.00, 'SINGLE', 0),
---        (14, 6100.00, 400.00, 'MARRIED', 2),
---        (15, 4900.00, 300.00, 'WIDOWED', 1);
+-- INSERT INTO financial_info (
+--     id,
+--     monthly_income,
+--     monthly_obligations,
+--     marital_status,
+--     employment_status,
+--     employment_term,
+--     dependants
+-- ) VALUES
+--       (1, 5000.00, 200.00, 'SINGLE', 'FULLTIME', 5, 0),
+--       (2, 4500.00, 150.00, 'MARRIED', 'FULLTIME', 10, 2),
+--       (3, 6200.00, 400.00, 'SINGLE', 'FULLTIME', 2, 1),
+--       (4, 3300.00, 600.00, 'DIVORCED', 'UNEMPLOYED', 0, 1),
+--       (5, 4700.00, 350.00, 'MARRIED', 'FULLTIME', 8, 3),
+--       (6, 3900.00, 500.00, 'SINGLE', 'SELFEMPLOYED', 4, 0),
+--       (7, 5800.00, 300.00, 'MARRIED', 'FULLTIME', 6, 1),
+--       (8, 4700.00, 200.00, 'DIVORCED', 'FULLTIME', 3, 2),
+--       (9, 5600.00, 450.00, 'MARRIED', 'FULLTIME', 7, 2),
+--       (10, 4200.00, 250.00, 'SINGLE', 'UNEMPLOYED', 0, 1),
+--       (11, 4500.00, 450.00, 'DIVORCED', 'FULLTIME', 12, 0),
+--       (12, 3200.00, 800.00, 'MARRIED', 'SELFEMPLOYED', 15, 1),
+--       (13, 5400.00, 250.00, 'SINGLE', 'FULLTIME', 2, 0),
+--       (14, 6100.00, 400.00, 'MARRIED', 'FULLTIME', 9, 2),
+--       (15, 4900.00, 300.00, 'COHABITEE', 'UNEMPLOYED', 0, 1);
+--
 --
 --
 --

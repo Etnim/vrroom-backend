@@ -1,15 +1,14 @@
 package com.vrrom.application.mapper;
 
-import com.vrrom.admin.Admin;
 import com.vrrom.application.model.Application;
 import com.vrrom.application.model.ApplicationListDTO;
 
-public class ApllicationListDTOMapper {
-    public static ApplicationListDTO toApplicationListDTO(Application application, Admin manager) {
+public class ApplicationListDTOMapper {
+    public static ApplicationListDTO toApplicationListDTO(Application application) {
         return ApplicationListDTO.builder()
                 .applicationId(application.getId())
-                .name(application.getCustomer().getName())
-                .surname(application.getCustomer().getSurname())
+                .customerName(application.getCustomer().getName())
+                .customerSurname(application.getCustomer().getSurname())
                 .leasingAmount(application.getPrice())
                 .applicationCreatedDate(application.getCreatedAt())
                 .applicationStatus(application.getStatus())
