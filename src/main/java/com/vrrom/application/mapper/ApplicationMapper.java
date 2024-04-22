@@ -1,8 +1,9 @@
 package com.vrrom.application.mapper;
 
-import com.vrrom.application.model.Application;
-import com.vrrom.application.model.ApplicationStatus;
+import com.vrrom.application.calculator.Calculator;
 import com.vrrom.application.dtos.ApplicationResponse;
+import com.vrrom.application.model.ApplicationStatus;
+import com.vrrom.application.model.Application;
 import com.vrrom.application.dtos.ApplicationRequest;
 import com.vrrom.customer.Customer;
 import com.vrrom.customer.dtos.CustomerResponse;
@@ -19,6 +20,8 @@ import java.util.List;
 
 public class ApplicationMapper {
     public static Application toEntity(Application application, ApplicationRequest applicationRequest, Customer customer, FinancialInfo financialInfo, List<VehicleDetails> vehicleDetails) {
+        Calculator calculator = new Calculator();
+
         application.setCustomer(customer);
         application.setFinancialInfo(financialInfo);
         application.setVehicleDetails(vehicleDetails);
@@ -27,13 +30,14 @@ public class ApplicationMapper {
         application.setYearPeriod(applicationRequest.getYearPeriod());
         application.setCreatedAt(LocalDate.now());
         application.setUpdatedAt(LocalDate.now());
-        application.setInterestRate(application.calculateInterestRate());
+        application.setInterestRate(calculator.getInterestRate(customer));
         application.setStatus(ApplicationStatus.SUBMITTED);
-        application.setDownPayment(application.calculateDownPayment());
+        application.setDownPayment(calculator.getDownPayment(applicationRequest.getPrice()));
         return application;
     }
 
     public static ApplicationResponse toResponse(Application application){
+        Calculator calculator = new Calculator();
         CustomerResponse customer = CustomerMapper.toResponse(application.getCustomer());
         FinancialInfoResponse financialInfo = FinancialInfoMapper.toResponse(application.getFinancialInfo());
         List<VehicleResponse> vehicles = VehicleMapper.toResponseList(application.getVehicleDetails());
@@ -52,7 +56,7 @@ public class ApplicationMapper {
         response.setResidualValue(application.getResidualValue());
         response.setInterestRate(application.getInterestRate());
         response.setEuribor(euribor.getRate());
-        response.setAgreementFee(application.calculateDownPayment());
+        application.setDownPayment(calculator.getDownPayment(application.getPrice()));
 
         return response;
     }

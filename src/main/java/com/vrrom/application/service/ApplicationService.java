@@ -75,7 +75,7 @@ public class ApplicationService {
     @Transactional
     public ApplicationResponse findApplicationById(long id) {
         Optional<Application> application = applicationRepository.findById(id);
-        return ApplicationMapper.toResponse(application.orElse(new Application()));
+        return ApplicationMapper.toResponse(application.orElseThrow());
     }
 
 }

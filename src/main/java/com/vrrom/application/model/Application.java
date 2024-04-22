@@ -86,13 +86,8 @@ public class Application {
     @Column(name = "updated_at")
     private LocalDate updatedAt;
 
-    public double calculateInterestRate(){
-        return 2.0 + (customer.getCreditRating() - 1) * 1.5;
-    }
-    public BigDecimal calculateDownPayment(){
-        BigDecimal value = price.divide(BigDecimal.valueOf(100.0));
-        return value.compareTo(BigDecimal.valueOf(200)) == 1  ? value: BigDecimal.valueOf(200);
-    }
+    @Column(name = "monthly_payment")
+    private BigDecimal monthlyPayment;
 
     public static class ApplicationBuilder {
         private List<VehicleDetails> vehicleDetails = new ArrayList<>();
