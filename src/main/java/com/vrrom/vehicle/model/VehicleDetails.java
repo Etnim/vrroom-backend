@@ -2,6 +2,7 @@ package com.vrrom.vehicle.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.vrrom.application.model.Application;
+import com.vrrom.vehicle.dtos.VehicleRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -62,13 +63,13 @@ public class VehicleDetails {
         private String model;
         private Application application;
 
-        public Builder withVehicleDTO(VehicleDTO vehicleDTO) {
-            this.emissionStart = vehicleDTO.getEmissionStart();
-            this.emissionEnd = vehicleDTO.getEmissionEnd();
-            this.fuel = vehicleDTO.getFuel();
-            this.year = vehicleDTO.getYear();
-            this.brand = vehicleDTO.getBrand();
-            this.model = vehicleDTO.getModel();
+        public Builder withVehicleDTO(VehicleRequest vehicleRequest) {
+            this.emissionStart = vehicleRequest.getEmissionStart();
+            this.emissionEnd = vehicleRequest.getEmissionEnd();
+            this.fuel = vehicleRequest.getFuel();
+            this.year = vehicleRequest.getYear();
+            this.brand = vehicleRequest.getBrand();
+            this.model = vehicleRequest.getModel();
             return this;
         }
 
