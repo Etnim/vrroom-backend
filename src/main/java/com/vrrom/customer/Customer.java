@@ -38,7 +38,7 @@ public class Customer {
     @Column(name = "birthDate")
     private LocalDate birthDate;
 
-    @Column(name = "email", unique = true)
+    @Column(name = "email") // should be unique
     private String email;
 
     @Column(name = "phone", unique = true)
@@ -97,13 +97,13 @@ public class Customer {
     public void assignRandomCreditRating() {
         double randomValue = new Random().nextDouble();
         if (randomValue <= 0.2) {
-            this.creditRating = 1; // Rating A
+            this.creditRating = 1;
         } else if (randomValue <= 0.6) {
-            this.creditRating = 2; // Rating B
+            this.creditRating = 2;
         } else if (randomValue <= 0.8) {
-            this.creditRating = 3; // Rating C
+            this.creditRating = 3;
         } else if (randomValue <= 0.95) {
-            this.creditRating = 4; // Rating D
+            this.creditRating = 4;
         } else {
             this.creditRating = 5;
         }

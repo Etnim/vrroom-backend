@@ -18,20 +18,13 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CustomerResponse {
-    @NotBlank(message = "Name is mandatory")
     private long pid;
 
-    @NotBlank(message = "Full name is mandatory")
-    @Pattern(regexp = "^[A-Za-z]+$", message = "Full name should contain only letters")
-    @Size(max = 70, message = "Full name must not be longer than 70 characters")
     private String fullName;
 
-    @Min(value = 18,message = "Age should bot be less that 18")
     private int age;
 
-    @Email(message = "Email should be valid")
     private String email;
 
-    @Pattern(regexp = "^\\+370[0-9]{9}$", message = "Phone should contain only numbers")
     private String phone;
 }

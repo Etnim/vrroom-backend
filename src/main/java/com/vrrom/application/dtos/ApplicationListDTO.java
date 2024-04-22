@@ -1,5 +1,6 @@
-package com.vrrom.application.model;
+package com.vrrom.application.dtos;
 
+import com.vrrom.application.model.ApplicationStatus;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

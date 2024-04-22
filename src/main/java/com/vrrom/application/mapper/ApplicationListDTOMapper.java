@@ -2,9 +2,9 @@ package com.vrrom.application.mapper;
 
 import com.vrrom.admin.Admin;
 import com.vrrom.application.model.Application;
-import com.vrrom.application.model.ApplicationListDTO;
+import com.vrrom.application.dtos.ApplicationListDTO;
 
-public class ApllicationListDTOMapper {
+public class ApplicationListDTOMapper {
     public static ApplicationListDTO toApplicationListDTO(Application application, Admin manager) {
         return ApplicationListDTO.builder()
                 .applicationId(application.getId())

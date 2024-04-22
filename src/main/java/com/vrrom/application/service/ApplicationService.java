@@ -3,10 +3,10 @@ package com.vrrom.application.service;
 import com.vrrom.application.dtos.ApplicationRequest;
 import com.vrrom.application.dtos.ApplicationResponse;
 import com.vrrom.application.exception.ApplicationException;
-import com.vrrom.application.mapper.ApllicationListDTOMapper;
+import com.vrrom.application.mapper.ApplicationListDTOMapper;
 import com.vrrom.application.mapper.ApplicationMapper;
 import com.vrrom.application.model.Application;
-import com.vrrom.application.model.ApplicationListDTO;
+import com.vrrom.application.dtos.ApplicationListDTO;
 import com.vrrom.application.repository.ApplicationRepository;
 import com.vrrom.customer.Customer;
 import com.vrrom.customer.mappers.CustomerMapper;
@@ -69,7 +69,7 @@ public class ApplicationService {
         Sort sort = Sort.by(Sort.Direction.fromString(sortDir.toUpperCase()), sortField);
         Pageable paging = PageRequest.of(pageNo, pageSize, sort);
         Page<Application> page = applicationRepository.findAll(paging);
-        return page.map(application -> ApllicationListDTOMapper.toApplicationListDTO(application, application.getManager()));
+        return page.map(application -> ApplicationListDTOMapper.toApplicationListDTO(application, application.getManager()));
     }
 
     @Transactional

@@ -2,7 +2,7 @@ package com.vrrom.application.controller;
 
 import com.vrrom.application.dtos.ApplicationRequest;
 import com.vrrom.application.dtos.ApplicationResponse;
-import com.vrrom.application.model.ApplicationListDTO;
+import com.vrrom.application.dtos.ApplicationListDTO;
 import com.vrrom.application.service.ApplicationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping()
+@RequestMapping(value = "/applications")
 @Tag(name = "Application Controller", description = "To work with application data")
 public class ApplicationController {
     private final ApplicationService applicationService;
@@ -29,7 +29,6 @@ public class ApplicationController {
         this.applicationService = applicationService;
     }
 
-    @PostMapping
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public Page<ApplicationListDTO> getPaginatedApplications(@RequestParam(defaultValue = "1") int page,
@@ -40,6 +39,7 @@ public class ApplicationController {
     }
 
     @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping(value="/application")
     @Operation(summary = "Create application")
     public ApplicationResponse createApplication(@RequestBody ApplicationRequest applicationRequest) {
         return applicationService.createApplication(applicationRequest);
