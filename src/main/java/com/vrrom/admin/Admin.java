@@ -1,8 +1,11 @@
 package com.vrrom.admin;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.vrrom.application.model.Application;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -33,7 +36,7 @@ public class Admin {
     @Column(name = "surname")
     private String surname;
 
-    @Column(name = "applications")
-    @OneToMany(mappedBy = "manager")
+    @JsonBackReference
+    @OneToMany(mappedBy = "manager", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Application> assignedApplications;
 }

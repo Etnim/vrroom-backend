@@ -1,6 +1,7 @@
-package com.vrrom.financialInfo.model;
+package com.vrrom.financialInfo.dtos;
 
-import jakarta.persistence.Column;
+import com.vrrom.financialInfo.model.EmploymentStatus;
+import com.vrrom.financialInfo.model.MaritalStatus;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -16,7 +17,7 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @AllArgsConstructor
-public class FinancialInfoDTO {
+public class FinancialInfoRequest {
     @DecimalMin(value = "0.0", inclusive = false, message = "Monthly income must be greater than 0")
     private BigDecimal monthlyIncome;
 
