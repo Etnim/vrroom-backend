@@ -1,4 +1,4 @@
-package com.vrrom.application.dtos;
+package com.vrrom.application.dto;
 
 import com.vrrom.admin.Admin;
 import com.vrrom.application.model.ApplicationStatus;

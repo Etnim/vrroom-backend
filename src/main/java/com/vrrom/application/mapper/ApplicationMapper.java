@@ -1,10 +1,10 @@
 package com.vrrom.application.mapper;
 
 import com.vrrom.application.calculator.Calculator;
-import com.vrrom.application.dtos.ApplicationResponse;
-import com.vrrom.application.model.ApplicationStatus;
+import com.vrrom.application.dto.ApplicationResponse;
 import com.vrrom.application.model.Application;
-import com.vrrom.application.dtos.ApplicationRequest;
+import com.vrrom.application.model.ApplicationStatus;
+import com.vrrom.application.dto.ApplicationRequest;
 import com.vrrom.customer.Customer;
 import com.vrrom.customer.dtos.CustomerResponse;
 import com.vrrom.customer.mappers.CustomerMapper;

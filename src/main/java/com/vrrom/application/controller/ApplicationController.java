@@ -1,13 +1,21 @@
 package com.vrrom.application.controller;
 
-import com.vrrom.application.dtos.ApplicationRequest;
-import com.vrrom.application.dtos.ApplicationResponse;
-import com.vrrom.application.dtos.ApplicationListDTO;
+
+import com.vrrom.application.dto.ApplicationRequest;
+import com.vrrom.application.dto.ApplicationResponse;
+import com.vrrom.application.dto.ApplicationListDTO;
+import com.vrrom.application.model.ApplicationSortParameters;
+import com.vrrom.application.model.ApplicationStatus;
 import com.vrrom.application.service.ApplicationService;
 import io.swagger.v3.oas.annotations.Operation;
+import com.vrrom.util.CustomPage;
+import com.vrrom.validation.annotations.PositiveLong;
+import com.vrrom.validation.annotations.ValidPageSize;
+import com.vrrom.validation.annotations.ValidSortDirection;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.xml.bind.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +25,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping(value = "/applications")
@@ -31,11 +41,15 @@ public class ApplicationController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Page<ApplicationListDTO> getPaginatedApplications(@RequestParam(defaultValue = "1") int page,
-                                                             @RequestParam(defaultValue = "5") int size,
-                                                             @RequestParam(defaultValue = "createdAt") String sortField,
-                                                             @RequestParam(defaultValue = "desc") String sortDir) {
-        return applicationService.findPaginatedApplications(page, size, sortField, sortDir);
+    public CustomPage<ApplicationListDTO> getPaginatedApplications(@RequestParam(defaultValue = "0") int page,
+                                                                   @RequestParam(defaultValue = "5") @ValidPageSize Integer size,
+                                                                   @RequestParam(defaultValue = "applicationCreatedDate") ApplicationSortParameters sortField,
+                                                                   @RequestParam(defaultValue = "desc") @ValidSortDirection String sortDir,
+                                                                   @RequestParam(required = false) @PositiveLong Long managerId,
+                                                                   @RequestParam(required = false) ApplicationStatus status,
+                                                                   @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                                                                   @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) throws ValidationException {
+        return applicationService.findPaginatedApplications(page, size, sortField, sortDir, managerId, status, startDate, endDate);
     }
 
     @ResponseStatus(HttpStatus.CREATED)

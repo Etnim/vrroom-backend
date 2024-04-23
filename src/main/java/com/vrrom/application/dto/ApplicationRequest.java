@@ -1,4 +1,5 @@
-package com.vrrom.application.dtos;
+package com.vrrom.application.dto;
+
 
 import com.vrrom.customer.dtos.CustomerRequest;
 import com.vrrom.financialInfo.dtos.FinancialInfoRequest;

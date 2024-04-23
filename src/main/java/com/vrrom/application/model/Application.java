@@ -1,9 +1,9 @@
 package com.vrrom.application.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.vrrom.application.dtos.ApplicationRequest;
-import com.vrrom.customer.Customer;
 import com.vrrom.admin.Admin;
+import com.vrrom.application.dto.ApplicationRequest;
+import com.vrrom.customer.Customer;
 import com.vrrom.financialInfo.model.FinancialInfo;
 import com.vrrom.vehicle.model.VehicleDetails;
 import jakarta.persistence.CascadeType;
@@ -57,7 +57,7 @@ public class Application {
     @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<VehicleDetails> vehicleDetails;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "manager_id")
     private Admin manager;
 

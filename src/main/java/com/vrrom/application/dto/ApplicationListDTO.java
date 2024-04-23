@@ -1,4 +1,4 @@
-package com.vrrom.application.dtos;
+package com.vrrom.application.dto;
 
 import com.vrrom.application.model.ApplicationStatus;
 import lombok.Builder;
@@ -13,8 +13,8 @@ import java.time.LocalDate;
 @Builder
 public class ApplicationListDTO {
     private long applicationId;
-    private String name;
-    private String surname;
+    private String customerName;
+    private String customerSurname;
     private BigDecimal leasingAmount;
     private LocalDate applicationCreatedDate;
     private ApplicationStatus applicationStatus;
