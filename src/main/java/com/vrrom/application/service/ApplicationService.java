@@ -15,6 +15,7 @@ import com.vrrom.email.service.EmailService;
 import com.vrrom.financialInfo.mapper.FinancialInfoMapper;
 import com.vrrom.financialInfo.model.FinancialInfo;
 import com.vrrom.application.util.ApplicationSpecifications;
+import com.vrrom.util.CustomPage;
 import com.vrrom.validation.ValidationService;
 import com.vrrom.vehicle.mapper.VehicleMapper;
 import com.vrrom.vehicle.model.VehicleDetails;
@@ -32,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ApplicationService {
@@ -68,10 +70,32 @@ public class ApplicationService {
         }
     }
 
-    public Page<ApplicationListDTO> findPaginatedApplications(int pageNo, int pageSize, ApplicationSortParameters sortField, String sortDir, Long managerId, ApplicationStatus status, LocalDate startDate, LocalDate endDate) throws ValidationException {
-        System.out.println(sortDir + " " + sortField + " " + startDate + " " + endDate);
+    public CustomPage<ApplicationListDTO> findPaginatedApplications(int pageNo, int pageSize, ApplicationSortParameters sortField, String sortDir, Long managerId, ApplicationStatus status, LocalDate startDate, LocalDate endDate) {
         Sort sort = Sort.by(Sort.Direction.fromString(sortDir), sortField.getDisplayName());
-        Pageable paging = PageRequest.of(pageNo, pageSize, sort);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        Specification<Application> spec = buildSpecification(managerId, status, startDate, endDate);
+        Page<Application> page = applicationRepository.findAll(spec, pageable);
+        return toCustomPage(page);
+    }
+
+    private CustomPage<ApplicationListDTO> toCustomPage(Page<Application> page) {
+        List<ApplicationListDTO> content = page.getContent().stream()
+                .map(ApplicationListDTOMapper::toApplicationListDTO)
+                .collect(Collectors.toList());
+        List<String> sortInfo = page.getSort().stream()
+                .map(order -> order.getProperty() + "," + order.getDirection())
+                .collect(Collectors.toList());
+        return new CustomPage<>(
+                content,
+                page.getNumber(),
+                page.getSize(),
+                page.getTotalElements(),
+                page.getTotalPages(),
+                sortInfo
+        );
+    }
+
+    private Specification<Application> buildSpecification(Long managerId, ApplicationStatus status, LocalDate startDate, LocalDate endDate) {
         Specification<Application> spec = Specification.where(null);
         if (managerId != null) {
             spec = spec.and(ApplicationSpecifications.hasManager(managerId));
@@ -82,12 +106,11 @@ public class ApplicationService {
         if (startDate != null || endDate != null) {
             if (ValidationService.isValidDateRange(startDate, endDate)) {
                 spec = spec.and(ApplicationSpecifications.isCreatedBetween(startDate, endDate));
-            }else {
-               throw new IllegalArgumentException(new Throwable("Invalid date range"));
+            } else {
+                throw new IllegalArgumentException(new Throwable("Invalid date range"));
             }
         }
-        Page<Application> page = applicationRepository.findAll(spec, paging);
-        return page.map(ApplicationListDTOMapper::toApplicationListDTO);
+        return spec;
     }
 }
 

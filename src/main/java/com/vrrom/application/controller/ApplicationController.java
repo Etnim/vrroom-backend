@@ -5,6 +5,7 @@ import com.vrrom.application.dto.ApplicationListDTO;
 import com.vrrom.application.model.ApplicationSortParameters;
 import com.vrrom.application.model.ApplicationStatus;
 import com.vrrom.application.service.ApplicationService;
+import com.vrrom.util.CustomPage;
 import com.vrrom.validation.annotations.PositiveLong;
 import com.vrrom.validation.annotations.ValidPageSize;
 import com.vrrom.validation.annotations.ValidSortDirection;
@@ -44,14 +45,14 @@ public class ApplicationController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Page<ApplicationListDTO> getPaginatedApplications(@RequestParam(defaultValue = "0") int page,
-                                                             @RequestParam(defaultValue = "5") @ValidPageSize Integer size,
-                                                             @RequestParam(defaultValue = "applicationCreatedDate") ApplicationSortParameters sortField,
-                                                             @RequestParam(defaultValue = "desc") @ValidSortDirection String sortDir,
-                                                             @RequestParam(required = false) @PositiveLong Long managerId,
-                                                             @RequestParam(required = false) ApplicationStatus status,
-                                                             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-                                                             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) throws ValidationException {
+    public CustomPage<ApplicationListDTO> getPaginatedApplications(@RequestParam(defaultValue = "0") int page,
+                                                                   @RequestParam(defaultValue = "5") @ValidPageSize Integer size,
+                                                                   @RequestParam(defaultValue = "applicationCreatedDate") ApplicationSortParameters sortField,
+                                                                   @RequestParam(defaultValue = "desc") @ValidSortDirection String sortDir,
+                                                                   @RequestParam(required = false) @PositiveLong Long managerId,
+                                                                   @RequestParam(required = false) ApplicationStatus status,
+                                                                   @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                                                                   @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) throws ValidationException {
         return applicationService.findPaginatedApplications(page, size, sortField, sortDir, managerId, status, startDate, endDate);
     }
 }
