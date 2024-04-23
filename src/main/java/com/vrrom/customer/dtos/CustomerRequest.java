@@ -9,13 +9,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 
 @Getter
 @Setter
 @AllArgsConstructor
-public class CustomerDTO {
+public class CustomerRequest {
 
     @NotBlank(message = "Name is mandatory")
     private long pid;
@@ -34,7 +35,7 @@ public class CustomerDTO {
     private String email;
 
     @Past(message = "Birthdate should be in the past")
-    private Date birthDate;
+    private LocalDate birthDate;
 
     @Pattern(regexp = "^\\+370[0-9]{9}$", message = "Phone should contain only numbers")
     private String phone;

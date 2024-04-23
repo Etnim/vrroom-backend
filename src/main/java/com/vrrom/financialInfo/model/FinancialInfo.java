@@ -2,6 +2,7 @@ package com.vrrom.financialInfo.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.vrrom.application.model.Application;
+import com.vrrom.financialInfo.dtos.FinancialInfoRequest;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -63,11 +64,11 @@ public class FinancialInfo {
         private BigDecimal monthlyObligations;
         private Application application;
 
-        public Builder withFinancialInfoDTO(FinancialInfoDTO financialInfoDTO) {
-            this.monthlyIncome = financialInfoDTO.getMonthlyIncome();
-            this.dependants = financialInfoDTO.getDependants();
-            this.maritalStatus = financialInfoDTO.getMaritalStatus();
-            this.monthlyObligations = financialInfoDTO.getMonthlyObligations();
+        public Builder withFinancialInfoDTO(FinancialInfoRequest financialInfoRequest) {
+            this.monthlyIncome = financialInfoRequest.getMonthlyIncome();
+            this.dependants = financialInfoRequest.getDependants();
+            this.maritalStatus = financialInfoRequest.getMaritalStatus();
+            this.monthlyObligations = financialInfoRequest.getMonthlyObligations();
             return this;
         }
 
@@ -85,5 +86,10 @@ public class FinancialInfo {
             financialInfo.setApplication(this.application);
             return financialInfo;
         }
+    }
+
+    public BigDecimal calculateDisposableIncome(){
+        //Formula required
+        return BigDecimal.valueOf(0);
     }
 }
