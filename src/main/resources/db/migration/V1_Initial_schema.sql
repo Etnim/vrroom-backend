@@ -56,9 +56,6 @@ CREATE TABLE IF NOT EXISTS application
     FOREIGN KEY (manager_id) REFERENCES admin(id) ON DELETE SET NULL
 );
 
-
-
-
 CREATE TABLE vehicle_details
 (
     id BIGSERIAL PRIMARY KEY,

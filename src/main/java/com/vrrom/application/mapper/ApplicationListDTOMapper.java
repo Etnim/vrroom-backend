@@ -13,6 +13,7 @@ public class ApplicationListDTOMapper {
                 .applicationCreatedDate(application.getCreatedAt())
                 .applicationStatus(application.getStatus())
                 .build();
+      
         if (application.getManager() != null) {
             dto.setManagerId(application.getManager().getId());
             dto.setManagerName(application.getManager().getName());

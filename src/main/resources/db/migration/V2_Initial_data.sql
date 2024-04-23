@@ -90,11 +90,6 @@ INSERT INTO application (
       (15, 15, 8, 37000.00, 7400.00, 14800, 6, 4.3, 'PENDING_CHANGES', '2023-04-05', '2023-04-05', 560);
 
 
--- Notes:
--- The 'financial_info_id', 'customer_id', and 'manager_id' values should exist in their respective tables.
--- 'status' can be one of 'APPROVED', 'PENDING', or 'REJECTED' based on your application logic.
--- 'created_at' and 'updated_at' are given realistic dates.
--- You might need to adjust interest rates, down payments, residual values, etc., according to actual business logic or scenarios.
 
 
 INSERT INTO vehicle_details (application_id, brand, model, year, fuel, emission_start, emission_end)
