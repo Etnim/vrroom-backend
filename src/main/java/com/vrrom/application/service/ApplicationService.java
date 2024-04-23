@@ -1,6 +1,5 @@
 package com.vrrom.application.service;
 
-
 import com.vrrom.application.dto.ApplicationListDTO;
 import com.vrrom.application.dto.ApplicationRequest;
 import com.vrrom.application.dto.ApplicationResponse;

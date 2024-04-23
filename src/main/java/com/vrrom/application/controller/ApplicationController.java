@@ -1,6 +1,5 @@
 package com.vrrom.application.controller;
 
-
 import com.vrrom.application.dto.ApplicationRequest;
 import com.vrrom.application.dto.ApplicationResponse;
 import com.vrrom.application.dto.ApplicationListDTO;
@@ -66,7 +65,7 @@ public class ApplicationController {
         return applicationService.findApplicationById(id);
     }
 
-    @PutMapping(value="/update/{id}")
+    @PutMapping(value="/{id}")
     public ApplicationResponse updateApplication(@PathVariable long id, @RequestBody ApplicationRequest applicationRequest) {
         return applicationService.updateApplication(id, applicationRequest);
     }
