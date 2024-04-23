@@ -59,38 +59,37 @@ INSERT INTO financial_info (
 
 
 
-INSERT INTO application (financial_info_id,
-                         customer_id,
-                         manager_id,
-                         price,
-                         down_payment,
-                         residual_value,
-                         year_period,
-                         interest_rate,
-                         status,
-                         created_at,
-                         updated_at)
-VALUES (1, 1, 1, 25000.00, 5000, 10000, 5, 4.5, 'SIGNED', '2023-01-01', '2023-04-01'),
-       (2, 2, 1, 18000.00, 3600, 7200, 3, 3.9, 'PENDING_CHANGES', '2023-01-15', '2023-04-01'),
-       (3, 3, 2, 22000.00, 4400, 8800, 4, 4.0, 'SIGNED', '2023-02-01', '2023-04-01'),
-       (4, 4, 2, 15000.00, 3000, 6000, 3, 5.0, 'SIGNED', '2023-02-20', '2023-04-01'),
-       (5, 5, 3, 32000.00, 6400, 12800, 6, 3.5, 'PENDING_CHANGES', '2023-03-05', '2023-04-01'),
-       (6, 6, 3, 36000.00, 7200, 14400, 7, 4.2, 'REJECTED', '2023-03-15', '2023-04-01'),
-       (7, 7, 4, 20000.00, 4000, 8000, 5, 4.8, 'SIGNED', '2023-03-25', '2023-04-01'),
-       (8, 8, 4, 24000.00, 4800, 9600, 6, 3.6, 'REJECTED', '2023-04-01', '2023-04-01'),
-       (9, 9, 5, 27000.00, 5400, 10800, 5, 4.4, 'PENDING_CHANGES', '2023-04-10', '2023-04-10'),
-       (10, 10, 5, 30000.00, 6000, 12000, 5, 3.7, 'SIGNED', '2023-04-15', '2023-04-15'),
-       (11, 11, 6, 40000.00, 8000, 16000, 7, 4.0, 'SIGNED', '2023-04-01', '2023-04-01'),
-       (12, 12, 6, 35000.00, 7000, 14000, 6, 3.5, 'REJECTED', '2023-04-02', '2023-04-02'),
-       (13, 13, 7, 25000.00, 5000, 10000, 4, 4.5, 'PENDING_CHANGES', '2023-04-03', '2023-04-03'),
-       (14, 14, 7, 45000.00, 9000, 18000, 5, 3.9, 'SIGNED', '2023-04-04', '2023-04-04'),
-       (15, 15, 8, 37000.00, 7400, 14800, 6, 4.3, 'PENDING_CHANGES', '2023-04-05', '2023-04-05');
+INSERT INTO application (
+    financial_info_id,
+    customer_id,
+    manager_id,
+    price,
+    down_payment,
+    residual_value,
+    year_period,
+    interest_rate,
+    status,
+    created_at,
+    updated_at,
+    monthly_payment
+) VALUES
+      (1, 1, null, 25000.00, 5000.00, 10000, 5, 4.5, 'SIGNED', '2023-01-01', '2023-04-01', 350.00),
+      (2, 2, 1, 18000.00, 3600.00, 7200, 3, 3.9, 'PENDING_CHANGES', '2023-01-15', '2023-04-01', 450.00),
+      (3, 3, 2, 22000.00, 4400.00, 8800, 4, 4.0, 'SIGNED', '2023-02-01', '2023-04-01', 500.00),
+      (4, 4, 2, 15000.00, 3000.00, 6000, 3, 5.0, 'SIGNED', '2023-02-20', '2023-04-01', 380.00),
+      (5, 5, 3, 32000.00, 6400.00, 12800, 6, 3.5, 'PENDING_CHANGES', '2023-03-05', '2023-04-01', 460.00),
+      (6, 6, 3, 36000.00, 7200.00, 14400, 7, 4.2, 'REJECTED', '2023-03-15', '2023-04-01', 470.00),
+      (7, 7, 4, 20000.00, 4000.00, 8000, 5, 4.8, 'SIGNED', '2023-03-25', '2023-04-01', 340.00),
+      (8, 8, 4, 24000.00, 4800.00, 9600, 6, 3.6, 'REJECTED', '2023-04-01', '2023-04-01', 390.00),
+      (9, 9, 5, 27000.00, 5400.00, 10800, 5, 4.4, 'PENDING_CHANGES', '2023-04-10', '2023-04-10', 510.00),
+      (10, 10, 5, 30000.00, 6000.00, 12000, 5, 3.7, 'SIGNED', '2023-04-15', '2023-04-15', 540.00),
+      (11, 11, 6, 40000.00, 8000.00, 16000, 7, 4.0, 'SIGNED', '2023-04-01', '2023-04-01', 550.00),
+      (12, 12, 6, 35000.00, 7000.00, 14000, 6, 3.5, 'REJECTED', '2023-04-02', '2023-04-02', 480.00),
+      (13, 13, 7, 25000.00, 5000.00, 10000, 4, 4.5, 'PENDING_CHANGES', '2023-04-03', '2023-04-03', 430.00),
+      (14, 14, 7, 45000.00, 9000.00, 18000, 5, 3.9, 'SIGNED', '2023-04-04', '2023-04-04', 590.00),
+      (15, 15, 8, 37000.00, 7400.00, 14800, 6, 4.3, 'PENDING_CHANGES', '2023-04-05', '2023-04-05', 560);
 
--- Notes:
--- The 'financial_info_id', 'customer_id', and 'manager_id' values should exist in their respective tables.
--- 'status' can be one of 'APPROVED', 'PENDING', or 'REJECTED' based on your application logic.
--- 'created_at' and 'updated_at' are given realistic dates.
--- You might need to adjust interest rates, down payments, residual values, etc., according to actual business logic or scenarios.
+
 
 
 INSERT INTO vehicle_details (application_id, brand, model, year, fuel, emission_start, emission_end)

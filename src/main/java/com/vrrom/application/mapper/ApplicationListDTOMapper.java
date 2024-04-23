@@ -5,16 +5,24 @@ import com.vrrom.application.dto.ApplicationListDTO;
 
 public class ApplicationListDTOMapper {
     public static ApplicationListDTO toApplicationListDTO(Application application) {
-        return ApplicationListDTO.builder()
+        ApplicationListDTO dto = ApplicationListDTO.builder()
                 .applicationId(application.getId())
                 .customerName(application.getCustomer().getName())
                 .customerSurname(application.getCustomer().getSurname())
                 .leasingAmount(application.getPrice())
                 .applicationCreatedDate(application.getCreatedAt())
                 .applicationStatus(application.getStatus())
-                .managerId(application.getManager().getId())
-                .managerName(application.getManager().getName())
-                .managerSurname(application.getManager().getSurname())
                 .build();
+      
+        if (application.getManager() != null) {
+            dto.setManagerId(application.getManager().getId());
+            dto.setManagerName(application.getManager().getName());
+            dto.setManagerSurname(application.getManager().getName());
+        } else {
+            dto.setManagerId(null);
+            dto.setManagerName(null);
+            dto.setManagerSurname(null);
+        }
+        return dto;
     }
 }
