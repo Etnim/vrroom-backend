@@ -1,8 +1,9 @@
 package com.vrrom.application.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.vrrom.admin.Admin;
+import com.vrrom.application.dtos.ApplicationRequest;
 import com.vrrom.customer.Customer;
+import com.vrrom.admin.Admin;
 import com.vrrom.financialInfo.model.FinancialInfo;
 import com.vrrom.vehicle.model.VehicleDetails;
 import jakarta.persistence.CascadeType;
@@ -64,7 +65,7 @@ public class Application {
     private BigDecimal price;
 
     @Column(name = "down_payment")
-    private int downPayment;
+    private BigDecimal downPayment;
 
     @Column(name = "residual_value")
     private int residualValue;
@@ -85,9 +86,8 @@ public class Application {
     @Column(name = "updated_at")
     private LocalDate updatedAt;
 
-    public double calculateInterestRate(){
-        return 2.0 + (customer.getCreditRating() - 1) * 1.5;
-    }
+    @Column(name = "monthly_payment")
+    private BigDecimal monthlyPayment;
 
     public static class ApplicationBuilder {
         private List<VehicleDetails> vehicleDetails = new ArrayList<>();
@@ -111,11 +111,10 @@ public class Application {
 
         public ApplicationBuilder setStatusSubmitted() {
             this.status = ApplicationStatus.SUBMITTED;
-       
             return this;
         }
 
-        public ApplicationBuilder fromDto(ApplicationDTO dto) {
+        public ApplicationBuilder fromDto(ApplicationRequest dto) {
             this.price = dto.getPrice();
             this.residualValue = dto.getResidualValue();
             this.yearPeriod = dto.getYearPeriod();

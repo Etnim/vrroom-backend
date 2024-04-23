@@ -1,5 +1,6 @@
-package com.vrrom.vehicle.model;
+package com.vrrom.vehicle.dtos;
 
+import com.vrrom.vehicle.model.FuelType;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -11,7 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class VehicleDTO {
+public class VehicleRequest {
     @NotBlank(message = "Brand must not be blank")
     private String brand;
 

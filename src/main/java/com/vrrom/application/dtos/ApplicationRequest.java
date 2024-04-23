@@ -1,8 +1,8 @@
-package com.vrrom.application.model;
+package com.vrrom.application.dtos;
 
-import com.vrrom.customer.dtos.CustomerDTO;
-import com.vrrom.financialInfo.model.FinancialInfoDTO;
-import com.vrrom.vehicle.model.VehicleDTO;
+import com.vrrom.customer.dtos.CustomerRequest;
+import com.vrrom.financialInfo.dtos.FinancialInfoRequest;
+import com.vrrom.vehicle.dtos.VehicleRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
@@ -19,15 +19,15 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ApplicationDTO {
+public class ApplicationRequest {
     @Valid
-    private CustomerDTO customer;
+    private CustomerRequest customer;
 
     @Valid
-    private List<VehicleDTO> vehicleDetails;
+    private List<VehicleRequest> vehicleDetails;
 
     @Valid
-    private FinancialInfoDTO financialInfo;
+    private FinancialInfoRequest financialInfo;
 
     @NotNull(message = "Price cannot be null")
     @DecimalMin(value = "0.01", message = "Price must be at least 0.01")
