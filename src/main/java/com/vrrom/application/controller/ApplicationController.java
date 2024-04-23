@@ -20,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -63,5 +64,10 @@ public class ApplicationController {
     @ResponseStatus(HttpStatus.OK)
     public ApplicationResponse getApplicationById(@PathVariable long id) {
         return applicationService.findApplicationById(id);
+    }
+
+    @PutMapping(value="/update/{id}")
+    public ApplicationResponse updateApplication(@PathVariable long id, @RequestBody ApplicationRequest applicationRequest) {
+        return applicationService.updateApplication(id, applicationRequest);
     }
 }
