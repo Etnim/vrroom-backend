@@ -20,19 +20,9 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FinancialInfoResponse {
-    @DecimalMin(value = "0.0", inclusive = false, message = "Monthly income must be greater than 0")
     private BigDecimal monthlyIncome;
-
-    @ElementCollection(targetClass = MaritalStatus.class)
-    @Enumerated(EnumType.STRING)
-    @NotNull
     private MaritalStatus maritalStatus;
-
-    @Min(value = 0, message = "Number of dependants must be non-negative")
     private int dependants;
-
-    @DecimalMin(value = "0.0", inclusive = false, message = "Monthly obligations must be greater than 0")
     private BigDecimal monthlyObligations;
-
     private BigDecimal disposableIncome;
 }

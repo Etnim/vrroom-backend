@@ -26,7 +26,7 @@ import java.util.Random;
 @NoArgsConstructor
 public class Customer {
     @Id
-    @Column(name = "pid")
+    @Column(name = "pid", unique = true )
     private long pid;
 
     @Column(name = "name")

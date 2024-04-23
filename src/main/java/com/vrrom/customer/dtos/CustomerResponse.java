@@ -19,12 +19,8 @@ import java.util.Date;
 @NoArgsConstructor
 public class CustomerResponse {
     private long pid;
-
     private String fullName;
-
     private int age;
-
     private String email;
-
     private String phone;
 }
