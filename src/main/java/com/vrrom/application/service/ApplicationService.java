@@ -146,16 +146,23 @@ public class ApplicationService {
     }
     @Transactional
     public String assignAdmin(long adminId, long applicationId) {
-        Application existingApplication = findApplicationById(applicationId);
+        Application application = findApplicationById(applicationId);
+        if(application.getManager() != null){
+            throw new ApplicationException("Application is already assigned to a manager");
+        }
         Admin admin = findAdminById(adminId);
-        existingApplication.setManager(admin);
+        application.setManager(admin);
+        admin.getAssignedApplications().add(application);
         return " Admin is successfully assigned";
     }
     @Transactional
     public String removeAdmin(long adminId, long applicationId) {
-        Application existingApplication = findApplicationById(applicationId);
-        existingApplication.setManager(null);
-        return " Admin is successfully assigned";
+        Application application = findApplicationById(applicationId);
+        if(application.getManager() == null){
+            throw new ApplicationException("Application is not assigned to any of managers");
+        }
+        application.setManager(null);
+        return " Admin is successfully removed";
     }
     private void updateApplication(ApplicationRequest applicationRequest, Application application) {
         Customer customer = CustomerMapper.toEntity(applicationRequest.getCustomer(), application);

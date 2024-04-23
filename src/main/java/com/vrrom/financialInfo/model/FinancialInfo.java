@@ -63,12 +63,14 @@ public class FinancialInfo {
         private MaritalStatus maritalStatus;
         private BigDecimal monthlyObligations;
         private Application application;
+        private EmploymentStatus employmentStatus;
 
         public Builder withFinancialInfoDTO(FinancialInfoRequest financialInfoRequest) {
             this.monthlyIncome = financialInfoRequest.getMonthlyIncome();
             this.dependants = financialInfoRequest.getDependants();
             this.maritalStatus = financialInfoRequest.getMaritalStatus();
             this.monthlyObligations = financialInfoRequest.getMonthlyObligations();
+            this.employmentStatus = financialInfoRequest.getEmploymentStatus();
             return this;
         }
 
@@ -84,6 +86,7 @@ public class FinancialInfo {
             financialInfo.setMaritalStatus(this.maritalStatus);
             financialInfo.setMonthlyObligations(this.monthlyObligations);
             financialInfo.setApplication(this.application);
+            financialInfo.setEmploymentStatus(this.employmentStatus);
             return financialInfo;
         }
     }

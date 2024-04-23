@@ -1,7 +1,10 @@
 package com.vrrom.admin.service;
 
 import com.vrrom.admin.Admin;
+import com.vrrom.admin.AdminMapper;
+import com.vrrom.admin.AdminRequest;
 import com.vrrom.admin.repository.AdminRepository;
+import com.vrrom.application.dto.ApplicationResponse;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -10,5 +13,9 @@ public class AdminService {
 
     public AdminService(AdminRepository adminRepository) {
         this.adminRepository = adminRepository;
+    }
+
+    public Admin createAdmin(AdminRequest admin) {
+        return adminRepository.save(AdminMapper.toEntity(admin));
     }
 }
