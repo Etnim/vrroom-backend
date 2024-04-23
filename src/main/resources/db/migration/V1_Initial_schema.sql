@@ -43,19 +43,18 @@ CREATE TABLE IF NOT EXISTS application
     customer_id       BIGINT,
     manager_id        BIGINT,
     price             NUMERIC(15, 2),
-    down_payment      INT,
+    down_payment      NUMERIC(15, 2),
     residual_value    INT,
     year_period       INT,
     interest_rate     DOUBLE PRECISION,
     status            VARCHAR(50),
     created_at        DATE,
     updated_at        DATE,
-    FOREIGN KEY (financial_info_id) REFERENCES financial_info (id) ON DELETE CASCADE,
-    FOREIGN KEY (customer_id) REFERENCES customer (pid) ON DELETE CASCADE,
-    FOREIGN KEY (manager_id) REFERENCES admin (id) ON DELETE SET NULL
+    monthly_payment   NUMERIC(15, 2),
+    FOREIGN KEY (financial_info_id) REFERENCES financial_info(id) ON DELETE CASCADE,
+    FOREIGN KEY (customer_id) REFERENCES customer(pid) ON DELETE CASCADE,
+    FOREIGN KEY (manager_id) REFERENCES admin(id) ON DELETE SET NULL
 );
-
-
 
 CREATE TABLE vehicle_details
 (

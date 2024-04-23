@@ -18,7 +18,7 @@ public class ApplicationListDTO {
     private BigDecimal leasingAmount;
     private LocalDate applicationCreatedDate;
     private ApplicationStatus applicationStatus;
-    private long managerId;
+    private Long managerId;
     private String managerName;
     private String managerSurname;
 }

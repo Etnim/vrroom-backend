@@ -52,16 +52,7 @@ public class ApplicationService {
     public ApplicationResponse createApplication(ApplicationRequest applicationRequest) {
         try {
             Application application = new Application();
-            Customer customer = CustomerMapper.toEntity(applicationRequest.getCustomer(), application);
-            FinancialInfo financialInfo = FinancialInfoMapper.toEntity(applicationRequest.getFinancialInfo(), application);
-            List<VehicleDetails> vehicleDetails = VehicleMapper.toEntityList(applicationRequest.getVehicleDetails(), application);
-            ApplicationMapper.toEntity(
-                    application,
-                    applicationRequest,
-                    customer,
-                    financialInfo,
-                    vehicleDetails);
-            applicationRepository.save(application);
+            updateApplication(applicationRequest, application);
             emailService.sendEmail("vrroom.leasing@gmail.com", application.getCustomer().getEmail(), "Application", "Your application has been created successfully.");
             return ApplicationMapper.toResponse(application);
 
@@ -116,13 +107,49 @@ public class ApplicationService {
         }
         return spec;
     }
-
     @Transactional
-    public ApplicationResponse findApplicationById(long id) {
+    public ApplicationResponse findApplicationById(long id){
         Optional<Application> application = applicationRepository.findById(id);
         return ApplicationMapper.toResponse(application.orElseThrow());
     }
 
+    @Transactional
+    public ApplicationResponse updateApplication(long id, ApplicationRequest applicationRequest) {
+        try {
+            Optional<Application> optionalApplication = applicationRepository.findById(id);
+            if (optionalApplication.isEmpty()) {
+                throw new ApplicationException("Application not found with id: " + id);
+            }
+            Application existingApplication = optionalApplication.get();
+
+            updateApplication(applicationRequest, existingApplication);
+            emailService.sendEmail("vrroom.leasing@gmail.com", existingApplication.getCustomer().getEmail(), "Application Update", "Your application has been updated successfully.");
+
+            return ApplicationMapper.toResponse(existingApplication);
+
+        } catch (DataAccessException dae) {
+            throw new ApplicationException("Failed to save application data", dae);
+        } catch (MailException me) {
+            throw new ApplicationException("Failed to send notification email", me);
+        } catch (Exception e) {
+            throw new ApplicationException("An unexpected error occurred while updating the application", e);
+        }
+    }
+
+    private void updateApplication(ApplicationRequest applicationRequest, Application application) {
+        Customer customer = CustomerMapper.toEntity(applicationRequest.getCustomer(), application);
+        FinancialInfo financialInfo = FinancialInfoMapper.toEntity(applicationRequest.getFinancialInfo(), application);
+        List<VehicleDetails> vehicleDetails = VehicleMapper.toEntityList(applicationRequest.getVehicleDetails(), application);
+
+        ApplicationMapper.toEntity(
+                application,
+                applicationRequest,
+                customer,
+                financialInfo,
+                vehicleDetails);
+
+        applicationRepository.save(application);
+    }
 }
 
 
