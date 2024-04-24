@@ -10,24 +10,24 @@ import com.vrrom.application.model.Application;
 import com.vrrom.application.model.ApplicationSortParameters;
 import com.vrrom.application.model.ApplicationStatus;
 import com.vrrom.application.repository.ApplicationRepository;
+import com.vrrom.application.util.ApplicationSpecifications;
 import com.vrrom.customer.Customer;
 import com.vrrom.customer.mappers.CustomerMapper;
 import com.vrrom.email.service.EmailService;
 import com.vrrom.financialInfo.mapper.FinancialInfoMapper;
 import com.vrrom.financialInfo.model.FinancialInfo;
-import com.vrrom.application.util.ApplicationSpecifications;
 import com.vrrom.util.CustomPage;
 import com.vrrom.validation.ValidationService;
 import com.vrrom.vehicle.mapper.VehicleMapper;
 import com.vrrom.vehicle.model.VehicleDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.mail.MailException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.mail.MailException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,7 +54,6 @@ public class ApplicationService {
             updateApplication(applicationRequest, application);
             emailService.sendEmail("vrroom.leasing@gmail.com", application.getCustomer().getEmail(), "Application", "Your application has been created successfully.");
             return ApplicationMapper.toResponse(application);
-
         } catch (DataAccessException dae) {
             throw new ApplicationException("Failed to save application data", dae);
         } catch (MailException me) {
@@ -65,7 +64,7 @@ public class ApplicationService {
     }
 
     public CustomPage<ApplicationListDTO> findPaginatedApplications(int pageNo, int pageSize, ApplicationSortParameters sortField, String sortDir, Long managerId, ApplicationStatus status, LocalDate startDate, LocalDate endDate) {
-        Sort sort = Sort.by(Sort.Direction.fromString(sortDir), sortField.getDisplayName());
+        Sort sort = Sort.by(Sort.Direction.fromString(sortDir), sortField.getValue());
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
         Specification<Application> spec = buildSpecification(managerId, status, startDate, endDate);
         Page<Application> page = applicationRepository.findAll(spec, pageable);
@@ -77,7 +76,11 @@ public class ApplicationService {
                 .map(ApplicationListDTOMapper::toApplicationListDTO)
                 .collect(Collectors.toList());
         List<String> sortInfo = page.getSort().stream()
-                .map(order -> order.getProperty() + "," + order.getDirection())
+                .map(order -> {
+                    ApplicationSortParameters param = ApplicationSortParameters.fromDisplayName(order.getProperty());
+                    String jsonValue = param != null ? param.getRequestValue() : order.getProperty();
+                    return jsonValue + "," + order.getDirection();
+                })
                 .collect(Collectors.toList());
         return new CustomPage<>(
                 content,
@@ -97,17 +100,25 @@ public class ApplicationService {
         if (status != null) {
             spec = spec.and(ApplicationSpecifications.hasStatus(status));
         }
-        if (startDate != null || endDate != null) {
+        if (startDate != null && endDate != null) {
             if (ValidationService.isValidDateRange(startDate, endDate)) {
                 spec = spec.and(ApplicationSpecifications.isCreatedBetween(startDate, endDate));
             } else {
                 throw new IllegalArgumentException(new Throwable("Invalid date range"));
             }
+        } else {
+            if (startDate != null) {
+                spec = spec.and(ApplicationSpecifications.isCreatedAfter(startDate));
+            }
+            if (endDate != null) {
+                spec = spec.and(ApplicationSpecifications.isCreatedBefore(endDate));
+            }
         }
         return spec;
     }
+
     @Transactional
-    public ApplicationResponse findApplicationById(long id){
+    public ApplicationResponse findApplicationById(long id) {
         Optional<Application> application = applicationRepository.findById(id);
         return ApplicationMapper.toResponse(application.orElseThrow());
     }
@@ -120,12 +131,9 @@ public class ApplicationService {
                 throw new ApplicationException("Application not found with id: " + id);
             }
             Application existingApplication = optionalApplication.get();
-
             updateApplication(applicationRequest, existingApplication);
             emailService.sendEmail("vrroom.leasing@gmail.com", existingApplication.getCustomer().getEmail(), "Application Update", "Your application has been updated successfully.");
-
             return ApplicationMapper.toResponse(existingApplication);
-
         } catch (DataAccessException dae) {
             throw new ApplicationException("Failed to save application data", dae);
         } catch (MailException me) {
@@ -139,14 +147,12 @@ public class ApplicationService {
         Customer customer = CustomerMapper.toEntity(applicationRequest.getCustomer(), application);
         FinancialInfo financialInfo = FinancialInfoMapper.toEntity(applicationRequest.getFinancialInfo(), application);
         List<VehicleDetails> vehicleDetails = VehicleMapper.toEntityList(applicationRequest.getVehicleDetails(), application);
-
         ApplicationMapper.toEntity(
                 application,
                 applicationRequest,
                 customer,
                 financialInfo,
                 vehicleDetails);
-
         applicationRepository.save(application);
     }
 }
