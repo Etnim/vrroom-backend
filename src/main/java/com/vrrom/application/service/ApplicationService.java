@@ -10,24 +10,24 @@ import com.vrrom.application.model.Application;
 import com.vrrom.application.model.ApplicationSortParameters;
 import com.vrrom.application.model.ApplicationStatus;
 import com.vrrom.application.repository.ApplicationRepository;
+import com.vrrom.application.util.ApplicationSpecifications;
 import com.vrrom.customer.Customer;
 import com.vrrom.customer.mappers.CustomerMapper;
 import com.vrrom.email.service.EmailService;
 import com.vrrom.financialInfo.mapper.FinancialInfoMapper;
 import com.vrrom.financialInfo.model.FinancialInfo;
-import com.vrrom.application.util.ApplicationSpecifications;
 import com.vrrom.util.CustomPage;
 import com.vrrom.validation.ValidationService;
 import com.vrrom.vehicle.mapper.VehicleMapper;
 import com.vrrom.vehicle.model.VehicleDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.mail.MailException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.mail.MailException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,7 +64,7 @@ public class ApplicationService {
     }
 
     public CustomPage<ApplicationListDTO> findPaginatedApplications(int pageNo, int pageSize, ApplicationSortParameters sortField, String sortDir, Long managerId, ApplicationStatus status, LocalDate startDate, LocalDate endDate) {
-        Sort sort = Sort.by(Sort.Direction.fromString(sortDir), sortField.getDisplayName());
+        Sort sort = Sort.by(Sort.Direction.fromString(sortDir), sortField.getValue());
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
         Specification<Application> spec = buildSpecification(managerId, status, startDate, endDate);
         Page<Application> page = applicationRepository.findAll(spec, pageable);
@@ -78,7 +78,7 @@ public class ApplicationService {
         List<String> sortInfo = page.getSort().stream()
                 .map(order -> {
                     ApplicationSortParameters param = ApplicationSortParameters.fromDisplayName(order.getProperty());
-                    String jsonValue = param != null ? param.getJsonValue() : order.getProperty();
+                    String jsonValue = param != null ? param.getRequestValue() : order.getProperty();
                     return jsonValue + "," + order.getDirection();
                 })
                 .collect(Collectors.toList());

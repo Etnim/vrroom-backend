@@ -10,7 +10,7 @@ public class StringToApplicationSortParametersConverter implements Converter<Str
     public ApplicationSortParameters convert(String source) {
         source = source.trim();
         for (ApplicationSortParameters param : ApplicationSortParameters.values()) {
-            if (param.getJsonValue().equalsIgnoreCase(source)) {
+            if (param.getRequestValue().equalsIgnoreCase(source)) {
                 return param;
             }
         }

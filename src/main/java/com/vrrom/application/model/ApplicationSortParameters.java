@@ -2,6 +2,7 @@ package com.vrrom.application.model;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
+
 import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -17,28 +18,26 @@ public enum ApplicationSortParameters {
     MANAGER_ID("managerId", "managerId"),
     MANAGER_NAME("managerName", "managerName"),
     MANAGER_SURNAME("managerSurname", "managerSurname");
-
-    private static final Map<String, ApplicationSortParameters> BY_DISPLAY_NAME = Arrays.stream(values())
-            .collect(Collectors.toMap(ApplicationSortParameters::getDisplayName, e -> e));
-
-    private final String jsonValue;
-    private final String displayName;
+    private static final Map<String, ApplicationSortParameters> BY_VALUE = Arrays.stream(values())
+            .collect(Collectors.toMap(ApplicationSortParameters::getValue, e -> e));
+    private final String requestValue;
+    private final String value;
 
     ApplicationSortParameters(String jsonValue, String displayName) {
-        this.jsonValue = jsonValue;
-        this.displayName = displayName;
+        this.requestValue = jsonValue;
+        this.value = displayName;
     }
 
     @JsonValue
-    public String getJsonValue() {
-        return jsonValue;
+    public String getRequestValue() {
+        return requestValue;
     }
 
-    public String getDisplayName() {
-        return displayName;
+    public String getValue() {
+        return value;
     }
 
     public static ApplicationSortParameters fromDisplayName(String displayName) {
-        return BY_DISPLAY_NAME.get(displayName);
+        return BY_VALUE.get(displayName);
     }
 }
