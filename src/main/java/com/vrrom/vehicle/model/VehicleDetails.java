@@ -1,6 +1,5 @@
 package com.vrrom.vehicle.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.vrrom.application.model.Application;
 import com.vrrom.vehicle.dtos.VehicleRequest;
 import jakarta.persistence.Column;
@@ -11,7 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -49,8 +48,7 @@ public class VehicleDetails {
     @Column(name = "emission_end")
     private int emissionEnd;
 
-    @JsonBackReference
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "application_id")
     private Application application;
 

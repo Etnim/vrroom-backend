@@ -24,12 +24,12 @@ public class ApplicationResponse {
     private LocalDate dateOfSubmission;
     private Admin assignedManager;
     private CustomerResponse customer;
-    private List<VehicleResponse> vehicleDetails;
+    private VehicleResponse vehicleDetails;
     private FinancialInfoResponse financialInfo;
     private BigDecimal price;
-    private int downPayment;
+    private BigDecimal downPayment;
     private int yearPeriod;
-    private int residualValue;
+    private BigDecimal residualValue;
     private double interestRate;
     private double euribor;
     private BigDecimal agreementFee;

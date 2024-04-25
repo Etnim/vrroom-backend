@@ -167,17 +167,23 @@ public class ApplicationService {
         return "InterestRate is successfully update to: " + application.getInterestRate();
     }
 
+    public String modifyAgreementFee(long applicationId, double interestRate){
+        Application application = findApplicationById(applicationId);
+        application.setInterestRate(interestRate);
+        return "InterestRate is successfully update to: " + application.getInterestRate();
+    }
+
     private void populateApplicationWithRequest(ApplicationRequest applicationRequest, Application application) {
         Customer customer = CustomerMapper.toEntity(applicationRequest.getCustomer(), application);
         FinancialInfo financialInfo = FinancialInfoMapper.toEntity(applicationRequest.getFinancialInfo(), application);
-        List<VehicleDetails> vehicleDetails = VehicleMapper.toEntityList(applicationRequest.getVehicleDetails(), application);
+        VehicleDetails vehicleDetails = VehicleMapper.toEntity(applicationRequest.getVehicleDetails(), application);
+
         ApplicationMapper.toEntity(
                 application,
                 applicationRequest,
                 customer,
                 financialInfo,
                 vehicleDetails);
-        applicationRepository.save(application);
     }
 
     public Application findApplicationById(long applicationId) {

@@ -3,8 +3,10 @@ package com.vrrom.application.model;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.vrrom.admin.Admin;
 import com.vrrom.application.dto.ApplicationRequest;
+import com.vrrom.application.mapper.ApplicationMapper;
 import com.vrrom.customer.Customer;
 import com.vrrom.financialInfo.model.FinancialInfo;
+import com.vrrom.vehicle.mapper.VehicleMapper;
 import com.vrrom.vehicle.model.VehicleDetails;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -43,19 +45,16 @@ public class Application {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @JsonManagedReference
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "financial_info_id")
     private FinancialInfo financialInfo;
 
-    @JsonManagedReference
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    @JsonManagedReference
-    @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<VehicleDetails> vehicleDetails;
+    @OneToOne(mappedBy = "application", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private VehicleDetails vehicleDetails;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "manager_id")
@@ -68,7 +67,7 @@ public class Application {
     private BigDecimal downPayment;
 
     @Column(name = "residual_value")
-    private int residualValue;
+    private BigDecimal residualValue;
 
     @Column(name = "year_period")
     private int yearPeriod;
@@ -89,9 +88,10 @@ public class Application {
     @Column(name = "monthly_payment")
     private BigDecimal monthlyPayment;
 
-    public static class ApplicationBuilder {
-        private List<VehicleDetails> vehicleDetails = new ArrayList<>();
+    @Column(name = "agreement_fee")
+    private BigDecimal agreementFee;
 
+    public static class ApplicationBuilder {
         public ApplicationBuilder defaultCreatedAtNow() {
             this.createdAt = LocalDate.now();
             return this;
@@ -116,7 +116,6 @@ public class Application {
 
         public ApplicationBuilder fromDto(ApplicationRequest dto) {
             this.price = dto.getPrice();
-            this.residualValue = dto.getResidualValue();
             this.yearPeriod = dto.getYearPeriod();
             return this;
         }

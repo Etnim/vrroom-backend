@@ -55,7 +55,7 @@ public class Customer {
     private Application application;
 
     public static class Builder {
-        private long pid;
+        private long personalId;
         private String name;
         private String surname;
         private String email;
@@ -65,7 +65,7 @@ public class Customer {
         private Application application;
 
         public Builder withCustomerDTO(CustomerRequest customerRequest) {
-            this.pid = customerRequest.getPid();
+            this.personalId = customerRequest.getPersonalId();
             this.name = customerRequest.getName();
             this.surname = customerRequest.getSurname();
             this.email = customerRequest.getEmail();
@@ -82,7 +82,7 @@ public class Customer {
 
         public Customer build() {
             Customer customer = new Customer();
-            customer.setPersonalId(this.pid);
+            customer.setPersonalId(this.personalId);
             customer.setName(this.name);
             customer.setSurname(this.surname);
             customer.setEmail(this.email);
