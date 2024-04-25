@@ -8,13 +8,13 @@ public enum EmploymentStatus {
     SELF_EMPLOYED("Self-employed"),
     UNEMPLOYED("Unemployed");
 
-    private final String jsonValue;
+    private final String employmentStatusText;
 
-    EmploymentStatus(String jsonValue) {
-        this.jsonValue = jsonValue;
+    EmploymentStatus(String employmentStatusText) {
+        this.employmentStatusText = employmentStatusText;
     }
     @JsonValue
-    public String getJsonValue() {
-        return jsonValue;
+    public String getEmploymentStatusText() {
+        return employmentStatusText;
     }
 }

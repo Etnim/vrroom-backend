@@ -3,12 +3,11 @@ package com.vrrom.admin.controller;
 import com.vrrom.admin.Admin;
 import com.vrrom.admin.AdminRequest;
 import com.vrrom.admin.service.AdminService;
-import com.vrrom.application.dto.ApplicationRequest;
-import com.vrrom.application.dto.ApplicationResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,9 +26,14 @@ public class AdminController {
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping(value = "admin")
+    @PostMapping(value = "/admin")
     @Operation(summary = "Create admin")
-    public Admin createApplication(@RequestBody AdminRequest admin) {
+    public Admin createAdmin(@RequestBody AdminRequest admin) {
         return adminService.createAdmin(admin);
+    }
+
+    @GetMapping(value = "/{id}")
+    public Admin findAdminById(long id){
+        return adminService.findAdminById(id);
     }
 }

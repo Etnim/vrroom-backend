@@ -8,14 +8,14 @@ public enum FuelType {
     ELECTRIC("Electric"),
     HYBRID("Hybrid");
 
-    private final String jsonValue;
+    private final String fuelTypeText;
 
-    FuelType(String jsonValue) {
-        this.jsonValue = jsonValue;
+    FuelType(String fuelTypeText) {
+        this.fuelTypeText = fuelTypeText;
     }
 
     @JsonValue
-    public String getJsonValue() {
-        return jsonValue;
+    public String getFuelTypeText() {
+        return fuelTypeText;
     }
 }

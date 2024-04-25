@@ -12,12 +12,15 @@ public enum ApplicationStatus {
     SIGNED("Signed"),
     REJECTED("Rejected"),
     CANCELLED("Canceled");
-    private final String jsonValue;
-    ApplicationStatus(String jsonValue) {
-        this.jsonValue = jsonValue;
+
+    private final String applicationStatusText;
+
+    ApplicationStatus(String applicationStatusText) {
+        this.applicationStatusText = applicationStatusText;
     }
+
     @JsonValue
-    public String getJsonValue() {
-        return jsonValue;
+    public String getApplicationStatusText() {
+        return applicationStatusText;
     }
 }

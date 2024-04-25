@@ -8,12 +8,14 @@ public enum MaritalStatus {
     DIVORCED("Divorced"),
     COHABITEE("Cohabitee");
 
-    MaritalStatus(String jsonValue) {
-        this.jsonValue = jsonValue;
+    private final String maritalStatusText;
+
+    MaritalStatus(String maritalStatusText) {
+        this.maritalStatusText = maritalStatusText;
     }
-    private final String jsonValue;
+
     @JsonValue
-    public String getJsonValue() {
-        return jsonValue;
+    public String getMaritalStatusText() {
+        return maritalStatusText;
     }
 }

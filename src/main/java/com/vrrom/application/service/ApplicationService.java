@@ -1,7 +1,7 @@
 package com.vrrom.application.service;
 
 import com.vrrom.admin.Admin;
-import com.vrrom.admin.repository.AdminRepository;
+import com.vrrom.admin.service.AdminService;
 import com.vrrom.application.dto.ApplicationListDTO;
 import com.vrrom.application.dto.ApplicationRequest;
 import com.vrrom.application.dto.ApplicationResponse;
@@ -35,33 +35,30 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class ApplicationService {
     private final ApplicationRepository applicationRepository;
     private final EmailService emailService;
-    private final AdminRepository adminRepository;
+    private final AdminService adminService;
 
     @Autowired
-    public ApplicationService(ApplicationRepository applicationRepository, EmailService emailService, AdminRepository adminRepository) {
+    public ApplicationService(ApplicationRepository applicationRepository, EmailService emailService, AdminService adminService) {
         this.applicationRepository = applicationRepository;
         this.emailService = emailService;
-        this.adminRepository = adminRepository;
+        this.adminService = adminService;
     }
-    @Transactional
-    public ApplicationResponse findApplicationResponseById(long id){
-        Optional<Application> application = applicationRepository.findById(id);
-        return ApplicationMapper.toResponse(application.orElseThrow());
-    }
+
     @Transactional
     public ApplicationResponse createApplication(ApplicationRequest applicationRequest) {
         try {
             Application application = new Application();
-            updateApplication(applicationRequest, application);
+            populateApplicationWithRequest(applicationRequest, application);
+            applicationRepository.save(application);
             emailService.sendEmail("vrroom.leasing@gmail.com", application.getCustomer().getEmail(), "Application", "Your application has been created successfully.");
             return ApplicationMapper.toResponse(application);
+
         } catch (DataAccessException dae) {
             throw new ApplicationException("Failed to save application data", dae);
         } catch (MailException me) {
@@ -124,18 +121,14 @@ public class ApplicationService {
         }
         return spec;
     }
-
     @Transactional
     public ApplicationResponse updateApplication(long id, ApplicationRequest applicationRequest) {
         try {
-            Optional<Application> optionalApplication = applicationRepository.findById(id);
-            if (optionalApplication.isEmpty()) {
-                throw new ApplicationException("Application not found with id: " + id);
-            }
-            Application existingApplication = optionalApplication.get();
-            updateApplication(applicationRequest, existingApplication);
-            emailService.sendEmail("vrroom.leasing@gmail.com", existingApplication.getCustomer().getEmail(), "Application Update", "Your application has been updated successfully.");
-            return ApplicationMapper.toResponse(existingApplication);
+            Application application = findApplicationById(id);
+            populateApplicationWithRequest(applicationRequest, application);
+            applicationRepository.save(application);
+            emailService.sendEmail("vrroom.leasing@gmail.com", application.getCustomer().getEmail(), "Application Update", "Your application has been updated successfully.");
+            return ApplicationMapper.toResponse(application);
         } catch (DataAccessException dae) {
             throw new ApplicationException("Failed to save application data", dae);
         } catch (MailException me) {
@@ -144,27 +137,31 @@ public class ApplicationService {
             throw new ApplicationException("An unexpected error occurred while updating the application", e);
         }
     }
+
     @Transactional
     public String assignAdmin(long adminId, long applicationId) {
         Application application = findApplicationById(applicationId);
-        if(application.getManager() != null){
+        if (application.getManager() != null) {
             throw new ApplicationException("Application is already assigned to a manager");
         }
-        Admin admin = findAdminById(adminId);
+        Admin admin = adminService.findAdminById(adminId);
         application.setManager(admin);
+        application.setStatus(ApplicationStatus.UNDER_REVIEW);
         admin.getAssignedApplications().add(application);
         return " Admin is successfully assigned";
     }
+
     @Transactional
-    public String removeAdmin(long adminId, long applicationId) {
+    public String removeAdmin(long applicationId) {
         Application application = findApplicationById(applicationId);
-        if(application.getManager() == null){
+        if (application.getManager() == null) {
             throw new ApplicationException("Application is not assigned to any of managers");
         }
         application.setManager(null);
         return " Admin is successfully removed";
     }
-    private void updateApplication(ApplicationRequest applicationRequest, Application application) {
+
+    private void populateApplicationWithRequest(ApplicationRequest applicationRequest, Application application) {
         Customer customer = CustomerMapper.toEntity(applicationRequest.getCustomer(), application);
         FinancialInfo financialInfo = FinancialInfoMapper.toEntity(applicationRequest.getFinancialInfo(), application);
         List<VehicleDetails> vehicleDetails = VehicleMapper.toEntityList(applicationRequest.getVehicleDetails(), application);
@@ -177,13 +174,9 @@ public class ApplicationService {
         applicationRepository.save(application);
     }
 
-    private Application findApplicationById(long applicationId) {
+    public Application findApplicationById(long applicationId) {
         return applicationRepository.findById(applicationId)
                 .orElseThrow(() -> new ApplicationException("No such application found"));
-    }
-    private Admin findAdminById(long adminId) {
-        return adminRepository.findById(adminId)
-                .orElseThrow(() -> new ApplicationException("No such admin found"));
     }
 }
 

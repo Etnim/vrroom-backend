@@ -26,8 +26,8 @@ import java.util.Random;
 @NoArgsConstructor
 public class Customer {
     @Id
-    @Column(name = "pid", unique = true )
-    private long pid;
+    @Column(name = "personalId", unique = true )
+    private long personalId;
 
     @Column(name = "name")
     private String name;
@@ -82,7 +82,7 @@ public class Customer {
 
         public Customer build() {
             Customer customer = new Customer();
-            customer.setPid(this.pid);
+            customer.setPersonalId(this.pid);
             customer.setName(this.name);
             customer.setSurname(this.surname);
             customer.setEmail(this.email);

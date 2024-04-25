@@ -5,8 +5,6 @@ import com.vrrom.financialInfo.dtos.FinancialInfoResponse;
 import com.vrrom.financialInfo.model.FinancialInfo;
 import com.vrrom.financialInfo.dtos.FinancialInfoRequest;
 
-import java.math.BigDecimal;
-
 public class FinancialInfoMapper {
     public static FinancialInfo toEntity(FinancialInfoRequest financialInfoRequest, Application application) {
         return  new FinancialInfo.Builder()
@@ -18,11 +16,11 @@ public class FinancialInfoMapper {
     public static FinancialInfoResponse toResponse(FinancialInfo financialInfo){
         FinancialInfoResponse response = new FinancialInfoResponse();
         response.setMonthlyIncome(financialInfo.getMonthlyIncome());
-        response.setMaritalStatus(financialInfo.getMaritalStatus().getJsonValue());
+        response.setMaritalStatus(financialInfo.getMaritalStatus().getMaritalStatusText());
         response.setDependants(financialInfo.getDependants());
         response.setMonthlyObligations(financialInfo.getMonthlyObligations());
         response.setDisposableIncome(financialInfo.calculateDisposableIncome());
-        response.setEmploymentStatus(financialInfo.getEmploymentStatus().getJsonValue());
+        response.setEmploymentStatus(financialInfo.getEmploymentStatus().getEmploymentStatusText());
         return response;
     }
 }

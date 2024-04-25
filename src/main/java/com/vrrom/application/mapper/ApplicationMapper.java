@@ -45,7 +45,7 @@ public class ApplicationMapper {
 
         ApplicationResponse response = new ApplicationResponse();
         response.setApplicationID(application.getId());
-        response.setApplicationStatus(application.getStatus().getJsonValue());
+        response.setApplicationStatus(application.getStatus().getApplicationStatusText());
         response.setDateOfSubmission(application.getCreatedAt());
         response.setAssignedManager(application.getManager());
         response.setCustomer(customer);
