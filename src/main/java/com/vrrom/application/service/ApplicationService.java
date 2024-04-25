@@ -148,7 +148,7 @@ public class ApplicationService {
         application.setManager(admin);
         application.setStatus(ApplicationStatus.UNDER_REVIEW);
         admin.getAssignedApplications().add(application);
-        return " Admin is successfully assigned";
+        return "Admin " + application.getManager() + " is successfully assigned to: " + application.getId();
     }
 
     @Transactional
@@ -158,7 +158,13 @@ public class ApplicationService {
             throw new ApplicationException("Application is not assigned to any of managers");
         }
         application.setManager(null);
-        return " Admin is successfully removed";
+        return "Admin is successfully removed";
+    }
+
+    public String modifyInterestRate(long applicationId, double interestRate){
+        Application application = findApplicationById(applicationId);
+        application.setInterestRate(interestRate);
+        return "InterestRate is successfully update to: " + application.getInterestRate();
     }
 
     private void populateApplicationWithRequest(ApplicationRequest applicationRequest, Application application) {

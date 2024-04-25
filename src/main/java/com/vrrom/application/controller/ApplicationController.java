@@ -65,22 +65,27 @@ public class ApplicationController {
 
     @GetMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Get application")
     public ApplicationResponse getApplicationById(@PathVariable long id) {
         Application application = applicationService.findApplicationById(id);
         return ApplicationMapper.toResponse(application);
     }
 
     @PutMapping(value = "/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Update application")
     public ApplicationResponse updateApplication(@PathVariable long id, @RequestBody ApplicationRequest applicationRequest) {
         return applicationService.updateApplication(id, applicationRequest);
     }
 
     @PutMapping("/{applicationId}/assignAdmin/{adminId}")
+    @ResponseStatus(HttpStatus.OK)
     public String assignAdmin(@PathVariable long adminId, @PathVariable long applicationId) {
         return applicationService.assignAdmin(adminId, applicationId);
     }
 
     @PutMapping("/{applicationId}/removeAdmin")
+    @ResponseStatus(HttpStatus.OK)
     public String removeAdmin(@PathVariable long applicationId) {
         return applicationService.removeAdmin(applicationId);
     }
