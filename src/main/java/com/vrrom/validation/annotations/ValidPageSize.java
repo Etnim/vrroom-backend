@@ -14,9 +14,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target(PARAMETER)
 @Retention(RUNTIME)
 public @interface ValidPageSize {
-    String message() default "The number must be positive";
-
+    String message() default "Page size must be between 1 and 20";
     Class<?>[] groups() default {};
-
     Class<? extends Payload>[] payload() default {};
 }

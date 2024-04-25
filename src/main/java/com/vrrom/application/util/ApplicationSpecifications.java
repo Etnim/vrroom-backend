@@ -28,4 +28,17 @@ public class ApplicationSpecifications {
             return cb.between(root.get("createdAt"), startDate, endDate);
         };
     }
+
+    public static Specification<Application> isCreatedAfter(LocalDate startDate) {
+        return (root, query, cb) -> {
+            if (startDate == null) return cb.isTrue(cb.literal(true));
+            return cb.greaterThanOrEqualTo(root.get("createdAt"), startDate);
+        };
+    }
+    public static Specification<Application> isCreatedBefore(LocalDate endDate) {
+        return (root, query, cb) -> {
+            if (endDate == null) return cb.isTrue(cb.literal(true));
+            return cb.lessThanOrEqualTo(root.get("createdAt"), endDate);
+        };
+    }
 }
