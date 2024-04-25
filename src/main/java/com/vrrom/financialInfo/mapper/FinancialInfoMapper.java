@@ -18,11 +18,11 @@ public class FinancialInfoMapper {
     public static FinancialInfoResponse toResponse(FinancialInfo financialInfo){
         FinancialInfoResponse response = new FinancialInfoResponse();
         response.setMonthlyIncome(financialInfo.getMonthlyIncome());
-        response.setMaritalStatus(financialInfo.getMaritalStatus());
+        response.setMaritalStatus(financialInfo.getMaritalStatus().getJsonValue());
         response.setDependants(financialInfo.getDependants());
         response.setMonthlyObligations(financialInfo.getMonthlyObligations());
         response.setDisposableIncome(financialInfo.calculateDisposableIncome());
-
+        response.setEmploymentStatus(financialInfo.getEmploymentStatus().getJsonValue());
         return response;
     }
 }

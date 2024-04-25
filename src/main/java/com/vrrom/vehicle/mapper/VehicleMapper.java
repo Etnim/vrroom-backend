@@ -33,7 +33,7 @@ public class VehicleMapper {
         response.setMake(vehicle.getBrand());
         response.setModel(vehicle.getModel());
         response.setYear(vehicle.getYear());
-        response.setFuel(vehicle.getFuel());
+        response.setFuel(vehicle.getFuel().getJsonValue());
         response.setEmissionStart(vehicle.getEmissionStart());
         response.setEmissionEnd(vehicle.getEmissionEnd());
 

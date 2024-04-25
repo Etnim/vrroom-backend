@@ -1,16 +1,16 @@
 package com.vrrom.application.controller;
 
+import com.vrrom.application.dto.ApplicationListDTO;
 import com.vrrom.application.dto.ApplicationRequest;
 import com.vrrom.application.dto.ApplicationResponse;
-import com.vrrom.application.dto.ApplicationListDTO;
 import com.vrrom.application.model.ApplicationSortParameters;
 import com.vrrom.application.model.ApplicationStatus;
 import com.vrrom.application.service.ApplicationService;
-import io.swagger.v3.oas.annotations.Operation;
 import com.vrrom.util.CustomPage;
 import com.vrrom.validation.annotations.PositiveLong;
 import com.vrrom.validation.annotations.ValidPageSize;
 import com.vrrom.validation.annotations.ValidSortDirection;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.xml.bind.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +40,6 @@ public class ApplicationController {
     public ApplicationController(ApplicationService applicationService) {
         this.applicationService = applicationService;
     }
-
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public CustomPage<ApplicationListDTO> getPaginatedApplications(@RequestParam(defaultValue = "0") int page,
@@ -53,22 +52,28 @@ public class ApplicationController {
                                                                    @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) throws ValidationException {
         return applicationService.findPaginatedApplications(page, size, sortField, sortDir, managerId, status, startDate, endDate);
     }
-
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping(value="/application")
+    @PostMapping(value = "/application")
     @Operation(summary = "Create application")
     public ApplicationResponse createApplication(@RequestBody ApplicationRequest applicationRequest) {
         return applicationService.createApplication(applicationRequest);
     }
-
     @GetMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     public ApplicationResponse getApplicationById(@PathVariable long id) {
-        return applicationService.findApplicationById(id);
+        return applicationService.findApplicationResponseById(id);
     }
-
-    @PutMapping(value="/{id}")
+    @PutMapping(value = "/{id}")
     public ApplicationResponse updateApplication(@PathVariable long id, @RequestBody ApplicationRequest applicationRequest) {
         return applicationService.updateApplication(id, applicationRequest);
     }
+    @PutMapping("/assignAdmin/{adminId}/{applicationId}")
+    public String assignAdmin(@PathVariable long adminId, @PathVariable long applicationId) {
+        return applicationService.assignAdmin(adminId, applicationId);
+    }
+    @PutMapping("/removeAdmin/{adminId}/{applicationId}")
+    public String removeAdmin(@PathVariable long adminId, @PathVariable long applicationId) {
+        return applicationService.removeAdmin(adminId, applicationId);
+    }
+
 }

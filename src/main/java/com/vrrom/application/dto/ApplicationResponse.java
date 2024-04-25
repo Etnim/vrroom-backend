@@ -20,7 +20,7 @@ import java.util.List;
 @NoArgsConstructor
 public class ApplicationResponse {
     private long applicationID;
-    private ApplicationStatus applicationStatus;
+    private String applicationStatus;
     private LocalDate dateOfSubmission;
     private Admin assignedManager;
     private CustomerResponse customer;

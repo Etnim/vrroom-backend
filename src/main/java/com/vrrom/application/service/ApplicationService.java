@@ -1,5 +1,7 @@
 package com.vrrom.application.service;
 
+import com.vrrom.admin.Admin;
+import com.vrrom.admin.repository.AdminRepository;
 import com.vrrom.application.dto.ApplicationListDTO;
 import com.vrrom.application.dto.ApplicationRequest;
 import com.vrrom.application.dto.ApplicationResponse;
@@ -40,13 +42,19 @@ import java.util.stream.Collectors;
 public class ApplicationService {
     private final ApplicationRepository applicationRepository;
     private final EmailService emailService;
+    private final AdminRepository adminRepository;
 
     @Autowired
-    public ApplicationService(ApplicationRepository applicationRepository, EmailService emailService) {
+    public ApplicationService(ApplicationRepository applicationRepository, EmailService emailService, AdminRepository adminRepository) {
         this.applicationRepository = applicationRepository;
         this.emailService = emailService;
+        this.adminRepository = adminRepository;
     }
-
+    @Transactional
+    public ApplicationResponse findApplicationResponseById(long id){
+        Optional<Application> application = applicationRepository.findById(id);
+        return ApplicationMapper.toResponse(application.orElseThrow());
+    }
     @Transactional
     public ApplicationResponse createApplication(ApplicationRequest applicationRequest) {
         try {
@@ -118,12 +126,6 @@ public class ApplicationService {
     }
 
     @Transactional
-    public ApplicationResponse findApplicationById(long id) {
-        Optional<Application> application = applicationRepository.findById(id);
-        return ApplicationMapper.toResponse(application.orElseThrow());
-    }
-
-    @Transactional
     public ApplicationResponse updateApplication(long id, ApplicationRequest applicationRequest) {
         try {
             Optional<Application> optionalApplication = applicationRepository.findById(id);
@@ -142,7 +144,19 @@ public class ApplicationService {
             throw new ApplicationException("An unexpected error occurred while updating the application", e);
         }
     }
-
+    @Transactional
+    public String assignAdmin(long adminId, long applicationId) {
+        Application existingApplication = findApplicationById(applicationId);
+        Admin admin = findAdminById(adminId);
+        existingApplication.setManager(admin);
+        return " Admin is successfully assigned";
+    }
+    @Transactional
+    public String removeAdmin(long adminId, long applicationId) {
+        Application existingApplication = findApplicationById(applicationId);
+        existingApplication.setManager(null);
+        return " Admin is successfully assigned";
+    }
     private void updateApplication(ApplicationRequest applicationRequest, Application application) {
         Customer customer = CustomerMapper.toEntity(applicationRequest.getCustomer(), application);
         FinancialInfo financialInfo = FinancialInfoMapper.toEntity(applicationRequest.getFinancialInfo(), application);
@@ -154,6 +168,15 @@ public class ApplicationService {
                 financialInfo,
                 vehicleDetails);
         applicationRepository.save(application);
+    }
+
+    private Application findApplicationById(long applicationId) {
+        return applicationRepository.findById(applicationId)
+                .orElseThrow(() -> new ApplicationException("No such application found"));
+    }
+    private Admin findAdminById(long adminId) {
+        return adminRepository.findById(adminId)
+                .orElseThrow(() -> new ApplicationException("No such admin found"));
     }
 }
 
