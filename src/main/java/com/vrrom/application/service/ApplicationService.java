@@ -1,5 +1,6 @@
 package com.vrrom.application.service;
 
+import com.lowagie.text.DocumentException;
 import com.vrrom.admin.Admin;
 import com.vrrom.admin.service.AdminService;
 import com.vrrom.application.dto.ApplicationListDTO;
@@ -9,8 +10,10 @@ import com.vrrom.application.dto.ApplicationRequestFromAdmin;
 import com.vrrom.application.dto.ApplicationResponse;
 import com.vrrom.application.dto.ApplicationResponseFromAdmin;
 import com.vrrom.application.exception.ApplicationException;
+import com.vrrom.application.mapper.AgreementMapper;
 import com.vrrom.application.mapper.ApplicationListDTOMapper;
 import com.vrrom.application.mapper.ApplicationMapper;
+import com.vrrom.application.model.AgreementInfo;
 import com.vrrom.application.model.Application;
 import com.vrrom.application.model.ApplicationSortParameters;
 import com.vrrom.application.model.ApplicationStatus;
@@ -27,6 +30,7 @@ import com.vrrom.email.service.EmailService;
 import com.vrrom.financialInfo.mapper.FinancialInfoMapper;
 import com.vrrom.financialInfo.model.FinancialInfo;
 import com.vrrom.util.CustomPage;
+import com.vrrom.util.PdfGenerator;
 import com.vrrom.validation.ValidationService;
 import com.vrrom.vehicle.mapper.VehicleMapper;
 import com.vrrom.vehicle.model.VehicleDetails;
@@ -51,15 +55,17 @@ public class ApplicationService {
     private final ApplicationRepository applicationRepository;
     private final EmailService emailService;
     private final AdminService adminService;
+    private final PdfGenerator pdfGenerator;
     private final CustomerService customerService;
       private final ApplicationStatusHistoryService applicationStatusHistoryService;
 
 
     @Autowired
-    public ApplicationService(ApplicationRepository applicationRepository, EmailService emailService, AdminService adminService, CustomerService customerService,  ApplicationStatusHistoryService applicationStatusHistoryService) {
+    public ApplicationService(ApplicationRepository applicationRepository, EmailService emailService, AdminService adminService, CustomerService customerService,PdfGenerator pdfGenerator,  ApplicationStatusHistoryService applicationStatusHistoryService) {
         this.applicationRepository = applicationRepository;
         this.emailService = emailService;
         this.adminService = adminService;
+        this.pdfGenerator = pdfGenerator;
         this.customerService = customerService;
        this.applicationStatusHistoryService = applicationStatusHistoryService;
     }
@@ -266,6 +272,12 @@ public class ApplicationService {
         FinancialInfoMapper.toEntity(financialInfo, applicationRequest.getFinancialInfo(), application);
         VehicleMapper.toEntity(vehicleDetails, applicationRequest.getVehicleDetails(), application);
         ApplicationMapper.toEntity(application, applicationRequest, customer, financialInfo, vehicleDetails);
+    }
+
+    public byte[] getLeasingAgreement(Long applicationId) throws DocumentException {
+        Application application = applicationRepository.findById(applicationId).orElseThrow();
+        AgreementInfo agreementInfo = AgreementMapper.mapToAgreementInfo(application);
+        return pdfGenerator.generateAgreement(agreementInfo);
     }
 }
 
