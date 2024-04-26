@@ -1,12 +1,15 @@
 package com.vrrom.application.service;
 
-import com.lowagie.text.DocumentException;
 import com.vrrom.admin.Admin;
 import com.vrrom.admin.service.AdminService;
 import com.vrrom.application.dto.ApplicationListDTO;
 import com.vrrom.application.dto.ApplicationRequest;
 import com.vrrom.application.dto.ApplicationResponse;
 import com.vrrom.application.exception.ApplicationException;
+import com.vrrom.application.exception.ApplicationNotFoundException;
+import com.vrrom.util.exceptions.DatabaseException;
+import com.vrrom.util.exceptions.EntityMappingException;
+import com.vrrom.util.exceptions.PdfGenerationException;
 import com.vrrom.application.mapper.AgreementMapper;
 import com.vrrom.application.mapper.ApplicationListDTOMapper;
 import com.vrrom.application.mapper.ApplicationMapper;
@@ -64,7 +67,6 @@ public class ApplicationService {
             applicationRepository.save(application);
             emailService.sendEmail("vrroom.leasing@gmail.com", application.getCustomer().getEmail(), "Application", "Your application has been created successfully.");
             return ApplicationMapper.toResponse(application);
-
         } catch (DataAccessException dae) {
             throw new ApplicationException("Failed to save application data", dae);
         } catch (MailException me) {
@@ -127,6 +129,7 @@ public class ApplicationService {
         }
         return spec;
     }
+
     @Transactional
     public ApplicationResponse updateApplication(long id, ApplicationRequest applicationRequest) {
         try {
@@ -167,13 +170,13 @@ public class ApplicationService {
         return "Admin is successfully removed";
     }
 
-    public String modifyInterestRate(long applicationId, double interestRate){
+    public String modifyInterestRate(long applicationId, double interestRate) {
         Application application = findApplicationById(applicationId);
         application.setInterestRate(interestRate);
         return "InterestRate is successfully update to: " + application.getInterestRate();
     }
 
-    public String modifyAgreementFee(long applicationId, double interestRate){
+    public String modifyAgreementFee(long applicationId, double interestRate) {
         Application application = findApplicationById(applicationId);
         application.setInterestRate(interestRate);
         return "InterestRate is successfully update to: " + application.getInterestRate();
@@ -183,7 +186,6 @@ public class ApplicationService {
         Customer customer = CustomerMapper.toEntity(applicationRequest.getCustomer(), application);
         FinancialInfo financialInfo = FinancialInfoMapper.toEntity(applicationRequest.getFinancialInfo(), application);
         VehicleDetails vehicleDetails = VehicleMapper.toEntity(applicationRequest.getVehicleDetails(), application);
-
         ApplicationMapper.toEntity(
                 application,
                 applicationRequest,
@@ -197,9 +199,17 @@ public class ApplicationService {
                 .orElseThrow(() -> new ApplicationException("No such application found"));
     }
 
-    public byte[] getLeasingAgreement(Long applicationId) throws DocumentException {
-        Application application = applicationRepository.findById(applicationId).orElseThrow();
-        AgreementInfo agreementInfo = AgreementMapper.mapToAgreementInfo(application);
+    public byte[] getLeasingAgreement(Long applicationId) throws PdfGenerationException, EntityMappingException, DatabaseException, ApplicationException {
+        Application application;
+        AgreementInfo agreementInfo;
+        try {
+            application = applicationRepository.findById(applicationId).orElseThrow(() -> new ApplicationNotFoundException("No such application found ", new Throwable("ID: " + applicationId)));
+            agreementInfo = AgreementMapper.mapToAgreementInfo(application);
+        } catch (DataAccessException e) {
+            throw new DatabaseException("Database access error while retrieving application", e.getCause());
+        } catch (NullPointerException | IllegalArgumentException e) {
+            throw new EntityMappingException("Error mapping application to agreement info", e.getCause());
+        }
         return pdfGenerator.generateAgreement(agreementInfo);
     }
 }

@@ -16,12 +16,13 @@ public class AgreementInfo {
  private String customerAddress;
  private String customerEmail;
  private String customerPhone;
+ private LocalDate agreementDate;
  private String carMake;
  private String carModel;
  private int carYear;
  private BigDecimal leasingAmount;
- private BigDecimal downPayment;
  private int leasingYearPeriod;
- private BigDecimal residualValue;
- private BigDecimal agreementFee;
+ private BigDecimal monthlyPayment;
+ private LocalDate firstPaymentDate;
+ private double interestRate;
 }

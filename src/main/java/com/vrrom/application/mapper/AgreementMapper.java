@@ -3,6 +3,8 @@ package com.vrrom.application.mapper;
 import com.vrrom.application.model.AgreementInfo;
 import com.vrrom.application.model.Application;
 
+import java.time.LocalDate;
+
 public class AgreementMapper {
     public static AgreementInfo mapToAgreementInfo(Application application) {
         return AgreementInfo.builder()
@@ -17,10 +19,11 @@ public class AgreementMapper {
                 .carModel(application.getVehicleDetails().getModel())
                 .carYear(application.getVehicleDetails().getYear())
                 .leasingAmount(application.getPrice())
-                .downPayment(application.getDownPayment())
                 .leasingYearPeriod(application.getYearPeriod())
-                .residualValue(application.getResidualValue())
-                .agreementFee(application.getAgreementFee())
+                .monthlyPayment(application.getMonthlyPayment())
+                .firstPaymentDate(LocalDate.of(2024, 6, 14)) //for now, change to dynamic variable later
+                .interestRate(application.getInterestRate())
+                .agreementDate(LocalDate.now())
                 .build();
     }
 }

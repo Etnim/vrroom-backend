@@ -1,6 +1,7 @@
 package com.vrrom.util.exceptions;
 
 import com.vrrom.application.exception.ApplicationException;
+import com.vrrom.application.exception.ApplicationNotFoundException;
 import com.vrrom.vehicle.carInfoApi.exception.CarAPIException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -113,6 +114,39 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(String.format("Invalid value '%s' for type '%s'.",
                         ex.getValue(), Objects.requireNonNull(ex.getRequiredType()).getSimpleName()));
+    }
+
+    @ExceptionHandler(PdfGenerationException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<String> handlePdfGenerationException(PdfGenerationException ex) {
+        logger.error(ex.getMessage(), ex);
+        return ResponseEntity
+                .internalServerError()
+                .body("Error during PDF generation: " + ex.getCause().getMessage());
+    }
+
+    @ExceptionHandler(DatabaseException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<String> handleDatabaseException(DatabaseException ex) {
+        return ResponseEntity
+                .internalServerError()
+                .body(ex.getMessage() + ex.getCause().getMessage());
+    }
+
+    @ExceptionHandler(EntityMappingException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<String> handleEntityMappingException(EntityMappingException ex) {
+        return ResponseEntity
+                .badRequest()
+                .body(ex.getMessage() + ex.getCause().getMessage());
+    }
+
+    @ExceptionHandler(ApplicationNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<String> handleApplicationNotFoundException(ApplicationNotFoundException ex) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ex.getMessage() + ex.getCause().getMessage());
     }
 
     @ExceptionHandler(RestClientException.class)
