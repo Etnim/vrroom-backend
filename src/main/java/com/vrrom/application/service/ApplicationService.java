@@ -1,6 +1,5 @@
 package com.vrrom.application.service;
 
-import com.lowagie.text.DocumentException;
 import com.vrrom.admin.Admin;
 import com.vrrom.admin.service.AdminService;
 import com.vrrom.application.dto.ApplicationListDTO;
@@ -10,6 +9,10 @@ import com.vrrom.application.dto.ApplicationRequestFromAdmin;
 import com.vrrom.application.dto.ApplicationResponse;
 import com.vrrom.application.dto.ApplicationResponseFromAdmin;
 import com.vrrom.application.exception.ApplicationException;
+import com.vrrom.application.exception.ApplicationNotFoundException;
+import com.vrrom.util.exceptions.DatabaseException;
+import com.vrrom.util.exceptions.EntityMappingException;
+import com.vrrom.util.exceptions.PdfGenerationException;
 import com.vrrom.application.mapper.AgreementMapper;
 import com.vrrom.application.mapper.ApplicationListDTOMapper;
 import com.vrrom.application.mapper.ApplicationMapper;
@@ -274,9 +277,17 @@ public class ApplicationService {
         ApplicationMapper.toEntity(application, applicationRequest, customer, financialInfo, vehicleDetails);
     }
 
-    public byte[] getLeasingAgreement(Long applicationId) throws DocumentException {
-        Application application = applicationRepository.findById(applicationId).orElseThrow();
-        AgreementInfo agreementInfo = AgreementMapper.mapToAgreementInfo(application);
+    public byte[] getLeasingAgreement(Long applicationId) throws PdfGenerationException, EntityMappingException, DatabaseException, ApplicationException {
+        Application application;
+        AgreementInfo agreementInfo;
+        try {
+            application = applicationRepository.findById(applicationId).orElseThrow(() -> new ApplicationNotFoundException("No such application found ", new Throwable("ID: " + applicationId)));
+            agreementInfo = AgreementMapper.mapToAgreementInfo(application);
+        } catch (DataAccessException e) {
+            throw new DatabaseException("Database access error while retrieving application", e.getCause());
+        } catch (NullPointerException | IllegalArgumentException e) {
+            throw new EntityMappingException("Error mapping application to agreement info", e.getCause());
+        }
         return pdfGenerator.generateAgreement(agreementInfo);
     }
 }

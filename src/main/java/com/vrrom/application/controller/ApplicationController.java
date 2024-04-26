@@ -1,7 +1,5 @@
 package com.vrrom.application.controller;
 
-import com.lowagie.text.DocumentException;
-import com.vrrom.util.PdfGenerator;
 import com.vrrom.application.dto.ApplicationListDTO;
 import com.vrrom.application.dto.ApplicationRequest;
 import com.vrrom.application.dto.ApplicationRequestFromAdmin;
@@ -13,12 +11,15 @@ import com.vrrom.application.model.ApplicationSortParameters;
 import com.vrrom.application.model.ApplicationStatus;
 import com.vrrom.application.service.ApplicationService;
 import com.vrrom.util.CustomPage;
-import com.vrrom.validation.annotations.PositiveLong;
+import com.vrrom.util.exceptions.DatabaseException;
+import com.vrrom.util.exceptions.EntityMappingException;
+import com.vrrom.util.exceptions.PdfGenerationException;
 import com.vrrom.validation.annotations.ValidPageSize;
 import com.vrrom.validation.annotations.ValidSortDirection;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.ValidationException;
+import jakarta.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
@@ -108,7 +109,7 @@ public class ApplicationController {
 
     @GetMapping("/{id}/agreement")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<byte[]> getLeasingAgreement(@PathVariable long id) {
+    public ResponseEntity<byte[]> getLeasingAgreement(@PathVariable @Positive(message = "Id must be positive" ) long id) throws PdfGenerationException, EntityMappingException, DatabaseException {
         byte[] pdfBytes = applicationService.getLeasingAgreement(id);
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=agreement.pdf");
