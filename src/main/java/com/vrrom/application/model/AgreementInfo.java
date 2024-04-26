@@ -1,4 +1,4 @@
-package com.vrrom.agreement.dto;
+package com.vrrom.application.model;
 
 import lombok.Builder;
 import lombok.Getter;

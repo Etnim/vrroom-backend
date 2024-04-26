@@ -11,7 +11,7 @@ VALUES
     (9, 'Grace', 'Taylor');
 
 
-INSERT INTO customer (pid, name, surname, birth_date, email, phone, address, credit_rating)
+INSERT INTO customer (personal_id, name, surname, birth_date, email, phone, address, credit_rating)
 VALUES
     (1, 'John', 'Doe', '1980-01-15', 'john.doe@example.com', '555-0101', '123 Elm St, Springfield', 750),
     (2, 'Jane', 'Smith', '1992-04-23', 'jane.smith@example.com', '555-0202', '456 Oak St, Anytown', 800),
@@ -40,56 +40,21 @@ INSERT INTO financial_info (
     employment_term,
     dependants
 ) VALUES
-      (1, 5000.00, 200.00, 'SINGLE', 'FULLTIME', 5, 0),
-      (2, 4500.00, 150.00, 'MARRIED', 'FULLTIME', 10, 2),
-      (3, 6200.00, 400.00, 'SINGLE', 'FULLTIME', 2, 1),
+      (1, 5000.00, 200.00, 'SINGLE', 'FULL_TIME', 5, 0),
+      (2, 4500.00, 150.00, 'MARRIED', 'FULL_TIME', 10, 2),
+      (3, 6200.00, 400.00, 'SINGLE', 'FULL_TIME', 2, 1),
       (4, 3300.00, 600.00, 'DIVORCED', 'UNEMPLOYED', 0, 1),
-      (5, 4700.00, 350.00, 'MARRIED', 'FULLTIME', 8, 3),
-      (6, 3900.00, 500.00, 'SINGLE', 'SELFEMPLOYED', 4, 0),
-      (7, 5800.00, 300.00, 'MARRIED', 'FULLTIME', 6, 1),
-      (8, 4700.00, 200.00, 'DIVORCED', 'FULLTIME', 3, 2),
-      (9, 5600.00, 450.00, 'MARRIED', 'FULLTIME', 7, 2),
+      (5, 4700.00, 350.00, 'MARRIED', 'FULL_TIME', 8, 3),
+      (6, 3900.00, 500.00, 'SINGLE', 'SELF_EMPLOYED', 4, 0),
+      (7, 5800.00, 300.00, 'MARRIED', 'FULL_TIME', 6, 1),
+      (8, 4700.00, 200.00, 'DIVORCED', 'FULL_TIME', 3, 2),
+      (9, 5600.00, 450.00, 'MARRIED', 'FULL_TIME', 7, 2),
       (10, 4200.00, 250.00, 'SINGLE', 'UNEMPLOYED', 0, 1),
-      (11, 4500.00, 450.00, 'DIVORCED', 'FULLTIME', 12, 0),
-      (12, 3200.00, 800.00, 'MARRIED', 'SELFEMPLOYED', 15, 1),
-      (13, 5400.00, 250.00, 'SINGLE', 'FULLTIME', 2, 0),
-      (14, 6100.00, 400.00, 'MARRIED', 'FULLTIME', 9, 2),
+      (11, 4500.00, 450.00, 'DIVORCED', 'FULL_TIME', 12, 0),
+      (12, 3200.00, 800.00, 'MARRIED', 'SELF_EMPLOYED', 15, 1),
+      (13, 5400.00, 250.00, 'SINGLE', 'FULL_TIME', 2, 0),
+      (14, 6100.00, 400.00, 'MARRIED', 'FULL_TIME', 9, 2),
       (15, 4900.00, 300.00, 'COHABITEE', 'UNEMPLOYED', 0, 1);
-
-
-
-
-INSERT INTO application (
-    financial_info_id,
-    customer_id,
-    manager_id,
-    price,
-    down_payment,
-    residual_value,
-    year_period,
-    interest_rate,
-    status,
-    created_at,
-    updated_at,
-    monthly_payment
-) VALUES
-      (1, 1, null, 25000.00, 5000.00, 10000, 5, 4.5, 'SIGNED', '2023-01-01', '2023-04-01', 350.00),
-      (2, 2, 1, 18000.00, 3600.00, 7200, 3, 3.9, 'PENDING_CHANGES', '2023-01-15', '2023-04-01', 450.00),
-      (3, 3, 2, 22000.00, 4400.00, 8800, 4, 4.0, 'SIGNED', '2023-02-01', '2023-04-01', 500.00),
-      (4, 4, 2, 15000.00, 3000.00, 6000, 3, 5.0, 'SIGNED', '2023-02-20', '2023-04-01', 380.00),
-      (5, 5, 3, 32000.00, 6400.00, 12800, 6, 3.5, 'PENDING_CHANGES', '2023-03-05', '2023-04-01', 460.00),
-      (6, 6, 3, 36000.00, 7200.00, 14400, 7, 4.2, 'REJECTED', '2023-03-15', '2023-04-01', 470.00),
-      (7, 7, 4, 20000.00, 4000.00, 8000, 5, 4.8, 'SIGNED', '2023-03-25', '2023-04-01', 340.00),
-      (8, 8, 4, 24000.00, 4800.00, 9600, 6, 3.6, 'REJECTED', '2023-04-01', '2023-04-01', 390.00),
-      (9, 9, 5, 27000.00, 5400.00, 10800, 5, 4.4, 'PENDING_CHANGES', '2023-04-10', '2023-04-10', 510.00),
-      (10, 10, 5, 30000.00, 6000.00, 12000, 5, 3.7, 'SIGNED', '2023-04-15', '2023-04-15', 540.00),
-      (11, 11, 6, 40000.00, 8000.00, 16000, 7, 4.0, 'SIGNED', '2023-04-01', '2023-04-01', 550.00),
-      (12, 12, 6, 35000.00, 7000.00, 14000, 6, 3.5, 'REJECTED', '2023-04-02', '2023-04-02', 480.00),
-      (13, 13, 7, 25000.00, 5000.00, 10000, 4, 4.5, 'PENDING_CHANGES', '2023-04-03', '2023-04-03', 430.00),
-      (14, 14, 7, 45000.00, 9000.00, 18000, 5, 3.9, 'SIGNED', '2023-04-04', '2023-04-04', 590.00),
-      (15, 15, 8, 37000.00, 7400.00, 14800, 6, 4.3, 'PENDING_CHANGES', '2023-04-05', '2023-04-05', 560);
-
-
 
 
 INSERT INTO vehicle_details (application_id, brand, model, year, fuel, emission_start, emission_end)
@@ -123,6 +88,45 @@ VALUES (1, 'Toyota', 'Corolla', 2019, 'PETROL', 120, 120),
        (14, 'Mercedes', 'GLC', 2021, 'DIESEL', 120, 120),
        (15, 'Infiniti', 'Q50', 2022, 'PETROL', 110, 110),
        (15, 'Acura', 'TLX', 2023, 'HYBRID', 100, 100);
+
+
+
+
+INSERT INTO application (
+    financial_info_id,
+    customer_id,
+    vehicle_details_id,  -- Include this if the column is used
+    manager_id,
+    price,
+    down_payment,
+    residual_value,
+    year_period,
+    interest_rate,
+    status,
+    created_at,
+    updated_at,
+    monthly_payment,
+    agreement_fee
+) VALUES
+      (1, 1, 1, null, 25000.00, 5000.00, 10000.00, 5, 4.5, 'SIGNED', '2023-01-01', '2023-04-01', 350.00, null),
+      (2, 2, 2, 1, 18000.00, 3600.00, 7200.00, 3, 3.9, 'PENDING_CHANGES', '2023-01-15', '2023-04-01', 450.00, null),
+      (3, 3, 3, 2, 22000.00, 4400.00, 8800.00, 4, 4.0, 'SIGNED', '2023-02-01', '2023-04-01', 500.00, null),
+      (4, 4, 4, 2, 15000.00, 3000.00, 6000.00, 3, 5.0, 'SIGNED', '2023-02-20', '2023-04-01', 380.00, null),
+      (5, 5, 5, 3, 32000.00, 6400.00, 12800.00, 6, 3.5, 'PENDING_CHANGES', '2023-03-05', '2023-04-01', 460.00, null),
+      (6, 6, 6, 3, 36000.00, 7200.00, 14400.00, 7, 4.2, 'REJECTED', '2023-03-15', '2023-04-01', 470.00, null),
+      (7, 7, 7, 4, 20000.00, 4000.00, 8000.00, 5, 4.8, 'SIGNED', '2023-03-25', '2023-04-01', 340.00, null),
+      (8, 8, 8, 4, 24000.00, 4800.00, 9600.00, 6, 3.6, 'REJECTED', '2023-04-01', '2023-04-01', 390.00, null),
+      (9, 9, 9, 5, 27000.00, 5400.00, 10800.00, 5, 4.4, 'PENDING_CHANGES', '2023-04-10', '2023-04-10', 510.00, null),
+      (10, 10, 10, 5, 30000.00, 6000.00, 12000.00, 5, 3.7, 'SIGNED', '2023-04-15', '2023-04-15', 540.00, null),
+      (11, 11, 11, 6, 40000.00, 8000.00, 16000.00, 7, 4.0, 'SIGNED', '2023-04-01', '2023-04-01', 550.00, null),
+      (12, 12, 12, 6, 35000.00, 7000.00, 14000.00, 6, 3.5, 'REJECTED', '2023-04-02', '2023-04-02', 480.00, null),
+      (13, 13, 13, 7, 25000.00, 5000.00, 10000.00, 4, 4.5, 'PENDING_CHANGES', '2023-04-03', '2023-04-03', 430.00, null),
+      (14, 14, 14, 7, 45000.00, 9000.00, 18000.00, 5, 3.9, 'SIGNED', '2023-04-04', '2023-04-04', 590.00, null),
+      (15, 15, 15, 8, 37000.00, 7400.00, 14800.00, 6, 4.3, 'PENDING_CHANGES', '2023-04-05', '2023-04-05', 560.00, null);
+
+
+
+
 
 
 

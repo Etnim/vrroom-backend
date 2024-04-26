@@ -1,12 +1,9 @@
 package com.vrrom.application.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.vrrom.admin.Admin;
 import com.vrrom.application.dto.ApplicationRequest;
-import com.vrrom.application.mapper.ApplicationMapper;
 import com.vrrom.customer.Customer;
 import com.vrrom.financialInfo.model.FinancialInfo;
-import com.vrrom.vehicle.mapper.VehicleMapper;
 import com.vrrom.vehicle.model.VehicleDetails;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -19,7 +16,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,8 +25,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+
 
 
 @Entity
@@ -53,7 +48,8 @@ public class Application {
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    @OneToOne(mappedBy = "application", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "vehicle_details_id")
     private VehicleDetails vehicleDetails;
 
     @ManyToOne(cascade = CascadeType.ALL)

@@ -1,5 +1,7 @@
 package com.vrrom.application.controller;
 
+import com.lowagie.text.DocumentException;
+import com.vrrom.util.PdfGenerator;
 import com.vrrom.application.dto.ApplicationListDTO;
 import com.vrrom.application.dto.ApplicationRequest;
 import com.vrrom.application.dto.ApplicationResponse;
@@ -14,10 +16,12 @@ import com.vrrom.validation.annotations.ValidPageSize;
 import com.vrrom.validation.annotations.ValidSortDirection;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.xml.bind.ValidationException;
+import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -89,4 +93,17 @@ public class ApplicationController {
     public String removeAdmin(@PathVariable long applicationId) {
         return applicationService.removeAdmin(applicationId);
     }
+
+    @GetMapping("/{id}/agreement")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<byte[]> getLeasingAgreement(@PathVariable long id) {
+        byte[] pdfBytes = applicationService.getLeasingAgreement(id);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=agreement.pdf");
+        headers.add(HttpHeaders.CONTENT_TYPE, "application/pdf");
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(pdfBytes);
+    }
 }
+

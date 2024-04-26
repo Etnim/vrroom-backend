@@ -1,12 +1,11 @@
-package com.vrrom.agreement.mapper;
+package com.vrrom.application.mapper;
 
-import com.vrrom.agreement.dto.AgreementInfo;
+import com.vrrom.application.model.AgreementInfo;
 import com.vrrom.application.model.Application;
 
 public class AgreementMapper {
     public static AgreementInfo mapToAgreementInfo(Application application) {
-        return AgreementInfo
-                .builder()
+        return AgreementInfo.builder()
                 .pid(application.getId())
                 .customerName(application.getCustomer().getName())
                 .customerSurname(application.getCustomer().getSurname())
@@ -14,14 +13,14 @@ public class AgreementMapper {
                 .customerAddress(application.getCustomer().getAddress())
                 .customerEmail(application.getCustomer().getEmail())
                 .customerPhone(application.getCustomer().getPhone())
-                .carMake(application.getVehicleDetails().getMake())
+                .carMake(application.getVehicleDetails().getBrand())
                 .carModel(application.getVehicleDetails().getModel())
                 .carYear(application.getVehicleDetails().getYear())
-                .leasingAmount(application.getFinancialInfo().getLeasingAmount())
-                .downPayment(application.getFinancialInfo().getDownPayment())
-                .leasingYearPeriod(application.getFinancialInfo().getLeasingYearPeriod())
-                .residualValue(application.getFinancialInfo().getResidualValue())
-                .agreementFee(application.getFinancialInfo().getAgreementFee())
+                .leasingAmount(application.getPrice())
+                .downPayment(application.getDownPayment())
+                .leasingYearPeriod(application.getYearPeriod())
+                .residualValue(application.getResidualValue())
+                .agreementFee(application.getAgreementFee())
                 .build();
     }
 }

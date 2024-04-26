@@ -1,13 +1,16 @@
 package com.vrrom.application.service;
 
+import com.lowagie.text.DocumentException;
 import com.vrrom.admin.Admin;
 import com.vrrom.admin.service.AdminService;
 import com.vrrom.application.dto.ApplicationListDTO;
 import com.vrrom.application.dto.ApplicationRequest;
 import com.vrrom.application.dto.ApplicationResponse;
 import com.vrrom.application.exception.ApplicationException;
+import com.vrrom.application.mapper.AgreementMapper;
 import com.vrrom.application.mapper.ApplicationListDTOMapper;
 import com.vrrom.application.mapper.ApplicationMapper;
+import com.vrrom.application.model.AgreementInfo;
 import com.vrrom.application.model.Application;
 import com.vrrom.application.model.ApplicationSortParameters;
 import com.vrrom.application.model.ApplicationStatus;
@@ -19,6 +22,7 @@ import com.vrrom.email.service.EmailService;
 import com.vrrom.financialInfo.mapper.FinancialInfoMapper;
 import com.vrrom.financialInfo.model.FinancialInfo;
 import com.vrrom.util.CustomPage;
+import com.vrrom.util.PdfGenerator;
 import com.vrrom.validation.ValidationService;
 import com.vrrom.vehicle.mapper.VehicleMapper;
 import com.vrrom.vehicle.model.VehicleDetails;
@@ -42,12 +46,14 @@ public class ApplicationService {
     private final ApplicationRepository applicationRepository;
     private final EmailService emailService;
     private final AdminService adminService;
+    private final PdfGenerator pdfGenerator;
 
     @Autowired
-    public ApplicationService(ApplicationRepository applicationRepository, EmailService emailService, AdminService adminService) {
+    public ApplicationService(ApplicationRepository applicationRepository, EmailService emailService, AdminService adminService, PdfGenerator pdfGenerator) {
         this.applicationRepository = applicationRepository;
         this.emailService = emailService;
         this.adminService = adminService;
+        this.pdfGenerator = pdfGenerator;
     }
 
     @Transactional
@@ -189,6 +195,12 @@ public class ApplicationService {
     public Application findApplicationById(long applicationId) {
         return applicationRepository.findById(applicationId)
                 .orElseThrow(() -> new ApplicationException("No such application found"));
+    }
+
+    public byte[] getLeasingAgreement(Long applicationId) throws DocumentException {
+        Application application = applicationRepository.findById(applicationId).orElseThrow();
+        AgreementInfo agreementInfo = AgreementMapper.mapToAgreementInfo(application);
+        return pdfGenerator.generateAgreement(agreementInfo);
     }
 }
 

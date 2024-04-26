@@ -1,0 +1,13 @@
+
+body {
+    font-family: 'Helvetica', sans-serif;
+    background-color: black;
+}
+p {
+    color: white;
+    margin: 5px 0;
+}
+.highlight {
+    color: darkred;
+    font-weight: bold;
+}
