@@ -10,6 +10,7 @@ import com.vrrom.application.dto.ApplicationResponse;
 import com.vrrom.application.dto.ApplicationResponseFromAdmin;
 import com.vrrom.application.exception.ApplicationException;
 import com.vrrom.application.exception.ApplicationNotFoundException;
+import com.vrrom.dowloadToken.DownloadTokenException;
 import com.vrrom.dowloadToken.DownloadTokenService;
 import com.vrrom.util.UrlBuilder;
 import com.vrrom.util.exceptions.DatabaseException;
@@ -282,7 +283,7 @@ public class ApplicationService {
         ApplicationMapper.toEntity(application, applicationRequest, customer, financialInfo, vehicleDetails);
     }
 
-    public byte[] getLeasingAgreement(String token) throws PdfGenerationException, EntityMappingException, DatabaseException, ApplicationException {
+    public byte[] getLeasingAgreement(String token) throws PdfGenerationException, EntityMappingException, DatabaseException, ApplicationException, DownloadTokenException {
         Application application;
         AgreementInfo agreementInfo;
         try {

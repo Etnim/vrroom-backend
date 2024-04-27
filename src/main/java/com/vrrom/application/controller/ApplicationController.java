@@ -10,6 +10,7 @@ import com.vrrom.application.model.Application;
 import com.vrrom.application.model.ApplicationSortParameters;
 import com.vrrom.application.model.ApplicationStatus;
 import com.vrrom.application.service.ApplicationService;
+import com.vrrom.dowloadToken.DownloadTokenException;
 import com.vrrom.util.CustomPage;
 import com.vrrom.util.exceptions.DatabaseException;
 import com.vrrom.util.exceptions.EntityMappingException;
@@ -19,7 +20,6 @@ import com.vrrom.validation.annotations.ValidSortDirection;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.ValidationException;
-import jakarta.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
@@ -116,7 +116,7 @@ public class ApplicationController {
 
     @GetMapping("/{token}/agreement")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<byte[]> getLeasingAgreement(@PathVariable String token) throws PdfGenerationException, EntityMappingException, DatabaseException {
+    public ResponseEntity<byte[]> getLeasingAgreement(@PathVariable String token) throws PdfGenerationException, EntityMappingException, DatabaseException, DownloadTokenException {
         byte[] pdfBytes = applicationService.getLeasingAgreement(token);
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=agreement.pdf");

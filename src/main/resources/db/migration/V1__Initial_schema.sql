@@ -88,11 +88,11 @@ CREATE TABLE application_status_history (
 CREATE INDEX idx_application_status_history_application_id ON application_status_history (application_id);
 CREATE INDEX idx_application_status_history_manager_id ON application_status_history (changed_by_manager_id);
 
-CREATE TABLE download_token
-(
-    token          UUID NOT NULL,
-    application_id BIGINT,
-    PRIMARY KEY (token),
-    CONSTRAINT fk_download_token_application FOREIGN KEY (application_id) REFERENCES application (id)
+CREATE TABLE download_token (
+                                token UUID NOT NULL,
+                                application_id BIGINT,
+                                expires_at TIMESTAMP NOT NULL,
+                                PRIMARY KEY (token),
+                                CONSTRAINT fk_download_token_application FOREIGN KEY (application_id) REFERENCES application(id)
 );
 
