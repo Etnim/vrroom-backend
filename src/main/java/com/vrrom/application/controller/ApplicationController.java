@@ -102,10 +102,10 @@ public class ApplicationController {
         return ResponseEntity.ok("Status updated successfully");
     }
 
-    @GetMapping("/{id}/agreement")
+    @GetMapping("/{token}/agreement")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<byte[]> getLeasingAgreement(@PathVariable @Positive(message = "Id must be positive") long id) throws PdfGenerationException, EntityMappingException, DatabaseException {
-        byte[] pdfBytes = applicationService.getLeasingAgreement(id);
+    public ResponseEntity<byte[]> getLeasingAgreement(@PathVariable String token) throws PdfGenerationException, EntityMappingException, DatabaseException {
+        byte[] pdfBytes = applicationService.getLeasingAgreement(token);
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=agreement.pdf");
         headers.add(HttpHeaders.CONTENT_TYPE, "application/pdf");

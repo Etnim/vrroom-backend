@@ -7,6 +7,7 @@ import com.vrrom.application.dto.ApplicationRequest;
 import com.vrrom.application.dto.ApplicationResponse;
 import com.vrrom.application.exception.ApplicationException;
 import com.vrrom.application.exception.ApplicationNotFoundException;
+import com.vrrom.dowloadToken.DownloadTokenService;
 import com.vrrom.util.UrlBuilder;
 import com.vrrom.util.exceptions.DatabaseException;
 import com.vrrom.util.exceptions.EntityMappingException;
@@ -51,13 +52,15 @@ public class ApplicationService {
     private final EmailService emailService;
     private final AdminService adminService;
     private final PdfGenerator pdfGenerator;
+    private final DownloadTokenService downloadTokenService;
 
     @Autowired
-    public ApplicationService(ApplicationRepository applicationRepository, EmailService emailService, AdminService adminService, PdfGenerator pdfGenerator) {
+    public ApplicationService(ApplicationRepository applicationRepository, EmailService emailService, AdminService adminService, PdfGenerator pdfGenerator, DownloadTokenService downloadTokenService) {
         this.applicationRepository = applicationRepository;
         this.emailService = emailService;
         this.adminService = adminService;
         this.pdfGenerator = pdfGenerator;
+        this.downloadTokenService = downloadTokenService;
     }
 
     @Transactional
@@ -200,10 +203,11 @@ public class ApplicationService {
                 .orElseThrow(() -> new ApplicationException("No such application found"));
     }
 
-    public byte[] getLeasingAgreement(Long applicationId) throws PdfGenerationException, EntityMappingException, DatabaseException, ApplicationException {
+    public byte[] getLeasingAgreement(String token) throws PdfGenerationException, EntityMappingException, DatabaseException, ApplicationException {
         Application application;
         AgreementInfo agreementInfo;
         try {
+            long applicationId = downloadTokenService.getApplicationId(token);
             application = applicationRepository.findById(applicationId).orElseThrow(() -> new ApplicationNotFoundException("No such application found ", new Throwable("ID: " + applicationId)));
             agreementInfo = AgreementMapper.mapToAgreementInfo(application);
         } catch (DataAccessException e) {
@@ -221,7 +225,8 @@ public class ApplicationService {
         applicationRepository.save(application);
         if (application.getStatus() == ApplicationStatus.WAITING_FOR_SIGNING) {
             String baseUrl = "http://localhost:8080";
-            String encodedAgreementUrl = UrlBuilder.createEncodedUrl(baseUrl, "applications", String.valueOf(application.getId()), "agreement");
+            String token = downloadTokenService.generateToken(application);
+            String encodedAgreementUrl = UrlBuilder.createEncodedUrl(baseUrl, "applications", token, "agreement");
             emailService.sendEmail("vrroom.leasing@gmail.com", "vrroom.leasing@gmail.com", "Application Approved", "Your application has been approved successfully. Please click here to download your agreement: " + encodedAgreementUrl);
         }
     }
