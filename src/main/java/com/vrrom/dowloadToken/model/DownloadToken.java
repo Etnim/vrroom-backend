@@ -1,4 +1,4 @@
-package com.vrrom.dowloadToken;
+package com.vrrom.dowloadToken.model;
 
 import com.vrrom.application.model.Application;
 import jakarta.persistence.CascadeType;

@@ -1,6 +1,9 @@
-package com.vrrom.dowloadToken;
+package com.vrrom.dowloadToken.service;
 
 import com.vrrom.application.model.Application;
+import com.vrrom.dowloadToken.exception.DownloadTokenException;
+import com.vrrom.dowloadToken.model.DownloadToken;
+import com.vrrom.dowloadToken.repository.DownloadTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

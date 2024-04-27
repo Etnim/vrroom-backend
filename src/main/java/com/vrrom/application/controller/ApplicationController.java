@@ -8,7 +8,7 @@ import com.vrrom.application.model.Application;
 import com.vrrom.application.model.ApplicationSortParameters;
 import com.vrrom.application.model.ApplicationStatus;
 import com.vrrom.application.service.ApplicationService;
-import com.vrrom.dowloadToken.DownloadTokenException;
+import com.vrrom.dowloadToken.exception.DownloadTokenException;
 import com.vrrom.util.CustomPage;
 import com.vrrom.util.exceptions.DatabaseException;
 import com.vrrom.util.exceptions.EntityMappingException;

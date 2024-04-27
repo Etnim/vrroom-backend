@@ -2,7 +2,7 @@ package com.vrrom.util.exceptions;
 
 import com.vrrom.application.exception.ApplicationException;
 import com.vrrom.application.exception.ApplicationNotFoundException;
-import com.vrrom.dowloadToken.DownloadTokenException;
+import com.vrrom.dowloadToken.exception.DownloadTokenException;
 import com.vrrom.vehicle.carInfoApi.exception.CarAPIException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
