@@ -10,6 +10,7 @@ import com.vrrom.application.dto.ApplicationResponse;
 import com.vrrom.application.dto.ApplicationResponseFromAdmin;
 import com.vrrom.application.exception.ApplicationException;
 import com.vrrom.application.exception.ApplicationNotFoundException;
+import com.vrrom.util.UrlBuilder;
 import com.vrrom.util.exceptions.DatabaseException;
 import com.vrrom.util.exceptions.EntityMappingException;
 import com.vrrom.util.exceptions.PdfGenerationException;
@@ -289,6 +290,18 @@ public class ApplicationService {
             throw new EntityMappingException("Error mapping application to agreement info", e.getCause());
         }
         return pdfGenerator.generateAgreement(agreementInfo);
+    }
+
+    public void updateApplicationStatus(long id, ApplicationStatus status) {
+        Application application = applicationRepository.findById(id)
+                .orElseThrow(() -> new ApplicationNotFoundException("Application not found", new Throwable("ID: " + id)));
+        application.setStatus(status);
+        applicationRepository.save(application);
+        if (application.getStatus() == ApplicationStatus.WAITING_FOR_SIGNING) {
+            String baseUrl = "http://localhost:8080";
+            String encodedAgreementUrl = UrlBuilder.createEncodedUrl(baseUrl, "applications", String.valueOf(application.getId()), "agreement");
+            emailService.sendEmail("vrroom.leasing@gmail.com", "vrroom.leasing@gmail.com", "Application Approved", "Your application has been approved successfully. Please click here to download your agreement: " + encodedAgreementUrl);
+        }
     }
 }
 

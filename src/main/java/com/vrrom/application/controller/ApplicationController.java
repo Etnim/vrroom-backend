@@ -107,9 +107,16 @@ public class ApplicationController {
         return applicationService.removeAdmin(applicationId);
     }
 
+    @PutMapping("/{id}/updateStatus")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<String> updateApplicationStatus(@PathVariable long id, @RequestParam ApplicationStatus status) {
+        applicationService.updateApplicationStatus(id, status);
+        return ResponseEntity.ok("Status updated successfully");
+    }
+
     @GetMapping("/{id}/agreement")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<byte[]> getLeasingAgreement(@PathVariable @Positive(message = "Id must be positive" ) long id) throws PdfGenerationException, EntityMappingException, DatabaseException {
+    public ResponseEntity<byte[]> getLeasingAgreement(@PathVariable @Positive(message = "Id must be positive") long id) throws PdfGenerationException, EntityMappingException, DatabaseException {
         byte[] pdfBytes = applicationService.getLeasingAgreement(id);
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=agreement.pdf");
