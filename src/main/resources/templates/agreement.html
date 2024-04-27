@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>VRROOM - Leasing Agreement</title>
+    <link rel="stylesheet" href="src/main/resources/css/agreement.css"
+          th:href="@{src/main/resources/css/agreement.css}"/>
+</head>
+<body>
+<p>PID: <span th:text="${agreement.pid}"></span></p>
+<p>Name: <span th:text="${agreement.customerName}"></span></p>
+<p>Surname: <span th:text="${agreement.customerSurname}"></span></p>
+<p>Birth Date: <span th:text="${agreement.customerBirthDate}"></span></p>
+<p>Phone: <span th:text="${agreement.customerPhone}"></span></p>
+<p>Email: <span th:text="${agreement.customerEmail}"></span></p>
+<p>Address: <span th:text="${agreement.customerAddress}"></span></p>
+<p>Car make: <span th:text="${agreement.carMake}"></span></p>
+<p>Car model: <span th:text="${agreement.carModel}"></span></p>
+<p>Car year: <span th:text="${agreement.carYear}"></span></p>
+<p>Leasing Amount: <span th:text="${agreement.leasingAmount}"></span></p>
+<p>First Payment Date: <span th:text="${agreement.firstPaymentDate}"></span></p>
+<p>Leasing Year Period: <span th:text="${agreement.leasingYearPeriod}"></span></p>
+<p>Agreement Date: <span th:text="${agreement.agreementDate}"></span></p>
+<p>Monthly Payment: <span th:text="${agreement.monthlyPayment}"></span></p>
+<p>Interest Rate: <span th:text="${agreement.interestRate}"></span></p>
+</body>
+</html>
