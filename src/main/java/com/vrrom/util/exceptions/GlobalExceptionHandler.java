@@ -2,6 +2,7 @@ package com.vrrom.util.exceptions;
 
 import com.vrrom.application.exception.ApplicationException;
 import com.vrrom.application.exception.ApplicationNotFoundException;
+import com.vrrom.dowloadToken.DownloadTokenException;
 import com.vrrom.vehicle.carInfoApi.exception.CarAPIException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -149,8 +150,17 @@ public class GlobalExceptionHandler {
                 .body(ex.getMessage() + ex.getCause().getMessage());
     }
 
+    @ExceptionHandler(DownloadTokenException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ResponseEntity<String> handleDownloadTokenException(DownloadTokenException ex) {
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(ex.getMessage() + ex.getCause().getMessage());
+    }
+
     @ExceptionHandler(RestClientException.class)
     public ResponseEntity<Object> handleRestClientException(RestClientException ex, WebRequest request) {
+        logger.warn(ex.getMessage(), ex);
         return ResponseEntity
                 .status(HttpStatus.SERVICE_UNAVAILABLE)
                 .body("Service unavailable or request timed out.");

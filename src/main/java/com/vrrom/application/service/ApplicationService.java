@@ -7,6 +7,7 @@ import com.vrrom.application.dto.ApplicationRequest;
 import com.vrrom.application.dto.ApplicationResponse;
 import com.vrrom.application.exception.ApplicationException;
 import com.vrrom.application.exception.ApplicationNotFoundException;
+import com.vrrom.dowloadToken.DownloadTokenException;
 import com.vrrom.dowloadToken.DownloadTokenService;
 import com.vrrom.util.UrlBuilder;
 import com.vrrom.util.exceptions.DatabaseException;
@@ -203,7 +204,7 @@ public class ApplicationService {
                 .orElseThrow(() -> new ApplicationException("No such application found"));
     }
 
-    public byte[] getLeasingAgreement(String token) throws PdfGenerationException, EntityMappingException, DatabaseException, ApplicationException {
+    public byte[] getLeasingAgreement(String token) throws PdfGenerationException, EntityMappingException, DatabaseException, ApplicationException, DownloadTokenException {
         Application application;
         AgreementInfo agreementInfo;
         try {

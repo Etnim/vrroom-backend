@@ -67,11 +67,11 @@ CREATE TABLE IF NOT EXISTS application
     FOREIGN KEY (manager_id) REFERENCES admin (id) ON DELETE SET NULL
 );
 
-CREATE TABLE download_token
-(
-    token          UUID NOT NULL,
-    application_id BIGINT,
-    PRIMARY KEY (token),
-    CONSTRAINT fk_download_token_application FOREIGN KEY (application_id) REFERENCES application (id)
+CREATE TABLE download_token (
+                                token UUID NOT NULL,
+                                application_id BIGINT,
+                                expires_at TIMESTAMP NOT NULL,
+                                PRIMARY KEY (token),
+                                CONSTRAINT fk_download_token_application FOREIGN KEY (application_id) REFERENCES application(id)
 );
 
