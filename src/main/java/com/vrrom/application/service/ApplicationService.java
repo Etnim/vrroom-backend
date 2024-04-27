@@ -227,7 +227,7 @@ public class ApplicationService {
         if (application.getStatus() == ApplicationStatus.WAITING_FOR_SIGNING) {
             String baseUrl = "http://localhost:8080";
             String token = downloadTokenService.generateToken(application);
-            String encodedAgreementUrl = UrlBuilder.createEncodedUrl(baseUrl, "applications", token, "agreement");
+            String encodedAgreementUrl = UrlBuilder.createEncodedUrl(baseUrl, "agreement", token);
             emailService.sendEmail("vrroom.leasing@gmail.com", "vrroom.leasing@gmail.com", "Application Approved", "Your application has been approved successfully. Please click here to download your agreement: " + encodedAgreementUrl);
         }
     }

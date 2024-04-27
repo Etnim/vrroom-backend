@@ -27,8 +27,14 @@ public class DownloadTokenService {
         return token.toString();
     }
 
-    public Long getApplicationId(String token) throws DownloadTokenException {
-        DownloadToken downloadToken = downloadTokenRepository.findById(UUID.fromString(token)).orElseThrow(() -> new DownloadTokenException("Unable to download agreement. ", new Throwable("Invalid credentials")));
+    public Long getApplicationId(String tokenString) throws DownloadTokenException {
+        UUID tokenUuid;
+        try {
+            tokenUuid = UUID.fromString(tokenString);
+        } catch (Exception e) {
+            throw new DownloadTokenException("Unable to download agreement. ", new Throwable("Something went wrong"));
+        }
+        DownloadToken downloadToken = downloadTokenRepository.findById(tokenUuid).orElseThrow(() -> new DownloadTokenException("Unable to download agreement. ", new Throwable("Invalid credentials")));
         if (downloadToken.getExpiresAt().isBefore(LocalDateTime.now())) {
             downloadTokenRepository.delete(downloadToken);
             throw new DownloadTokenException("Unable to download agreement. ", new Throwable("Agreement is expired"));
