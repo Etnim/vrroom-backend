@@ -1,8 +1,6 @@
 package com.vrrom.application.dto;
 
 import com.vrrom.application.model.ApplicationStatus;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
