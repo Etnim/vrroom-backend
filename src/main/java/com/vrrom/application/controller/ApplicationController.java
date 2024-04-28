@@ -1,18 +1,21 @@
 package com.vrrom.application.controller;
 
-import com.vrrom.application.dto.ApplicationRequest;
-import com.vrrom.application.dto.ApplicationResponse;
 import com.vrrom.application.dto.ApplicationListDTO;
+import com.vrrom.application.dto.ApplicationRequest;
+import com.vrrom.application.dto.ApplicationRequestFromAdmin;
+import com.vrrom.application.dto.ApplicationResponse;
+import com.vrrom.application.dto.ApplicationResponseFromAdmin;
+import com.vrrom.application.mapper.ApplicationMapper;
+import com.vrrom.application.model.Application;
 import com.vrrom.application.model.ApplicationSortParameters;
 import com.vrrom.application.model.ApplicationStatus;
 import com.vrrom.application.service.ApplicationService;
-import io.swagger.v3.oas.annotations.Operation;
 import com.vrrom.util.CustomPage;
 import com.vrrom.validation.annotations.PositiveLong;
 import com.vrrom.validation.annotations.ValidPageSize;
 import com.vrrom.validation.annotations.ValidSortDirection;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.xml.bind.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -65,12 +68,29 @@ public class ApplicationController {
 
     @GetMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Get application")
     public ApplicationResponse getApplicationById(@PathVariable long id) {
-        return applicationService.findApplicationById(id);
+        Application application = applicationService.findApplicationById(id);
+        return ApplicationMapper.toResponse(application);
     }
 
     @PutMapping(value = "/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Update application")
     public ApplicationResponse updateApplication(@PathVariable long id, @RequestBody ApplicationRequest applicationRequest) {
         return applicationService.updateApplication(id, applicationRequest);
+    }
+    @PutMapping(value = "/{adminId}/{applicationId}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Update application from admin request")
+    public ApplicationResponseFromAdmin updateApplicationFromAdmin(@PathVariable long applicationId, @PathVariable long adminId, @RequestBody ApplicationRequestFromAdmin applicationRequest) {
+        return applicationService.updateApplicationFromAdmin(applicationId,applicationRequest, adminId);
+    }
+
+    @PutMapping("/{applicationId}/assignAdmin/{adminId}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Assign admin to application and change status of the application.")
+    public String assignAdmin(@PathVariable long adminId, @PathVariable long applicationId) {
+        return applicationService.assignAdmin(adminId, applicationId);
     }
 }

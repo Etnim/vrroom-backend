@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -16,7 +17,7 @@ public class ApplicationListDTO {
     private String customerName;
     private String customerSurname;
     private BigDecimal leasingAmount;
-    private LocalDate applicationCreatedDate;
+    private LocalDateTime applicationCreatedDate;
     private ApplicationStatus applicationStatus;
     private Long managerId;
     private String managerName;

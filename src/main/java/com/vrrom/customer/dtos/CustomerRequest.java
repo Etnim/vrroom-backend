@@ -10,7 +10,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 
 @Getter
@@ -18,8 +17,8 @@ import java.util.Date;
 @AllArgsConstructor
 public class CustomerRequest {
 
-    @NotBlank(message = "Name is mandatory")
-    private long pid;
+    @NotBlank(message = "personalID is mandatory")
+    private long personalId;
 
     @NotBlank(message = "Name is mandatory")
     @Pattern(regexp = "^[A-Za-z]+$", message = "Name should contain only letters")

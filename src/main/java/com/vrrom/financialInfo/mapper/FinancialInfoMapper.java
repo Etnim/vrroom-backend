@@ -5,24 +5,24 @@ import com.vrrom.financialInfo.dtos.FinancialInfoResponse;
 import com.vrrom.financialInfo.model.FinancialInfo;
 import com.vrrom.financialInfo.dtos.FinancialInfoRequest;
 
-import java.math.BigDecimal;
-
 public class FinancialInfoMapper {
-    public static FinancialInfo toEntity(FinancialInfoRequest financialInfoRequest, Application application) {
-        return  new FinancialInfo.Builder()
-                .withFinancialInfoDTO(financialInfoRequest)
-                .withApplication(application)
-                .build();
+    public static void toEntity(FinancialInfo financialInfo, FinancialInfoRequest financialInfoRequest, Application application) {
+        financialInfo.setApplication(application);
+        financialInfo.setDependants(financialInfoRequest.getDependants());
+        financialInfo.setMaritalStatus(financialInfoRequest.getMaritalStatus());
+        financialInfo.setMonthlyIncome(financialInfoRequest.getMonthlyIncome());
+        financialInfo.setEmploymentStatus(financialInfoRequest.getEmploymentStatus());
+        financialInfo.setEmploymentTerm(financialInfoRequest.getEmploymentTerm());
     }
 
     public static FinancialInfoResponse toResponse(FinancialInfo financialInfo){
         FinancialInfoResponse response = new FinancialInfoResponse();
         response.setMonthlyIncome(financialInfo.getMonthlyIncome());
-        response.setMaritalStatus(financialInfo.getMaritalStatus());
+        response.setMaritalStatus(financialInfo.getMaritalStatus().getMaritalStatusText());
         response.setDependants(financialInfo.getDependants());
         response.setMonthlyObligations(financialInfo.getMonthlyObligations());
         response.setDisposableIncome(financialInfo.calculateDisposableIncome());
-
+        response.setEmploymentStatus(financialInfo.getEmploymentStatus().getEmploymentStatusText());
         return response;
     }
 }
