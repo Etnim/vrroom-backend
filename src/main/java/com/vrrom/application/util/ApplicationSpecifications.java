@@ -2,6 +2,7 @@ package com.vrrom.application.util;
 
 import com.vrrom.application.model.Application;
 import com.vrrom.application.model.ApplicationStatus;
+import com.vrrom.util.SanitizationUtils;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -28,7 +29,8 @@ public class ApplicationSpecifications {
             if (fullName == null || fullName.isBlank()) {
                 return cb.isTrue(cb.literal(true));
             }
-            String[] nameParts = fullName.trim().split("\\s+");
+            String sanitizedFullName = SanitizationUtils.sanitizeInput(fullName.trim());
+            String[] nameParts = sanitizedFullName.split("\\s+");
             int numParts = nameParts.length;
             if (numParts == 1) {
                 String part = nameParts[0];
