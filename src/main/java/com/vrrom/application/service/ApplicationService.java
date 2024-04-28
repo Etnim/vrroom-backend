@@ -104,6 +104,34 @@ public class ApplicationService {
             result.setContent(enhancedDtos);
         }
         return result;
+        try {
+            Sort sort = Sort.by(Sort.Direction.fromString(sortDir), sortField.getValue());
+            Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+            Specification<Application> spec = buildSpecification(managerId, status, startDate, endDate);
+            Page<Application> page = applicationRepository.findAll(spec, pageable);
+            CustomPage<ApplicationListDTO> result = toCustomPage(page);
+            if (includeHistory) {
+                List<ApplicationListDTO> enhancedDtos = new ArrayList<>();
+                for (ApplicationListDTO dto : result.getContent()) {
+                    if (dto instanceof ApplicationListDTOWithHistory detailedDto) {
+                        List<ApplicationStatusHistory> history = applicationStatusHistoryService.getApplicationStatusHistory(detailedDto.getApplicationId());
+                        List<ApplicationStatusHistoryDTO> historyDTOs = history.stream()
+                                .map(ApplicationStatusHistoryMapper::toApplicationStatusHistoryDTO)
+                                .collect(Collectors.toList());
+                        detailedDto.setStatusHistory(historyDTOs);
+                        enhancedDtos.add(detailedDto);
+                    } else {
+                        enhancedDtos.add(applicationStatusHistoryService.enhanceDtoWithHistory(dto));
+                    }
+                }
+                result.setContent(enhancedDtos);
+            }
+            return result;
+        } catch (IllegalArgumentException e) {
+            throw new ApplicationException("Invalid request parameters", e);
+        } catch (Exception e) {
+            throw new ApplicationException("An error occurred while processing the applications", e);
+        }
     }
 
     private CustomPage<ApplicationListDTO> toCustomPage(Page<Application> page) {
