@@ -50,12 +50,13 @@ public class ApplicationController {
                                                                    @RequestParam(required = false) @PositiveLong Long managerId,
                                                                    @RequestParam(required = false) ApplicationStatus status,
                                                                    @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-                                                                   @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) throws ValidationException {
-        return applicationService.findPaginatedApplications(page, size, sortField, sortDir, managerId, status, startDate, endDate);
+                                                                   @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+                                                                   @RequestParam(defaultValue = "false") boolean isSuperAdmin) {
+        return applicationService.findPaginatedApplications(page, size, sortField, sortDir, managerId, status, startDate, endDate, isSuperAdmin);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping(value="/application")
+    @PostMapping(value = "/application")
     @Operation(summary = "Create application")
     public ApplicationResponse createApplication(@RequestBody ApplicationRequest applicationRequest) {
         return applicationService.createApplication(applicationRequest);
@@ -67,7 +68,7 @@ public class ApplicationController {
         return applicationService.findApplicationById(id);
     }
 
-    @PutMapping(value="/{id}")
+    @PutMapping(value = "/{id}")
     public ApplicationResponse updateApplication(@PathVariable long id, @RequestBody ApplicationRequest applicationRequest) {
         return applicationService.updateApplication(id, applicationRequest);
     }
