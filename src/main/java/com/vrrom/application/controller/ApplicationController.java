@@ -47,15 +47,17 @@ public class ApplicationController {
                                                                    @RequestParam(defaultValue = "5") @ValidPageSize Integer size,
                                                                    @RequestParam(defaultValue = "applicationCreatedDate") ApplicationSortParameters sortField,
                                                                    @RequestParam(defaultValue = "desc") @ValidSortDirection String sortDir,
+                                                                   @RequestParam(required = false) @PositiveLong Long customerId,
                                                                    @RequestParam(required = false) @PositiveLong Long managerId,
+                                                                   @RequestParam(required = false) String managerFullName,
                                                                    @RequestParam(required = false) ApplicationStatus status,
                                                                    @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-                                                                   @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) throws ValidationException {
-        return applicationService.findPaginatedApplications(page, size, sortField, sortDir, managerId, status, startDate, endDate);
+                                                                   @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+        return applicationService.findPaginatedApplications(page, size, sortField, sortDir, customerId, managerId, managerFullName, status, startDate, endDate);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping(value="/application")
+    @PostMapping(value = "/application")
     @Operation(summary = "Create application")
     public ApplicationResponse createApplication(@RequestBody ApplicationRequest applicationRequest) {
         return applicationService.createApplication(applicationRequest);
@@ -67,7 +69,7 @@ public class ApplicationController {
         return applicationService.findApplicationById(id);
     }
 
-    @PutMapping(value="/{id}")
+    @PutMapping(value = "/{id}")
     public ApplicationResponse updateApplication(@PathVariable long id, @RequestBody ApplicationRequest applicationRequest) {
         return applicationService.updateApplication(id, applicationRequest);
     }
