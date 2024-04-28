@@ -24,6 +24,4 @@ public class ApplicationListDTO {
     private Long managerId;
     private String managerName;
     private String managerSurname;
-
-
 }
