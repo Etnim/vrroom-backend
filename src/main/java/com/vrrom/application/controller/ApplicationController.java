@@ -57,7 +57,7 @@ public class ApplicationController {
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping(value = "/application")
+    @PostMapping(value="/application")
     @Operation(summary = "Create application")
     public ApplicationResponse createApplication(@RequestBody ApplicationRequest applicationRequest) {
         return applicationService.createApplication(applicationRequest);
@@ -69,7 +69,7 @@ public class ApplicationController {
         return applicationService.findApplicationById(id);
     }
 
-    @PutMapping(value = "/{id}")
+    @PutMapping(value="/{id}")
     public ApplicationResponse updateApplication(@PathVariable long id, @RequestBody ApplicationRequest applicationRequest) {
         return applicationService.updateApplication(id, applicationRequest);
     }
