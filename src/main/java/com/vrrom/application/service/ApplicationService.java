@@ -63,10 +63,10 @@ public class ApplicationService {
         }
     }
 
-    public CustomPage<ApplicationListDTO> findPaginatedApplications(int pageNo, int pageSize, ApplicationSortParameters sortField, String sortDir, Long managerId, ApplicationStatus status, LocalDate startDate, LocalDate endDate) {
+    public CustomPage<ApplicationListDTO> findPaginatedApplications(int pageNo, int pageSize, ApplicationSortParameters sortField, String sortDir, Long customerId, Long managerId, String managerFullName, ApplicationStatus status, LocalDate startDate, LocalDate endDate) {
         Sort sort = Sort.by(Sort.Direction.fromString(sortDir), sortField.getValue());
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
-        Specification<Application> spec = buildSpecification(managerId, status, startDate, endDate);
+        Specification<Application> spec = buildSpecification(customerId, managerId, managerFullName, status, startDate, endDate);
         Page<Application> page = applicationRepository.findAll(spec, pageable);
         return toCustomPage(page);
     }
@@ -92,10 +92,16 @@ public class ApplicationService {
         );
     }
 
-    private Specification<Application> buildSpecification(Long managerId, ApplicationStatus status, LocalDate startDate, LocalDate endDate) {
+    private Specification<Application> buildSpecification(Long customerId, Long managerId, String managerFullName, ApplicationStatus status, LocalDate startDate, LocalDate endDate) {
         Specification<Application> spec = Specification.where(null);
+        if (customerId != null) {
+            spec = spec.and(ApplicationSpecifications.hasCustomer(customerId));
+        }
         if (managerId != null) {
             spec = spec.and(ApplicationSpecifications.hasManager(managerId));
+        }
+        if (managerFullName != null) {
+            spec = spec.and(ApplicationSpecifications.hasManagerFullName(managerFullName));
         }
         if (status != null) {
             spec = spec.and(ApplicationSpecifications.hasStatus(status));
