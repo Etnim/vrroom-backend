@@ -54,6 +54,9 @@ public class ApplicationController {
                                                                    @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
                                                                    @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
         return applicationService.findPaginatedApplications(page, size, sortField, sortDir, customerId, managerId, managerFullName, status, startDate, endDate);
+                                                                   @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+                                                                   @RequestParam(defaultValue = "false") boolean isSuperAdmin) {
+        return applicationService.findPaginatedApplications(page, size, sortField, sortDir, managerId, status, startDate, endDate, isSuperAdmin);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
