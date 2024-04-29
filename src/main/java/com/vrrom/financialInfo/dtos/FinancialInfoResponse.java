@@ -21,8 +21,9 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class FinancialInfoResponse {
     private BigDecimal monthlyIncome;
-    private MaritalStatus maritalStatus;
+    private String maritalStatus;
     private int dependants;
     private BigDecimal monthlyObligations;
     private BigDecimal disposableIncome;
+    private String employmentStatus;
 }

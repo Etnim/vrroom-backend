@@ -5,35 +5,23 @@ import com.vrrom.vehicle.dtos.VehicleRequest;
 import com.vrrom.vehicle.dtos.VehicleResponse;
 import com.vrrom.vehicle.model.VehicleDetails;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 public class VehicleMapper {
-    public static List<VehicleDetails> toEntityList(List<VehicleRequest> vehicleRequests, Application application) {
-        return vehicleRequests.stream()
-                .map(dto -> toEntity(dto, application))
-                .collect(Collectors.toList());
+    public static void toEntity(VehicleDetails vehicle, VehicleRequest vehicleRequest, Application application) {
+        vehicle.setBrand(vehicleRequest.getBrand());
+        vehicle.setModel(vehicleRequest.getModel());
+        vehicle.setFuel(vehicleRequest.getFuel());
+        vehicle.setYear(vehicleRequest.getYear());
+        vehicle.setEmissionStart(vehicleRequest.getEmissionStart());
+        vehicle.setEmissionEnd(vehicleRequest.getEmissionEnd());
+        vehicle.setApplication(application);
     }
 
-    public static List<VehicleResponse> toResponseList(List<VehicleDetails> vehicles){
-        return vehicles.stream()
-                .map(VehicleMapper::toResponse)
-                .collect(Collectors.toList());
-    }
-
-    private static VehicleDetails toEntity(VehicleRequest vehicleRequest, Application application) {
-        return new VehicleDetails.Builder()
-                .withVehicleDTO(vehicleRequest)
-                .withApplication(application)
-                .build();
-    }
-
-    private static VehicleResponse toResponse(VehicleDetails vehicle){
+    public static VehicleResponse toResponse(VehicleDetails vehicle){
         VehicleResponse response = new VehicleResponse();
         response.setMake(vehicle.getBrand());
         response.setModel(vehicle.getModel());
         response.setYear(vehicle.getYear());
-        response.setFuel(vehicle.getFuel());
+        response.setFuel(vehicle.getFuel().getFuelTypeText());
         response.setEmissionStart(vehicle.getEmissionStart());
         response.setEmissionEnd(vehicle.getEmissionEnd());
 
