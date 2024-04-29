@@ -15,11 +15,11 @@ import com.vrrom.util.CustomPage;
 import com.vrrom.util.exceptions.DatabaseException;
 import com.vrrom.util.exceptions.EntityMappingException;
 import com.vrrom.util.exceptions.PdfGenerationException;
+import com.vrrom.validation.annotations.PositiveLong;
 import com.vrrom.validation.annotations.ValidPageSize;
 import com.vrrom.validation.annotations.ValidSortDirection;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
@@ -99,12 +99,6 @@ public class ApplicationController {
     @Operation(summary = "Assign admin to application and change status of the application.")
     public String assignAdmin(@PathVariable long adminId, @PathVariable long applicationId) {
         return applicationService.assignAdmin(adminId, applicationId);
-    }
-
-    @PutMapping("/{applicationId}/removeAdmin")
-    @ResponseStatus(HttpStatus.OK)
-    public String removeAdmin(@PathVariable long applicationId) {
-        return applicationService.removeAdmin(applicationId);
     }
 
     @PutMapping("/{id}/updateStatus")

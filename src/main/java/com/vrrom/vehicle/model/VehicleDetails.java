@@ -1,8 +1,6 @@
 package com.vrrom.vehicle.model;
 
 import com.vrrom.application.model.Application;
-import com.vrrom.vehicle.dtos.VehicleRequest;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -10,6 +8,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,27 +27,20 @@ public class VehicleDetails {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
     @Column(name = "brand")
     private String brand;
-
     @Column(name = "model")
     private String model;
-
     @Column(name = "year")
     private int year;
-
     @Column(name = "fuel")
     @Enumerated(EnumType.STRING)
     private FuelType fuel;
-
     @Column(name = "emission_start")
     private int emissionStart;
-
     @Column(name = "emission_end")
     private int emissionEnd;
-
-    @OneToOne(mappedBy ="vehicleDetails", cascade = CascadeType.ALL)
-
+    @OneToOne
+    @JoinColumn(name = "application_id")
     private Application application;
 }
