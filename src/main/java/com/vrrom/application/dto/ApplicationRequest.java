@@ -1,6 +1,5 @@
 package com.vrrom.application.dto;
 
-
 import com.vrrom.customer.dtos.CustomerRequest;
 import com.vrrom.financialInfo.dtos.FinancialInfoRequest;
 import com.vrrom.vehicle.dtos.VehicleRequest;
@@ -25,7 +24,7 @@ public class ApplicationRequest {
     private CustomerRequest customer;
 
     @Valid
-    private List<VehicleRequest> vehicleDetails;
+    private VehicleRequest vehicleDetails;
 
     @Valid
     private FinancialInfoRequest financialInfo;

@@ -22,7 +22,7 @@ public class CustomerMapper {
         int age = (int) ChronoUnit.YEARS.between(birthDate, LocalDate.now());
 
         CustomerResponse response = new CustomerResponse();
-        response.setPid(customer.getPid());
+        response.setPersonalId(customer.getPersonalId());
         response.setFullName(fullName);
         response.setAge(age);
         response.setEmail(customer.getEmail());

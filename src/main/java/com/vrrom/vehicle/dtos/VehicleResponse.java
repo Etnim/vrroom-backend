@@ -18,7 +18,7 @@ public class VehicleResponse {
     private String make;
     private String model;
     private int year;
-    private FuelType fuel;
+    private String fuel;
     private int emissionStart;
     private int emissionEnd;
 }
