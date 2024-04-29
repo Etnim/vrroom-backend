@@ -1,7 +1,7 @@
 package com.vrrom.admin.controller;
 
 import com.vrrom.admin.Admin;
-import com.vrrom.admin.AdminRequest;
+import com.vrrom.admin.dtos.AdminDTO;
 import com.vrrom.admin.service.AdminService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,7 +28,7 @@ public class AdminController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/admin")
     @Operation(summary = "Create admin")
-    public Admin createAdmin(@RequestBody AdminRequest admin) {
+    public Admin createAdmin(@RequestBody AdminDTO admin) {
         return adminService.createAdmin(admin);
     }
 

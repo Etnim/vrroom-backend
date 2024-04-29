@@ -1,7 +1,6 @@
 package com.vrrom.application.dto;
 
-import com.vrrom.admin.Admin;
-import com.vrrom.application.model.ApplicationStatus;
+import com.vrrom.admin.dtos.AdminDTO;
 import com.vrrom.customer.dtos.CustomerResponse;
 import com.vrrom.financialInfo.dtos.FinancialInfoResponse;
 import com.vrrom.vehicle.dtos.VehicleResponse;
@@ -12,7 +11,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -21,8 +20,8 @@ import java.util.List;
 public class ApplicationResponse {
     private long applicationID;
     private String applicationStatus;
-    private LocalDate dateOfSubmission;
-    private Admin assignedManager;
+    private LocalDateTime dateOfSubmission;
+    private AdminDTO assignedManager;
     private CustomerResponse customer;
     private VehicleResponse vehicleDetails;
     private FinancialInfoResponse financialInfo;

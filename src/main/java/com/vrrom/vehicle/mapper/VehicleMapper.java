@@ -5,15 +5,15 @@ import com.vrrom.vehicle.dtos.VehicleRequest;
 import com.vrrom.vehicle.dtos.VehicleResponse;
 import com.vrrom.vehicle.model.VehicleDetails;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 public class VehicleMapper {
-    public static VehicleDetails toEntity(VehicleRequest vehicleRequest, Application application) {
-        return new VehicleDetails.Builder()
-                .withVehicleDTO(vehicleRequest)
-                .withApplication(application)
-                .build();
+    public static void toEntity(VehicleDetails vehicle, VehicleRequest vehicleRequest, Application application) {
+        vehicle.setBrand(vehicleRequest.getBrand());
+        vehicle.setModel(vehicleRequest.getModel());
+        vehicle.setFuel(vehicleRequest.getFuel());
+        vehicle.setYear(vehicleRequest.getYear());
+        vehicle.setEmissionStart(vehicleRequest.getEmissionStart());
+        vehicle.setEmissionEnd(vehicleRequest.getEmissionEnd());
+        vehicle.setApplication(application);
     }
 
     public static VehicleResponse toResponse(VehicleDetails vehicle){

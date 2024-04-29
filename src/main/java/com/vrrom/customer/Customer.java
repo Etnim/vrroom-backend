@@ -8,7 +8,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,6 +16,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 @Entity
@@ -38,7 +40,7 @@ public class Customer {
     @Column(name = "birthDate")
     private LocalDate birthDate;
 
-    @Column(name = "email") // should be unique
+    @Column(name = "email", unique = true)
     private String email;
 
     @Column(name = "phone", unique = true)
@@ -50,9 +52,8 @@ public class Customer {
     @Column(name = "credit_rating")
     private int creditRating;
 
-    @JsonBackReference
-    @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Application application;
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Application> applications;
 
     public static class Builder {
         private long personalId;
@@ -62,7 +63,7 @@ public class Customer {
         private LocalDate birthDate;
         private String phone;
         private String address;
-        private Application application;
+        private List<Application> applications = new ArrayList<>();
 
         public Builder withCustomerDTO(CustomerRequest customerRequest) {
             this.personalId = customerRequest.getPersonalId();
@@ -76,7 +77,7 @@ public class Customer {
         }
 
         public Builder withApplication(Application application) {
-            this.application = application;
+            this.applications.add(application);
             return this;
         }
 
@@ -89,7 +90,7 @@ public class Customer {
             customer.setBirthDate(this.birthDate);
             customer.setPhone(this.phone);
             customer.setAddress(this.address);
-            customer.setApplication(this.application);
+            customer.setApplications(this.applications);
             return customer;
         }
     }

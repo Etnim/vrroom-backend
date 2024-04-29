@@ -1,7 +1,7 @@
 package com.vrrom.application.model;
 
 import com.vrrom.admin.Admin;
-import com.vrrom.application.dto.ApplicationRequest;
+import com.vrrom.comment.Comment;
 import com.vrrom.customer.Customer;
 import com.vrrom.financialInfo.model.FinancialInfo;
 import com.vrrom.vehicle.model.VehicleDetails;
@@ -16,6 +16,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,7 +26,8 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-
+import java.time.LocalDateTime;
+import java.util.List;
 
 
 @Entity
@@ -44,12 +46,11 @@ public class Application {
     @JoinColumn(name = "financial_info_id")
     private FinancialInfo financialInfo;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "vehicle_details_id")
+    @OneToOne(mappedBy = "application", cascade = CascadeType.ALL)
     private VehicleDetails vehicleDetails;
 
     @ManyToOne(cascade = CascadeType.ALL)
@@ -60,6 +61,7 @@ public class Application {
     private BigDecimal price;
 
     @Column(name = "down_payment")
+
     private BigDecimal downPayment;
 
     @Column(name = "residual_value")
@@ -76,10 +78,10 @@ public class Application {
     private ApplicationStatus status;
 
     @Column(name = "created_at")
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
-    private LocalDate updatedAt;
+    private LocalDateTime updatedAt;
 
     @Column(name = "monthly_payment")
     private BigDecimal monthlyPayment;
@@ -87,55 +89,6 @@ public class Application {
     @Column(name = "agreement_fee")
     private BigDecimal agreementFee;
 
-    public static class ApplicationBuilder {
-        public ApplicationBuilder defaultCreatedAtNow() {
-            this.createdAt = LocalDate.now();
-            return this;
-        }
-
-        public ApplicationBuilder defaultUpdatedAtNow() {
-            this.updatedAt = LocalDate.now();
-            return this;
-        }
-
-        public ApplicationBuilder calculateInterestRate() {
-            if (this.customer != null) {
-                this.interestRate = 2.0 + (this.customer.getCreditRating() - 1) * 1.5;
-            }
-            return this;
-        }
-
-        public ApplicationBuilder setStatusSubmitted() {
-            this.status = ApplicationStatus.SUBMITTED;
-            return this;
-        }
-
-        public ApplicationBuilder fromDto(ApplicationRequest dto) {
-            this.price = dto.getPrice();
-            this.yearPeriod = dto.getYearPeriod();
-            return this;
-        }
-
-        public Application build() {
-            defaultCreatedAtNow();
-            defaultUpdatedAtNow();
-            calculateInterestRate();
-            setStatusSubmitted();
-            Application application = new Application();
-            application.setId(this.id);
-            application.setCustomer(this.customer);
-            application.setFinancialInfo(this.financialInfo);
-            application.setVehicleDetails(this.vehicleDetails);
-            application.setManager(this.manager);
-            application.setPrice(this.price);
-            application.setDownPayment(this.downPayment);
-            application.setResidualValue(this.residualValue);
-            application.setYearPeriod(this.yearPeriod);
-            application.setInterestRate(this.interestRate);
-            application.setStatus(this.status);
-            application.setCreatedAt(this.createdAt);
-            application.setUpdatedAt(this.updatedAt);
-            return application;
-        }
-    }
+    @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Comment> comments;
 }

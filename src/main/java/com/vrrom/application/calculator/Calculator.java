@@ -1,7 +1,6 @@
 package com.vrrom.application.calculator;
 
 import com.vrrom.application.dto.ApplicationRequest;
-import com.vrrom.application.model.Application;
 import com.vrrom.customer.Customer;
 import com.vrrom.euribor.dto.EuriborRate;
 
@@ -9,29 +8,30 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 
 public class Calculator {
+    public final MathContext mc = new MathContext(5);
+
     public BigDecimal getAgreementFee(BigDecimal price) {
-        BigDecimal feeValue = price.divide(BigDecimal.valueOf(100));
-        return feeValue.compareTo(BigDecimal.valueOf(200)) == 1 ? feeValue : BigDecimal.valueOf(200);
+        BigDecimal feeValue = price.divide(BigDecimal.valueOf(100), mc);
+        return feeValue
+                .compareTo(BigDecimal.valueOf(200)) > 0
+                ? feeValue
+                : BigDecimal.valueOf(200);
     }
 
     public BigDecimal getDownPayment(ApplicationRequest application){
         BigDecimal downPaymentPercentage = BigDecimal.valueOf(application.getDownPayment());
-        MathContext mc = new MathContext(5);
-
         return downPaymentPercentage
-                .divide(application.getPrice(), mc)
-                .multiply(BigDecimal.valueOf(100));
+                .multiply(application.getPrice())
+                .divide(BigDecimal.valueOf(100), mc);
     }
 
-    public BigDecimal getMonthlyPayment(Application application) {
+    public BigDecimal getMonthlyPayment(ApplicationRequest application, Customer customer) {
         EuriborRate euribor = new EuriborRate();
-        MathContext mc = new MathContext(5);
-
         BigDecimal price = application.getPrice();
-        BigDecimal downPayment = application.getDownPayment();
-        BigDecimal residualValue = application.getResidualValue();
+        BigDecimal downPayment = getDownPayment(application);
+        BigDecimal residualValue = getResidualValue(application);
         int yearPeriod = application.getYearPeriod();
-        double interestRate = application.getInterestRate();
+        double interestRate = getInterestRate(customer);
 
         BigDecimal p = price.subtract(downPayment).subtract(residualValue);
         int n = yearPeriod * 12;
@@ -50,10 +50,9 @@ public class Calculator {
 
     public BigDecimal getResidualValue(ApplicationRequest application){
         BigDecimal residualValuePercentage = BigDecimal.valueOf(application.getResidualValue());
-        MathContext mc = new MathContext(5);
 
        return residualValuePercentage
-                .divide(application.getPrice(), mc)
-                .multiply(BigDecimal.valueOf(100));
+               .multiply(application.getPrice())
+               .divide(BigDecimal.valueOf(100), mc);
     }
 }

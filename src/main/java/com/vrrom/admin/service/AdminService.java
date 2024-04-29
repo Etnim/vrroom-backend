@@ -1,10 +1,9 @@
 package com.vrrom.admin.service;
 
 import com.vrrom.admin.Admin;
-import com.vrrom.admin.AdminMapper;
-import com.vrrom.admin.AdminRequest;
+import com.vrrom.admin.mapper.AdminMapper;
+import com.vrrom.admin.dtos.AdminDTO;
 import com.vrrom.admin.repository.AdminRepository;
-import com.vrrom.application.dto.ApplicationResponse;
 import com.vrrom.application.exception.ApplicationException;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +15,7 @@ public class AdminService {
         this.adminRepository = adminRepository;
     }
 
-    public Admin createAdmin(AdminRequest admin) {
+    public Admin createAdmin(AdminDTO admin) {
         return adminRepository.save(AdminMapper.toEntity(admin));
     }
     public Admin findAdminById(long adminId) {
