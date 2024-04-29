@@ -2,15 +2,15 @@ package com.vrrom.application.service;
 
 import com.vrrom.admin.Admin;
 import com.vrrom.admin.service.AdminService;
-import com.vrrom.application.dto.ApplicationListDTO;
-import com.vrrom.application.dto.ApplicationListDTOWithHistory;
+import com.vrrom.application.dto.ApplicationPage;
+import com.vrrom.application.dto.ApplicationPageWithHistory;
 import com.vrrom.application.dto.ApplicationRequest;
 import com.vrrom.application.dto.ApplicationRequestFromAdmin;
 import com.vrrom.application.dto.ApplicationResponse;
 import com.vrrom.application.dto.ApplicationResponseFromAdmin;
 import com.vrrom.application.exception.ApplicationException;
-import com.vrrom.application.mapper.ApplicationListDTOMapper;
 import com.vrrom.application.mapper.ApplicationMapper;
+import com.vrrom.application.mapper.ApplicationPageMapper;
 import com.vrrom.application.model.Application;
 import com.vrrom.application.model.ApplicationSortParameters;
 import com.vrrom.application.model.ApplicationStatus;
@@ -123,8 +123,7 @@ public class ApplicationService {
         }
     }
 
-
-    public CustomPage<ApplicationListDTO> findPaginatedApplications(
+    public CustomPage<ApplicationPage> findPaginatedApplications(
             int pageNo, int pageSize,
             ApplicationSortParameters sortField,
             String sortDir,
@@ -140,11 +139,11 @@ public class ApplicationService {
             Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
             Specification<Application> spec = buildSpecification(customerId, managerId, managerFullName, status, startDate, endDate);
             Page<Application> page = applicationRepository.findAll(spec, pageable);
-            CustomPage<ApplicationListDTO> result = toCustomPage(page);
+            CustomPage<ApplicationPage> result = toCustomPage(page);
             if (includeHistory) {
-                List<ApplicationListDTO> enhancedDtos = new ArrayList<>();
-                for (ApplicationListDTO dto : result.getContent()) {
-                    if (dto instanceof ApplicationListDTOWithHistory detailedDto) {
+                List<ApplicationPage> enhancedDtos = new ArrayList<>();
+                for (ApplicationPage dto : result.getContent()) {
+                    if (dto instanceof ApplicationPageWithHistory detailedDto) {
                         List<ApplicationStatusHistory> history = applicationStatusHistoryService.getApplicationStatusHistory(detailedDto.getApplicationId());
                         List<ApplicationStatusHistoryDTO> historyDTOs = history.stream()
                                 .map(ApplicationStatusHistoryMapper::toApplicationStatusHistoryDTO)
@@ -163,12 +162,11 @@ public class ApplicationService {
         } catch (Exception e) {
             throw new ApplicationException("An error occurred while processing the applications", e);
         }
-
     }
 
-    private CustomPage<ApplicationListDTO> toCustomPage(Page<Application> page) {
-        List<ApplicationListDTO> content = page.getContent().stream()
-                .map(ApplicationListDTOMapper::toApplicationListDTO)
+    private CustomPage<ApplicationPage> toCustomPage(Page<Application> page) {
+        List<ApplicationPage> content = page.getContent().stream()
+                .map(ApplicationPageMapper::toApplicationListDTO)
                 .collect(Collectors.toList());
         List<String> sortInfo = page.getSort().stream()
                 .map(order -> {

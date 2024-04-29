@@ -3,7 +3,7 @@ package com.vrrom.application.mapper;
 import com.vrrom.application.dto.ApplicationPage;
 import com.vrrom.application.model.Application;
 
-public class ApplicationListDTOMapper {
+public class ApplicationPageMapper {
     public static ApplicationPage toApplicationListDTO(Application application) {
         ApplicationPage dto = ApplicationPage.builder()
                 .applicationId(application.getId())
