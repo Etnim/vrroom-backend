@@ -1,6 +1,6 @@
 package com.vrrom.application.controller;
 
-import com.vrrom.application.dto.ApplicationListDTO;
+import com.vrrom.application.dto.ApplicationPage;
 import com.vrrom.application.dto.ApplicationRequest;
 import com.vrrom.application.dto.ApplicationRequestFromAdmin;
 import com.vrrom.application.dto.ApplicationResponse;
@@ -46,17 +46,17 @@ public class ApplicationController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public CustomPage<ApplicationListDTO> getPaginatedApplications(@RequestParam(defaultValue = "0") int page,
-                                                                   @RequestParam(defaultValue = "5") @ValidPageSize Integer size,
-                                                                   @RequestParam(defaultValue = "applicationCreatedDate") ApplicationSortParameters sortField,
-                                                                   @RequestParam(defaultValue = "desc") @ValidSortDirection String sortDir,
-                                                                   @RequestParam(required = false) @PositiveLong Long customerId,
-                                                                   @RequestParam(required = false) @PositiveLong Long managerId,
-                                                                   @RequestParam(required = false) String managerFullName,
-                                                                   @RequestParam(required = false) ApplicationStatus status,
-                                                                   @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-                                                                   @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
-                                                                   @RequestParam(defaultValue = "false") boolean isSuperAdmin) {
+    public CustomPage<ApplicationPage> getPaginatedApplications(@RequestParam(defaultValue = "0") int page,
+                                                                @RequestParam(defaultValue = "5") @ValidPageSize Integer size,
+                                                                @RequestParam(defaultValue = "applicationCreatedDate") ApplicationSortParameters sortField,
+                                                                @RequestParam(defaultValue = "desc") @ValidSortDirection String sortDir,
+                                                                @RequestParam(required = false) @PositiveLong Long customerId,
+                                                                @RequestParam(required = false) @PositiveLong Long managerId,
+                                                                @RequestParam(required = false) String managerFullName,
+                                                                @RequestParam(required = false) ApplicationStatus status,
+                                                                @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                                                                @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+                                                                @RequestParam(defaultValue = "false") boolean isSuperAdmin) {
         return applicationService.findPaginatedApplications(page, size, sortField, sortDir, customerId, managerId, managerFullName, status, startDate, endDate, isSuperAdmin);
     }
 

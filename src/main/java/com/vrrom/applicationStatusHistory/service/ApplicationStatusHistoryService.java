@@ -1,7 +1,7 @@
 package com.vrrom.applicationStatusHistory.service;
 
-import com.vrrom.application.dto.ApplicationListDTO;
-import com.vrrom.application.dto.ApplicationListDTOWithHistory;
+import com.vrrom.application.dto.ApplicationPage;
+import com.vrrom.application.dto.ApplicationPageWithHistory;
 import com.vrrom.applicationStatusHistory.dto.ApplicationStatusHistoryDTO;
 import com.vrrom.applicationStatusHistory.mapper.ApplicationStatusHistoryMapper;
 import com.vrrom.applicationStatusHistory.model.ApplicationStatusHistory;
@@ -25,12 +25,12 @@ public class ApplicationStatusHistoryService {
         return applicationStatusHistoryRepository.findByApplicationId(applicationId);
     }
 
-    public ApplicationListDTOWithHistory enhanceDtoWithHistory(ApplicationListDTO dto) {
+    public ApplicationPageWithHistory enhanceDtoWithHistory(ApplicationPage dto) {
         List<ApplicationStatusHistory> history = getApplicationStatusHistory(dto.getApplicationId());
         List<ApplicationStatusHistoryDTO> historyDTOs = history.stream()
                 .map(ApplicationStatusHistoryMapper::toApplicationStatusHistoryDTO)
                 .collect(Collectors.toList());
-        return ApplicationListDTOWithHistory.builder()
+        return ApplicationPageWithHistory.builder()
                 .applicationId(dto.getApplicationId())
                 .customerName(dto.getCustomerName())
                 .customerSurname(dto.getCustomerSurname())

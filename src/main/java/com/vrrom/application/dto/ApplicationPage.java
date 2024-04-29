@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @SuperBuilder(toBuilder = true)
-public class ApplicationListDTO {
+public class ApplicationPage {
     private long applicationId;
     private String customerName;
     private String customerSurname;
