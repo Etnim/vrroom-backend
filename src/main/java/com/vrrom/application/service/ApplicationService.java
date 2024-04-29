@@ -63,18 +63,17 @@ public class ApplicationService {
     private final AdminService adminService;
     private final PdfGenerator pdfGenerator;
     private final CustomerService customerService;
-      private final ApplicationStatusHistoryService applicationStatusHistoryService;
-
+    private final ApplicationStatusHistoryService applicationStatusHistoryService;
+    private final DownloadTokenService downloadTokenService;
 
     @Autowired
-
-    public ApplicationService(ApplicationRepository applicationRepository, EmailService emailService, AdminService adminService, CustomerService customerService,PdfGenerator pdfGenerator,  ApplicationStatusHistoryService applicationStatusHistoryService,  DownloadTokenService downloadTokenService) {
+    public ApplicationService(ApplicationRepository applicationRepository, EmailService emailService, AdminService adminService, CustomerService customerService, PdfGenerator pdfGenerator, ApplicationStatusHistoryService applicationStatusHistoryService, DownloadTokenService downloadTokenService) {
         this.applicationRepository = applicationRepository;
         this.emailService = emailService;
         this.adminService = adminService;
         this.pdfGenerator = pdfGenerator;
         this.customerService = customerService;
-       this.applicationStatusHistoryService = applicationStatusHistoryService;
+        this.applicationStatusHistoryService = applicationStatusHistoryService;
         this.downloadTokenService = downloadTokenService;
     }
 
@@ -118,15 +117,13 @@ public class ApplicationService {
         try {
             Application application = findApplicationById(applicationId);
             Admin admin = adminService.findAdminById(adminId);
-            if(application.getManager() == null){
+            if (application.getManager() == null) {
                 throw new ApplicationException("Admin is not assigned to this application");
             }
-            if(application.getManager().getId() != adminId) {
+            if (application.getManager().getId() != adminId) {
                 throw new ApplicationException("This admin is not assigned to this application");
             }
-
             ApplicationMapper.toEntityFromAdmin(application, applicationRequest, admin);
-
             applicationRepository.save(application);
             sendEmail(application, "Application Update By Admin", "Your application has been updated by admin.");
             return ApplicationMapper.toResponseFromAdmin(application);
@@ -136,7 +133,6 @@ public class ApplicationService {
             throw new ApplicationException("An unexpected error occurred while updating the application", e);
         }
     }
-
 
     public CustomPage<ApplicationListDTO> findPaginatedApplications(
             int pageNo, int pageSize,
@@ -177,7 +173,6 @@ public class ApplicationService {
         } catch (Exception e) {
             throw new ApplicationException("An error occurred while processing the applications", e);
         }
-
     }
 
     private CustomPage<ApplicationListDTO> toCustomPage(Page<Application> page) {
@@ -256,7 +251,6 @@ public class ApplicationService {
         Customer customer = CustomerMapper.toEntity(applicationRequest.getCustomer(), application);
         FinancialInfo financialInfo = application.getFinancialInfo();
         VehicleDetails vehicleDetails = application.getVehicleDetails();
-
         populateCommonApplicationDetails(applicationRequest, application, customer, vehicleDetails, financialInfo);
     }
 
@@ -280,7 +274,6 @@ public class ApplicationService {
         FinancialInfoMapper.toEntity(financialInfo, applicationRequest.getFinancialInfo(), application);
         VehicleMapper.toEntity(vehicleDetails, applicationRequest.getVehicleDetails(), application);
         ApplicationMapper.toEntity(application, applicationRequest, customer, financialInfo, vehicleDetails);
-
     }
 
     public byte[] getLeasingAgreement(String token) throws PdfGenerationException, EntityMappingException, DatabaseException, ApplicationException, DownloadTokenException {
@@ -309,7 +302,6 @@ public class ApplicationService {
             String encodedAgreementUrl = UrlBuilder.createEncodedUrl(baseUrl, "applications", token, "agreement");
             emailService.sendEmail("vrroom.leasing@gmail.com", "vrroom.leasing@gmail.com", "Application Approved", "Your application has been approved successfully. Please click here to download your agreement: " + encodedAgreementUrl);
         }
-
     }
 }
 
