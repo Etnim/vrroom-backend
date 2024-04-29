@@ -1,3 +1,4 @@
+
 -- CREATE TABLE admin
 -- (
 --     id      BIGSERIAL PRIMARY KEY,
@@ -96,3 +97,4 @@
 --                                 CONSTRAINT fk_download_token_application FOREIGN KEY (application_id) REFERENCES application(id)
 -- );
 --
+

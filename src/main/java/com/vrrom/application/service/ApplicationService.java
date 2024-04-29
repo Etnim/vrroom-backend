@@ -62,12 +62,12 @@ public class ApplicationService {
     private final EmailService emailService;
     private final AdminService adminService;
     private final PdfGenerator pdfGenerator;
-    private final DownloadTokenService downloadTokenService;
     private final CustomerService customerService;
       private final ApplicationStatusHistoryService applicationStatusHistoryService;
 
 
     @Autowired
+
     public ApplicationService(ApplicationRepository applicationRepository, EmailService emailService, AdminService adminService, CustomerService customerService,PdfGenerator pdfGenerator,  ApplicationStatusHistoryService applicationStatusHistoryService,  DownloadTokenService downloadTokenService) {
         this.applicationRepository = applicationRepository;
         this.emailService = emailService;
@@ -81,7 +81,6 @@ public class ApplicationService {
     public Application findApplicationById(long applicationId) {
         return applicationRepository.findById(applicationId)
                 .orElseThrow(() -> new ApplicationException("No such application found"));
-
     }
 
     @Transactional
@@ -281,6 +280,7 @@ public class ApplicationService {
         FinancialInfoMapper.toEntity(financialInfo, applicationRequest.getFinancialInfo(), application);
         VehicleMapper.toEntity(vehicleDetails, applicationRequest.getVehicleDetails(), application);
         ApplicationMapper.toEntity(application, applicationRequest, customer, financialInfo, vehicleDetails);
+
     }
 
     public byte[] getLeasingAgreement(String token) throws PdfGenerationException, EntityMappingException, DatabaseException, ApplicationException, DownloadTokenException {
@@ -309,6 +309,7 @@ public class ApplicationService {
             String encodedAgreementUrl = UrlBuilder.createEncodedUrl(baseUrl, "applications", token, "agreement");
             emailService.sendEmail("vrroom.leasing@gmail.com", "vrroom.leasing@gmail.com", "Application Approved", "Your application has been approved successfully. Please click here to download your agreement: " + encodedAgreementUrl);
         }
+
     }
 }
 
