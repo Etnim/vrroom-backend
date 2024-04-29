@@ -68,3 +68,23 @@ CREATE TABLE vehicle_details
     emission_end INT,
     FOREIGN KEY (application_id) REFERENCES application (id)
 );
+CREATE TABLE application_status_history (
+                                            id BIGSERIAL PRIMARY KEY,
+                                            application_id BIGINT NOT NULL,
+                                            status VARCHAR(255) NOT NULL,
+                                            changed_by_manager_id BIGINT,
+                                            changed_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+
+                                            CONSTRAINT fk_application
+                                                FOREIGN KEY (application_id)
+                                                    REFERENCES application (id)
+                                                    ON DELETE CASCADE,
+
+                                            CONSTRAINT fk_manager
+                                                FOREIGN KEY (changed_by_manager_id)
+                                                    REFERENCES admin (id)
+                                                    ON DELETE SET NULL
+);
+
+CREATE INDEX idx_application_status_history_application_id ON application_status_history (application_id);
+CREATE INDEX idx_application_status_history_manager_id ON application_status_history (changed_by_manager_id);

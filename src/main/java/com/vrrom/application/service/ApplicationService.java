@@ -3,6 +3,7 @@ package com.vrrom.application.service;
 import com.vrrom.admin.Admin;
 import com.vrrom.admin.service.AdminService;
 import com.vrrom.application.dto.ApplicationListDTO;
+import com.vrrom.application.dto.ApplicationListDTOWithHistory;
 import com.vrrom.application.dto.ApplicationRequest;
 import com.vrrom.application.dto.ApplicationRequestFromAdmin;
 import com.vrrom.application.dto.ApplicationResponse;
@@ -15,6 +16,10 @@ import com.vrrom.application.model.ApplicationSortParameters;
 import com.vrrom.application.model.ApplicationStatus;
 import com.vrrom.application.repository.ApplicationRepository;
 import com.vrrom.application.util.ApplicationSpecifications;
+import com.vrrom.applicationStatusHistory.dto.ApplicationStatusHistoryDTO;
+import com.vrrom.applicationStatusHistory.mapper.ApplicationStatusHistoryMapper;
+import com.vrrom.applicationStatusHistory.model.ApplicationStatusHistory;
+import com.vrrom.applicationStatusHistory.service.ApplicationStatusHistoryService;
 import com.vrrom.customer.Customer;
 import com.vrrom.customer.mappers.CustomerMapper;
 import com.vrrom.customer.service.CustomerService;
@@ -37,6 +42,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,13 +52,16 @@ public class ApplicationService {
     private final EmailService emailService;
     private final AdminService adminService;
     private final CustomerService customerService;
+      private final ApplicationStatusHistoryService applicationStatusHistoryService;
+
 
     @Autowired
-    public ApplicationService(ApplicationRepository applicationRepository, EmailService emailService, AdminService adminService, CustomerService customerService) {
+    public ApplicationService(ApplicationRepository applicationRepository, EmailService emailService, AdminService adminService, CustomerService customerService,  ApplicationStatusHistoryService applicationStatusHistoryService) {
         this.applicationRepository = applicationRepository;
         this.emailService = emailService;
         this.adminService = adminService;
         this.customerService = customerService;
+       this.applicationStatusHistoryService = applicationStatusHistoryService;
     }
 
     public Application findApplicationById(long applicationId) {
@@ -114,12 +123,47 @@ public class ApplicationService {
         }
     }
 
-    public CustomPage<ApplicationListDTO> findPaginatedApplications(int pageNo, int pageSize, ApplicationSortParameters sortField, String sortDir, Long customerId, Long managerId, String managerFullName, ApplicationStatus status, LocalDate startDate, LocalDate endDate) {
-        Sort sort = Sort.by(Sort.Direction.fromString(sortDir), sortField.getValue());
-        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
-        Specification<Application> spec = buildSpecification(customerId, managerId, managerFullName, status, startDate, endDate);
-        Page<Application> page = applicationRepository.findAll(spec, pageable);
-        return toCustomPage(page);
+
+    public CustomPage<ApplicationListDTO> findPaginatedApplications(
+            int pageNo, int pageSize,
+            ApplicationSortParameters sortField,
+            String sortDir,
+            Long customerId,
+            Long managerId,
+            String managerFullName,
+            ApplicationStatus status,
+            LocalDate startDate,
+            LocalDate endDate,
+            boolean includeHistory) {
+        try {
+            Sort sort = Sort.by(Sort.Direction.fromString(sortDir), sortField.getValue());
+            Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+            Specification<Application> spec = buildSpecification(customerId, managerId, managerFullName, status, startDate, endDate);
+            Page<Application> page = applicationRepository.findAll(spec, pageable);
+            CustomPage<ApplicationListDTO> result = toCustomPage(page);
+            if (includeHistory) {
+                List<ApplicationListDTO> enhancedDtos = new ArrayList<>();
+                for (ApplicationListDTO dto : result.getContent()) {
+                    if (dto instanceof ApplicationListDTOWithHistory detailedDto) {
+                        List<ApplicationStatusHistory> history = applicationStatusHistoryService.getApplicationStatusHistory(detailedDto.getApplicationId());
+                        List<ApplicationStatusHistoryDTO> historyDTOs = history.stream()
+                                .map(ApplicationStatusHistoryMapper::toApplicationStatusHistoryDTO)
+                                .collect(Collectors.toList());
+                        detailedDto.setStatusHistory(historyDTOs);
+                        enhancedDtos.add(detailedDto);
+                    } else {
+                        enhancedDtos.add(applicationStatusHistoryService.enhanceDtoWithHistory(dto));
+                    }
+                }
+                result.setContent(enhancedDtos);
+            }
+            return result;
+        } catch (IllegalArgumentException e) {
+            throw new ApplicationException("Invalid request parameters", e);
+        } catch (Exception e) {
+            throw new ApplicationException("An error occurred while processing the applications", e);
+        }
+
     }
 
     private CustomPage<ApplicationListDTO> toCustomPage(Page<Application> page) {
