@@ -3,7 +3,6 @@ package com.vrrom.application.service;
 import com.vrrom.admin.Admin;
 import com.vrrom.admin.service.AdminService;
 import com.vrrom.application.dto.ApplicationPage;
-import com.vrrom.application.dto.ApplicationPageWithHistory;
 import com.vrrom.application.dto.ApplicationRequest;
 import com.vrrom.application.dto.ApplicationRequestFromAdmin;
 import com.vrrom.application.dto.ApplicationResponse;
@@ -16,9 +15,8 @@ import com.vrrom.application.model.ApplicationSortParameters;
 import com.vrrom.application.model.ApplicationStatus;
 import com.vrrom.application.repository.ApplicationRepository;
 import com.vrrom.application.util.ApplicationSpecifications;
-import com.vrrom.applicationStatusHistory.dto.ApplicationStatusHistoryDTO;
-import com.vrrom.applicationStatusHistory.mapper.ApplicationStatusHistoryMapper;
-import com.vrrom.applicationStatusHistory.model.ApplicationStatusHistory;
+import com.vrrom.application.util.CustomPageWithHistory;
+import com.vrrom.application.util.StatisticsService;
 import com.vrrom.applicationStatusHistory.service.ApplicationStatusHistoryService;
 import com.vrrom.customer.Customer;
 import com.vrrom.customer.mappers.CustomerMapper;
@@ -26,7 +24,7 @@ import com.vrrom.customer.service.CustomerService;
 import com.vrrom.email.service.EmailService;
 import com.vrrom.financialInfo.mapper.FinancialInfoMapper;
 import com.vrrom.financialInfo.model.FinancialInfo;
-import com.vrrom.util.CustomPage;
+import com.vrrom.application.util.CustomPageBase;
 import com.vrrom.validation.ValidationService;
 import com.vrrom.vehicle.mapper.VehicleMapper;
 import com.vrrom.vehicle.model.VehicleDetails;
@@ -41,9 +39,9 @@ import org.springframework.mail.MailException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -52,16 +50,17 @@ public class ApplicationService {
     private final EmailService emailService;
     private final AdminService adminService;
     private final CustomerService customerService;
-      private final ApplicationStatusHistoryService applicationStatusHistoryService;
-
+    private final ApplicationStatusHistoryService applicationStatusHistoryService;
+    private final StatisticsService statisticsService;
 
     @Autowired
-    public ApplicationService(ApplicationRepository applicationRepository, EmailService emailService, AdminService adminService, CustomerService customerService,  ApplicationStatusHistoryService applicationStatusHistoryService) {
+    public ApplicationService(ApplicationRepository applicationRepository, EmailService emailService, AdminService adminService, CustomerService customerService, ApplicationStatusHistoryService applicationStatusHistoryService, StatisticsService statisticsService) {
         this.applicationRepository = applicationRepository;
         this.emailService = emailService;
         this.adminService = adminService;
         this.customerService = customerService;
-       this.applicationStatusHistoryService = applicationStatusHistoryService;
+        this.applicationStatusHistoryService = applicationStatusHistoryService;
+        this.statisticsService = statisticsService;
     }
 
     public Application findApplicationById(long applicationId) {
@@ -104,15 +103,13 @@ public class ApplicationService {
         try {
             Application application = findApplicationById(applicationId);
             Admin admin = adminService.findAdminById(adminId);
-            if(application.getManager() == null){
+            if (application.getManager() == null) {
                 throw new ApplicationException("Admin is not assigned to this application");
             }
-            if(application.getManager().getId() != adminId) {
+            if (application.getManager().getId() != adminId) {
                 throw new ApplicationException("This admin is not assigned to this application");
             }
-
             ApplicationMapper.toEntityFromAdmin(application, applicationRequest, admin);
-
             applicationRepository.save(application);
             sendEmail(application, "Application Update By Admin", "Your application has been updated by admin.");
             return ApplicationMapper.toResponseFromAdmin(application);
@@ -122,8 +119,48 @@ public class ApplicationService {
             throw new ApplicationException("An unexpected error occurred while updating the application", e);
         }
     }
+//    public CustomPageBase<ApplicationPage> findPaginatedApplications(
+//            int pageNo, int pageSize,
+//            ApplicationSortParameters sortField,
+//            String sortDir,
+//            Long customerId,
+//            Long managerId,
+//            String managerFullName,
+//            ApplicationStatus status,
+//            LocalDate startDate,
+//            LocalDate endDate,
+//            boolean includeHistory) {
+//        try {
+//            Sort sort = Sort.by(Sort.Direction.fromString(sortDir), sortField.getValue());
+//            Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+//            Specification<Application> spec = buildSpecification(customerId, managerId, managerFullName, status, startDate, endDate);
+//            Page<Application> page = applicationRepository.findAll(spec, pageable);
+//            CustomPageBase<ApplicationPage> result = toCustomPage(page);
+//            if (includeHistory) {
+//                List<ApplicationPage> enhancedDtos = new ArrayList<>();
+//                for (ApplicationPage dto : result.getContent()) {
+//                    if (dto instanceof ApplicationPageWithHistory detailedDto) {
+//                        List<ApplicationStatusHistory> history = applicationStatusHistoryService.getApplicationStatusHistory(detailedDto.getApplicationId());
+//                        List<ApplicationStatusHistoryDTO> historyDTOs = history.stream()
+//                                .map(ApplicationStatusHistoryMapper::toApplicationStatusHistoryDTO)
+//                                .collect(Collectors.toList());
+//                        detailedDto.setStatusHistory(historyDTOs);
+//                        enhancedDtos.add(detailedDto);
+//                    } else {
+//                        enhancedDtos.add(applicationStatusHistoryService.enhanceDtoWithHistory(dto));
+//                    }
+//                }
+//                result.setContent(enhancedDtos);
+//            }
+//            return result;
+//        } catch (IllegalArgumentException e) {
+//            throw new ApplicationException("Invalid request parameters", e);
+//        } catch (Exception e) {
+//            throw new ApplicationException("An error occurred while processing the applications", e);
+//        }
+//    }
 
-    public CustomPage<ApplicationPage> findPaginatedApplications(
+    public CustomPageBase<ApplicationPage> findPaginatedApplications(
             int pageNo, int pageSize,
             ApplicationSortParameters sortField,
             String sortDir,
@@ -131,61 +168,63 @@ public class ApplicationService {
             Long managerId,
             String managerFullName,
             ApplicationStatus status,
-            LocalDate startDate,
-            LocalDate endDate,
+            LocalDateTime startDate,
+            LocalDateTime endDate,
             boolean includeHistory) {
-        try {
-            Sort sort = Sort.by(Sort.Direction.fromString(sortDir), sortField.getValue());
-            Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
-            Specification<Application> spec = buildSpecification(customerId, managerId, managerFullName, status, startDate, endDate);
-            Page<Application> page = applicationRepository.findAll(spec, pageable);
-            CustomPage<ApplicationPage> result = toCustomPage(page);
-            if (includeHistory) {
-                List<ApplicationPage> enhancedDtos = new ArrayList<>();
-                for (ApplicationPage dto : result.getContent()) {
-                    if (dto instanceof ApplicationPageWithHistory detailedDto) {
-                        List<ApplicationStatusHistory> history = applicationStatusHistoryService.getApplicationStatusHistory(detailedDto.getApplicationId());
-                        List<ApplicationStatusHistoryDTO> historyDTOs = history.stream()
-                                .map(ApplicationStatusHistoryMapper::toApplicationStatusHistoryDTO)
-                                .collect(Collectors.toList());
-                        detailedDto.setStatusHistory(historyDTOs);
-                        enhancedDtos.add(detailedDto);
-                    } else {
-                        enhancedDtos.add(applicationStatusHistoryService.enhanceDtoWithHistory(dto));
-                    }
-                }
-                result.setContent(enhancedDtos);
-            }
+        Sort sort = Sort.by(Sort.Direction.fromString(sortDir), sortField.getValue());
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        Specification<Application> spec = buildSpecification(customerId, managerId, managerFullName, status, startDate, endDate);
+        Page<Application> page = applicationRepository.findAll(spec, pageable);
+        if (includeHistory) {
+            CustomPageWithHistory<ApplicationPage> result = new CustomPageWithHistory<>();
+            populateBasePageData(result, page);
+            LocalDateTime startDateTime = startDate != null ? startDate : LocalDateTime.of(1970, 1, 1, 0, 0);
+            LocalDateTime endDateTime = endDate != null ? endDate : LocalDateTime.now();
+            result.setNumberOfApplications(statisticsService.countApplications(Optional.ofNullable(managerId), startDateTime, endDateTime));
+            result.setAverageTimeToSignOrCancel(statisticsService.calculateAverageTimeFromSubmitToSignOrCancel(startDateTime, endDateTime, Optional.ofNullable(managerId)));
+            result.setAverageTimeFromSubmitToAssigned(statisticsService.calculateAverageTimeFromSubmitToAssigned(Optional.ofNullable(managerId),startDateTime, endDateTime));
             return result;
-        } catch (IllegalArgumentException e) {
-            throw new ApplicationException("Invalid request parameters", e);
-        } catch (Exception e) {
-            throw new ApplicationException("An error occurred while processing the applications", e);
+        } else {
+            CustomPageBase<ApplicationPage> result = new CustomPageBase<>();
+            populateBasePageData(result, page);
+            return result;
         }
     }
 
-    private CustomPage<ApplicationPage> toCustomPage(Page<Application> page) {
-        List<ApplicationPage> content = page.getContent().stream()
-                .map(ApplicationPageMapper::toApplicationListDTO)
-                .collect(Collectors.toList());
-        List<String> sortInfo = page.getSort().stream()
-                .map(order -> {
-                    ApplicationSortParameters param = ApplicationSortParameters.fromDisplayName(order.getProperty());
-                    String jsonValue = param != null ? param.getRequestValue() : order.getProperty();
-                    return jsonValue + "," + order.getDirection();
-                })
-                .collect(Collectors.toList());
-        return new CustomPage<>(
-                content,
-                page.getNumber(),
-                page.getSize(),
-                page.getTotalElements(),
-                page.getTotalPages(),
-                sortInfo
-        );
+    private void populateBasePageData(CustomPageBase<ApplicationPage> page, Page<Application> data) {
+        page.setContent(data.getContent().stream().map(ApplicationPageMapper::toApplicationListDTO).collect(Collectors.toList()));
+        page.setPageNumber(data.getNumber());
+        page.setPageSize(data.getSize());
+        page.setTotalElements(data.getTotalElements());
+        page.setTotalPages(data.getTotalPages());
+        page.setSort(data.getSort().stream().map(order -> {
+            ApplicationSortParameters param = ApplicationSortParameters.fromDisplayName(order.getProperty());
+            return (param != null ? param.getRequestValue() : order.getProperty()) + "," + order.getDirection();
+        }).collect(Collectors.toList()));
     }
 
-    private Specification<Application> buildSpecification(Long customerId, Long managerId, String managerFullName, ApplicationStatus status, LocalDate startDate, LocalDate endDate) {
+//    private CustomPageBase<ApplicationPage> toCustomPage(Page<Application> page) {
+//        List<ApplicationPage> content = page.getContent().stream()
+//                .map(ApplicationPageMapper::toApplicationListDTO)
+//                .collect(Collectors.toList());
+//        List<String> sortInfo = page.getSort().stream()
+//                .map(order -> {
+//                    ApplicationSortParameters param = ApplicationSortParameters.fromDisplayName(order.getProperty());
+//                    String jsonValue = param != null ? param.getRequestValue() : order.getProperty();
+//                    return jsonValue + "," + order.getDirection();
+//                })
+//                .collect(Collectors.toList());
+//        return new CustomPageBase<>(
+//                content,
+//                page.getNumber(),
+//                page.getSize(),
+//                page.getTotalElements(),
+//                page.getTotalPages(),
+//                sortInfo
+//        );
+//    }
+
+    private Specification<Application> buildSpecification(Long customerId, Long managerId, String managerFullName, ApplicationStatus status, LocalDateTime startDate, LocalDateTime endDate) {
         Specification<Application> spec = Specification.where(null);
         if (customerId != null) {
             spec = spec.and(ApplicationSpecifications.hasCustomer(customerId));
@@ -240,7 +279,6 @@ public class ApplicationService {
         Customer customer = CustomerMapper.toEntity(applicationRequest.getCustomer(), application);
         FinancialInfo financialInfo = application.getFinancialInfo();
         VehicleDetails vehicleDetails = application.getVehicleDetails();
-
         populateCommonApplicationDetails(applicationRequest, application, customer, vehicleDetails, financialInfo);
     }
 

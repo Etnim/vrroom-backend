@@ -1,7 +1,9 @@
 package com.vrrom.applicationStatusHistory.service;
 
+import com.vrrom.admin.Admin;
 import com.vrrom.application.dto.ApplicationPage;
 import com.vrrom.application.dto.ApplicationPageWithHistory;
+import com.vrrom.application.model.ApplicationStatus;
 import com.vrrom.applicationStatusHistory.dto.ApplicationStatusHistoryDTO;
 import com.vrrom.applicationStatusHistory.mapper.ApplicationStatusHistoryMapper;
 import com.vrrom.applicationStatusHistory.model.ApplicationStatusHistory;
@@ -9,7 +11,10 @@ import com.vrrom.applicationStatusHistory.repository.ApplicationStatusHistoryRep
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,4 +48,6 @@ public class ApplicationStatusHistoryService {
                 .statusHistory(historyDTOs)
                 .build();
     }
+
+
 }

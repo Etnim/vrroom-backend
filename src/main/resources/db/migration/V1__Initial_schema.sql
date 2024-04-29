@@ -10,14 +10,14 @@ CREATE TABLE admin
 
 CREATE TABLE IF NOT EXISTS customer
 (
-    pid           SERIAL PRIMARY KEY,
-    name          VARCHAR(255),
-    surname       VARCHAR(255),
-    birth_date     DATE,
-    email         VARCHAR(255) UNIQUE,
-    phone         VARCHAR(50),
-    address       VARCHAR(255),
-    credit_rating INT
+    personal_id     BIGINT PRIMARY KEY,
+    name           VARCHAR(255),
+    surname        VARCHAR(255),
+    birth_date      DATE,
+    email          VARCHAR(255) UNIQUE,
+    phone          VARCHAR(50) UNIQUE,
+    address        VARCHAR(255),
+    credit_rating  INT
 );
 
 CREATE TYPE marital_status AS ENUM ('SINGLE', 'MARRIED', 'DIVORCED', 'WIDOWED');
@@ -35,24 +35,24 @@ CREATE TABLE financial_info
 
 
 
-
 CREATE TABLE IF NOT EXISTS application
 (
-    id                BIGSERIAL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     financial_info_id BIGINT,
     customer_id       BIGINT,
     manager_id        BIGINT,
     price             NUMERIC(15, 2),
     down_payment      NUMERIC(15, 2),
-    residual_value    INT,
+    residual_value    NUMERIC(15, 2),  -- Changed from INT to NUMERIC to match BigDecimal
     year_period       INT,
     interest_rate     DOUBLE PRECISION,
     status            VARCHAR(50),
-    created_at        DATE,
-    updated_at        DATE,
+    created_at        TIMESTAMP,       -- Changed from DATE to TIMESTAMP
+    updated_at        TIMESTAMP,       -- Changed from DATE to TIMESTAMP
     monthly_payment   NUMERIC(15, 2),
+    agreement_fee     NUMERIC(15, 2),  -- Added field to match Java class
     FOREIGN KEY (financial_info_id) REFERENCES financial_info(id) ON DELETE CASCADE,
-    FOREIGN KEY (customer_id) REFERENCES customer(pid) ON DELETE CASCADE,
+    FOREIGN KEY (customer_id) REFERENCES customer(personal_id) ON DELETE CASCADE, -- Adjusted to match standard naming
     FOREIGN KEY (manager_id) REFERENCES admin(id) ON DELETE SET NULL
 );
 
