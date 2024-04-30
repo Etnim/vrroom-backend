@@ -15,18 +15,13 @@ import java.util.Optional;
 @Repository
 public interface ApplicationStatusHistoryRepository extends JpaRepository<ApplicationStatusHistory, Long> {
     List<ApplicationStatusHistory> findByApplicationId(Long applicationId);
-    // Count applications
-//    @Query("SELECT COUNT(DISTINCT application) FROM ApplicationStatusHistory WHERE (manager = :managerId OR :managerId IS NULL) AND changedAt BETWEEN :from AND :to")
-//    Long countApplications(Long managerId, LocalDateTime from, LocalDateTime to);
+    ApplicationStatusHistory findByApplicationIdAndStatus(Long applicationId, ApplicationStatus status);
 
-    //    List<ApplicationStatusHistory> findByStatusAndChangedAtBetween(ApplicationStatus status, LocalDateTime changedAt, LocalDateTime changedAt2);
     @Query("SELECT ash FROM ApplicationStatusHistory ash WHERE ash.application.id = :applicationId AND ash.status = :status AND ash.changedAt > :date ORDER BY ash.changedAt ASC")
     Optional<ApplicationStatusHistory> findFirstByApplicationIdAndStatusAndDateAfter(Long applicationId, ApplicationStatus status, LocalDateTime date);
 
     long countByManagerAndChangedAtBetween(Admin admin, LocalDateTime start, LocalDateTime end);
 
-    //    @Query("SELECT ash FROM ApplicationStatusHistory ash WHERE ash.manager.id = :managerId AND ash.status IN :status AND ash.changedAt BETWEEN :start AND :end")
-//    List<ApplicationStatusHistory> findByStatusAndChangedAtBetweenAndManager(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end, @Param("managerId") Long managerId);
     @Query("SELECT ash FROM ApplicationStatusHistory ash WHERE ash.status = :status AND ash.changedAt BETWEEN :start AND :end AND (:managerId IS NULL OR ash.manager.id = :managerId)")
     List<ApplicationStatusHistory> findByStatusChangedAtBetweenAndManagerId(ApplicationStatus status, LocalDateTime start, LocalDateTime end, Long managerId);
 

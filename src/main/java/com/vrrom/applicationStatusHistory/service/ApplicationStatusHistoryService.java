@@ -1,21 +1,13 @@
 package com.vrrom.applicationStatusHistory.service;
 
-import com.vrrom.admin.Admin;
-import com.vrrom.application.dto.ApplicationPage;
-import com.vrrom.application.dto.ApplicationPageWithHistory;
-import com.vrrom.application.model.ApplicationStatus;
-import com.vrrom.applicationStatusHistory.dto.ApplicationStatusHistoryDTO;
-import com.vrrom.applicationStatusHistory.mapper.ApplicationStatusHistoryMapper;
+import com.vrrom.application.exception.ApplicationException;
+import com.vrrom.application.model.Application;
 import com.vrrom.applicationStatusHistory.model.ApplicationStatusHistory;
 import com.vrrom.applicationStatusHistory.repository.ApplicationStatusHistoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class ApplicationStatusHistoryService {
@@ -26,28 +18,17 @@ public class ApplicationStatusHistoryService {
         this.applicationStatusHistoryRepository = applicationStatusHistoryRepository;
     }
 
-    public List<ApplicationStatusHistory> getApplicationStatusHistory(Long applicationId) {
-        return applicationStatusHistoryRepository.findByApplicationId(applicationId);
-    }
-
-    public ApplicationPageWithHistory enhanceDtoWithHistory(ApplicationPage dto) {
-        List<ApplicationStatusHistory> history = getApplicationStatusHistory(dto.getApplicationId());
-        List<ApplicationStatusHistoryDTO> historyDTOs = history.stream()
-                .map(ApplicationStatusHistoryMapper::toApplicationStatusHistoryDTO)
-                .collect(Collectors.toList());
-        return ApplicationPageWithHistory.builder()
-                .applicationId(dto.getApplicationId())
-                .customerName(dto.getCustomerName())
-                .customerSurname(dto.getCustomerSurname())
-                .leasingAmount(dto.getLeasingAmount())
-                .applicationCreatedDate(dto.getApplicationCreatedDate())
-                .applicationStatus(dto.getApplicationStatus())
-                .managerId(dto.getManagerId())
-                .managerName(dto.getManagerName())
-                .managerSurname(dto.getManagerSurname())
-                .statusHistory(historyDTOs)
+    public void addApplicationStatusHistory(Application application) {
+        ApplicationStatusHistory oldHistory = applicationStatusHistoryRepository.findByApplicationIdAndStatus(application.getId(), application.getStatus());
+        if(oldHistory != null) {
+            throw new ApplicationException("Application already in status " + application.getStatus().name());
+        }
+        ApplicationStatusHistory newHistory = ApplicationStatusHistory.builder()
+                .application(application)
+                .status(application.getStatus())
+                .manager(application.getManager())
+                .changedAt(LocalDateTime.now())
                 .build();
+        applicationStatusHistoryRepository.save(newHistory);
     }
-
-
 }

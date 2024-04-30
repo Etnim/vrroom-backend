@@ -15,6 +15,7 @@ import com.vrrom.dowloadToken.exception.DownloadTokenException;
 import com.vrrom.util.exceptions.DatabaseException;
 import com.vrrom.util.exceptions.EntityMappingException;
 import com.vrrom.util.exceptions.PdfGenerationException;
+import com.vrrom.util.exceptions.StatisticsException;
 import com.vrrom.validation.annotations.PositiveLong;
 import com.vrrom.validation.annotations.ValidPageSize;
 import com.vrrom.validation.annotations.ValidSortDirection;
@@ -62,7 +63,7 @@ public class ApplicationController {
                                                                     @RequestParam(required = false) ApplicationStatus status,
                                                                     @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
                                                                     @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
-                                                                    @RequestParam(defaultValue = "false") boolean isSuperAdmin) {
+                                                                    @RequestParam(defaultValue = "false") boolean isSuperAdmin) throws StatisticsException {
         return applicationService.findPaginatedApplications(page, size, sortField, sortDir, customerId, managerId, managerFullName, status, startDate, endDate, isSuperAdmin);
     }
 
