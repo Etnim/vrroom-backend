@@ -16,8 +16,8 @@ public class CustomerMapper {
                 .build();
     }
 
-    public static CustomerResponse toResponse(Customer customer){
-        String fullName = customer.getName() +" "+customer.getSurname();
+    public static CustomerResponse toResponse(Customer customer) {
+        String fullName = customer.getName() + " " + customer.getSurname();
         LocalDate birthDate = customer.getBirthDate();
         int age = (int) ChronoUnit.YEARS.between(birthDate, LocalDate.now());
 
