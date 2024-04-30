@@ -10,6 +10,15 @@ import com.vrrom.application.dto.ApplicationResponseFromAdmin;
 import com.vrrom.application.exception.ApplicationException;
 import com.vrrom.application.mapper.ApplicationMapper;
 import com.vrrom.application.mapper.ApplicationPageMapper;
+import com.vrrom.application.exception.ApplicationNotFoundException;
+import com.vrrom.dowloadToken.exception.DownloadTokenException;
+import com.vrrom.dowloadToken.service.DownloadTokenService;
+import com.vrrom.util.UrlBuilder;
+import com.vrrom.util.exceptions.DatabaseException;
+import com.vrrom.util.exceptions.EntityMappingException;
+import com.vrrom.util.exceptions.PdfGenerationException;
+import com.vrrom.application.mapper.AgreementMapper;
+import com.vrrom.application.model.AgreementInfo;
 import com.vrrom.application.model.Application;
 import com.vrrom.application.model.ApplicationSortParameters;
 import com.vrrom.application.model.ApplicationStatus;
@@ -24,7 +33,12 @@ import com.vrrom.customer.service.CustomerService;
 import com.vrrom.email.service.EmailService;
 import com.vrrom.financialInfo.mapper.FinancialInfoMapper;
 import com.vrrom.financialInfo.model.FinancialInfo;
+
 import com.vrrom.application.util.CustomPageBase;
+
+
+import com.vrrom.util.PdfGenerator;
+
 import com.vrrom.validation.ValidationService;
 import com.vrrom.vehicle.mapper.VehicleMapper;
 import com.vrrom.vehicle.model.VehicleDetails;
@@ -49,18 +63,31 @@ public class ApplicationService {
     private final ApplicationRepository applicationRepository;
     private final EmailService emailService;
     private final AdminService adminService;
+    private final PdfGenerator pdfGenerator;
     private final CustomerService customerService;
     private final ApplicationStatusHistoryService applicationStatusHistoryService;
+
     private final StatisticsService statisticsService;
+    private final DownloadTokenService downloadTokenService;
+
+
+
+
 
     @Autowired
-    public ApplicationService(ApplicationRepository applicationRepository, EmailService emailService, AdminService adminService, CustomerService customerService, ApplicationStatusHistoryService applicationStatusHistoryService, StatisticsService statisticsService) {
+    public ApplicationService(ApplicationRepository applicationRepository, EmailService emailService, AdminService adminService, CustomerService customerService, PdfGenerator pdfGenerator, ApplicationStatusHistoryService applicationStatusHistoryService, DownloadTokenService downloadTokenService,StatisticsService statisticsService) {
+
         this.applicationRepository = applicationRepository;
         this.emailService = emailService;
         this.adminService = adminService;
+        this.pdfGenerator = pdfGenerator;
         this.customerService = customerService;
         this.applicationStatusHistoryService = applicationStatusHistoryService;
+
         this.statisticsService = statisticsService;
+
+        this.downloadTokenService = downloadTokenService;
+
     }
 
     public Application findApplicationById(long applicationId) {
@@ -160,7 +187,9 @@ public class ApplicationService {
 //        }
 //    }
 
+
     public CustomPageBase<ApplicationPage> findPaginatedApplications(
+
             int pageNo, int pageSize,
             ApplicationSortParameters sortField,
             String sortDir,
@@ -302,6 +331,34 @@ public class ApplicationService {
         FinancialInfoMapper.toEntity(financialInfo, applicationRequest.getFinancialInfo(), application);
         VehicleMapper.toEntity(vehicleDetails, applicationRequest.getVehicleDetails(), application);
         ApplicationMapper.toEntity(application, applicationRequest, customer, financialInfo, vehicleDetails);
+    }
+
+    public byte[] getLeasingAgreement(String token) throws PdfGenerationException, EntityMappingException, DatabaseException, ApplicationException, DownloadTokenException {
+        Application application;
+        AgreementInfo agreementInfo;
+        try {
+            long applicationId = downloadTokenService.getApplicationId(token);
+            application = applicationRepository.findById(applicationId).orElseThrow(() -> new ApplicationNotFoundException("No such application found ", new Throwable("ID: " + applicationId)));
+            agreementInfo = AgreementMapper.mapToAgreementInfo(application);
+        } catch (DataAccessException e) {
+            throw new DatabaseException("Database access error while retrieving application", e.getCause());
+        } catch (NullPointerException | IllegalArgumentException e) {
+            throw new EntityMappingException("Error mapping application to agreement info", e.getCause());
+        }
+        return pdfGenerator.generateAgreement(agreementInfo);
+    }
+
+    public void updateApplicationStatus(long id, ApplicationStatus status) {
+        Application application = applicationRepository.findById(id)
+                .orElseThrow(() -> new ApplicationNotFoundException("Application not found", new Throwable("ID: " + id)));
+        application.setStatus(status);
+        applicationRepository.save(application);
+        if (application.getStatus() == ApplicationStatus.WAITING_FOR_SIGNING) {
+            String baseUrl = "http://localhost:8080";
+            String token = downloadTokenService.generateToken(application);
+            String encodedAgreementUrl = UrlBuilder.createEncodedUrl(baseUrl, "applications", token, "agreement");
+            emailService.sendEmail("vrroom.leasing@gmail.com", "vrroom.leasing@gmail.com", "Application Approved", "Your application has been approved successfully. Please click here to download your agreement: " + encodedAgreementUrl);
+        }
     }
 }
 

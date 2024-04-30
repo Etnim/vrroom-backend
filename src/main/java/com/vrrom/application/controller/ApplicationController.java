@@ -11,6 +11,10 @@ import com.vrrom.application.model.ApplicationSortParameters;
 import com.vrrom.application.model.ApplicationStatus;
 import com.vrrom.application.service.ApplicationService;
 import com.vrrom.application.util.CustomPageBase;
+import com.vrrom.dowloadToken.exception.DownloadTokenException;
+import com.vrrom.util.exceptions.DatabaseException;
+import com.vrrom.util.exceptions.EntityMappingException;
+import com.vrrom.util.exceptions.PdfGenerationException;
 import com.vrrom.validation.annotations.PositiveLong;
 import com.vrrom.validation.annotations.ValidPageSize;
 import com.vrrom.validation.annotations.ValidSortDirection;
@@ -18,7 +22,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,7 +36,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @RestController
@@ -95,4 +100,24 @@ public class ApplicationController {
     public String assignAdmin(@PathVariable long adminId, @PathVariable long applicationId) {
         return applicationService.assignAdmin(adminId, applicationId);
     }
+
+    @PutMapping("/{id}/updateStatus")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<String> updateApplicationStatus(@PathVariable long id, @RequestParam ApplicationStatus status) {
+        applicationService.updateApplicationStatus(id, status);
+        return ResponseEntity.ok("Status updated successfully");
+    }
+
+    @GetMapping("/{token}/agreement")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<byte[]> getLeasingAgreement(@PathVariable String token) throws PdfGenerationException, EntityMappingException, DatabaseException, DownloadTokenException {
+        byte[] pdfBytes = applicationService.getLeasingAgreement(token);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=agreement.pdf");
+        headers.add(HttpHeaders.CONTENT_TYPE, "application/pdf");
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(pdfBytes);
+    }
+
 }
