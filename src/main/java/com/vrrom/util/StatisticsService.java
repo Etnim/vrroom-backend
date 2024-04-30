@@ -55,12 +55,20 @@ public class StatisticsService {
         }
     }
 
-    public long countApplications(Optional<Long> managerIdOpt, LocalDateTime from, LocalDateTime to) {
-        return applicationRepository.countByManagerIdAndDateRange(managerIdOpt.orElse(null), from, to);
+    public long countApplications(Optional<Long> managerIdOpt, LocalDateTime from, LocalDateTime to) throws StatisticsException {
+        try {
+            return applicationRepository.countByManagerIdAndDateRange(managerIdOpt.orElse(null), from, to);
+        } catch (Exception e) {
+            throw new StatisticsException("Failed to count applications", e.getCause());
+        }
     }
 
-    public Duration calculateAverageTimeFromSubmitToAssigned(Optional<Long> managerIdOpt, LocalDateTime from, LocalDateTime to) {
-        Double averageSeconds = applicationStatusHistoryRepository.findAverageTimeFromSubmittedToAssignedByManagerAndDateRange(managerIdOpt.orElse(null), from, to);
-        return averageSeconds != null ? Duration.ofSeconds(averageSeconds.longValue()) : Duration.ZERO;
+    public Duration calculateAverageTimeFromSubmitToAssigned(Optional<Long> managerIdOpt, LocalDateTime from, LocalDateTime to) throws StatisticsException {
+        try {
+            Double averageSeconds = applicationStatusHistoryRepository.findAverageTimeFromSubmittedToAssignedByManagerAndDateRange(managerIdOpt.orElse(null), from, to);
+            return averageSeconds != null ? Duration.ofSeconds(averageSeconds.longValue()) : Duration.ZERO;
+        } catch (Exception e) {
+            throw new StatisticsException("Failed to calculate average time", e.getCause());
+        }
     }
 }

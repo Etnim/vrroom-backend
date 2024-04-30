@@ -11,6 +11,7 @@ import com.vrrom.application.exception.ApplicationException;
 import com.vrrom.application.mapper.ApplicationMapper;
 import com.vrrom.application.mapper.ApplicationPageMapper;
 import com.vrrom.application.exception.ApplicationNotFoundException;
+import com.vrrom.applicationStatusHistory.exception.ApplicationStatusHistoryException;
 import com.vrrom.dowloadToken.exception.DownloadTokenException;
 import com.vrrom.dowloadToken.service.DownloadTokenService;
 import com.vrrom.util.UrlBuilder;
@@ -213,7 +214,7 @@ public class ApplicationService {
     }
 
     @Transactional
-    public String assignAdmin(long adminId, long applicationId) {
+    public String assignAdmin(long adminId, long applicationId) throws ApplicationStatusHistoryException {
         Application application = findApplicationById(applicationId);
         if (application.getManager() != null) {
             throw new ApplicationException("Application is already assigned to a manager");
@@ -277,7 +278,7 @@ public class ApplicationService {
         return pdfGenerator.generateAgreement(agreementInfo);
     }
 
-    public void updateApplicationStatus(long id, ApplicationStatus status) {
+    public void updateApplicationStatus(long id, ApplicationStatus status) throws ApplicationStatusHistoryException {
         Application application = applicationRepository.findById(id)
                 .orElseThrow(() -> new ApplicationNotFoundException("Application not found", new Throwable("ID: " + id)));
         application.setStatus(status);

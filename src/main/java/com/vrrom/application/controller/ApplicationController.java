@@ -11,6 +11,7 @@ import com.vrrom.application.model.ApplicationSortParameters;
 import com.vrrom.application.model.ApplicationStatus;
 import com.vrrom.application.service.ApplicationService;
 import com.vrrom.application.util.CustomPageBase;
+import com.vrrom.applicationStatusHistory.exception.ApplicationStatusHistoryException;
 import com.vrrom.dowloadToken.exception.DownloadTokenException;
 import com.vrrom.util.exceptions.DatabaseException;
 import com.vrrom.util.exceptions.EntityMappingException;
@@ -98,13 +99,13 @@ public class ApplicationController {
     @PutMapping("/{applicationId}/assignAdmin/{adminId}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Assign admin to application and change status of the application.")
-    public String assignAdmin(@PathVariable long adminId, @PathVariable long applicationId) {
+    public String assignAdmin(@PathVariable long adminId, @PathVariable long applicationId) throws ApplicationStatusHistoryException {
         return applicationService.assignAdmin(adminId, applicationId);
     }
 
     @PutMapping("/{id}/updateStatus")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> updateApplicationStatus(@PathVariable long id, @RequestParam ApplicationStatus status) {
+    public ResponseEntity<String> updateApplicationStatus(@PathVariable long id, @RequestParam ApplicationStatus status) throws ApplicationStatusHistoryException {
         applicationService.updateApplicationStatus(id, status);
         return ResponseEntity.ok("Status updated successfully");
     }
