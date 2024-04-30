@@ -1,7 +1,6 @@
 package com.vrrom.vehicle.model;
 
 import com.vrrom.application.model.Application;
-import com.vrrom.vehicle.dtos.VehicleRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -28,26 +27,19 @@ public class VehicleDetails {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
     @Column(name = "brand")
     private String brand;
-
     @Column(name = "model")
     private String model;
-
     @Column(name = "year")
     private int year;
-
     @Column(name = "fuel")
     @Enumerated(EnumType.STRING)
     private FuelType fuel;
-
     @Column(name = "emission_start")
     private int emissionStart;
-
     @Column(name = "emission_end")
     private int emissionEnd;
-
     @OneToOne
     @JoinColumn(name = "application_id")
     private Application application;
