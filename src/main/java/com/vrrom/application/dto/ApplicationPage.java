@@ -1,8 +1,6 @@
 package com.vrrom.application.dto;
 
 import com.vrrom.application.model.ApplicationStatus;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
@@ -14,7 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @SuperBuilder(toBuilder = true)
-public class ApplicationListDTO {
+public class ApplicationPage {
     private long applicationId;
     private String customerName;
     private String customerSurname;
