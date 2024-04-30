@@ -1,6 +1,8 @@
 package com.vrrom.util.exceptions;
 
 import com.vrrom.application.exception.ApplicationException;
+import com.vrrom.application.exception.ApplicationNotFoundException;
+import com.vrrom.dowloadToken.exception.DownloadTokenException;
 import com.vrrom.vehicle.carInfoApi.exception.CarAPIException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -115,8 +117,50 @@ public class GlobalExceptionHandler {
                         ex.getValue(), Objects.requireNonNull(ex.getRequiredType()).getSimpleName()));
     }
 
+    @ExceptionHandler(PdfGenerationException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<String> handlePdfGenerationException(PdfGenerationException ex) {
+        logger.error(ex.getMessage(), ex);
+        return ResponseEntity
+                .internalServerError()
+                .body("Error during PDF generation: " + ex.getCause().getMessage());
+    }
+
+    @ExceptionHandler(DatabaseException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<String> handleDatabaseException(DatabaseException ex) {
+        return ResponseEntity
+                .internalServerError()
+                .body(ex.getMessage() + ex.getCause().getMessage());
+    }
+
+    @ExceptionHandler(EntityMappingException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<String> handleEntityMappingException(EntityMappingException ex) {
+        return ResponseEntity
+                .badRequest()
+                .body(ex.getMessage() + ex.getCause().getMessage());
+    }
+
+    @ExceptionHandler(ApplicationNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<String> handleApplicationNotFoundException(ApplicationNotFoundException ex) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ex.getMessage() + ex.getCause().getMessage());
+    }
+
+    @ExceptionHandler(DownloadTokenException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ResponseEntity<String> handleDownloadTokenException(DownloadTokenException ex) {
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(ex.getMessage() + ex.getCause().getMessage());
+    }
+
     @ExceptionHandler(RestClientException.class)
     public ResponseEntity<Object> handleRestClientException(RestClientException ex, WebRequest request) {
+        logger.warn(ex.getMessage(), ex);
         return ResponseEntity
                 .status(HttpStatus.SERVICE_UNAVAILABLE)
                 .body("Service unavailable or request timed out.");
