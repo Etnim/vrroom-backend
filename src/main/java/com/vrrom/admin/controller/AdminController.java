@@ -25,13 +25,6 @@ public class AdminController {
         this.adminService = adminService;
     }
 
-    @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping(value = "/admin")
-    @Operation(summary = "Create admin")
-    public Admin createAdmin(@RequestBody AdminDTO admin) {
-        return adminService.createAdmin(admin);
-    }
-
     @GetMapping(value = "/{id}")
     public Admin findAdminById(long id){
         return adminService.findAdminById(id);
