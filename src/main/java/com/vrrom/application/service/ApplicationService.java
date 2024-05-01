@@ -22,7 +22,7 @@ import com.vrrom.application.util.CustomPageBase;
 import com.vrrom.application.util.CustomPageWithHistory;
 import com.vrrom.applicationStatusHistory.exception.ApplicationStatusHistoryException;
 import com.vrrom.applicationStatusHistory.service.ApplicationStatusHistoryService;
-import com.vrrom.customer.Customer;
+import com.vrrom.customer.model.Customer;
 import com.vrrom.customer.mappers.CustomerMapper;
 import com.vrrom.customer.service.CustomerService;
 import com.vrrom.dowloadToken.exception.DownloadTokenException;

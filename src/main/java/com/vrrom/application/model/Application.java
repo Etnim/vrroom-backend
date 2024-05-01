@@ -2,7 +2,7 @@ package com.vrrom.application.model;
 
 import com.vrrom.admin.Admin;
 import com.vrrom.comment.Comment;
-import com.vrrom.customer.Customer;
+import com.vrrom.customer.model.Customer;
 import com.vrrom.financialInfo.model.FinancialInfo;
 import com.vrrom.vehicle.model.VehicleDetails;
 import jakarta.persistence.CascadeType;
@@ -25,7 +25,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 

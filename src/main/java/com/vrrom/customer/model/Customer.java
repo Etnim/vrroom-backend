@@ -1,6 +1,5 @@
-package com.vrrom.customer;
+package com.vrrom.customer.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.vrrom.application.model.Application;
 import com.vrrom.customer.dtos.CustomerRequest;
 import jakarta.persistence.CascadeType;
