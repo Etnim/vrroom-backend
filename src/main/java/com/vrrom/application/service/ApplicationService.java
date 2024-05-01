@@ -31,6 +31,7 @@ import com.vrrom.email.service.EmailService;
 import com.vrrom.euribor.service.EuriborService;
 import com.vrrom.financialInfo.mapper.FinancialInfoMapper;
 import com.vrrom.financialInfo.model.FinancialInfo;
+import com.vrrom.messageSender.MessageSender;
 import com.vrrom.util.PdfGenerator;
 import com.vrrom.util.StatisticsService;
 import com.vrrom.util.UrlBuilder;
@@ -52,6 +53,7 @@ import org.springframework.mail.MailException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.mail.Message;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -67,9 +69,10 @@ public class ApplicationService {
     private final StatisticsService statisticsService;
     private final DownloadTokenService downloadTokenService;
     private final EuriborService euriborService;
+    private final MessageSender messageSender;
 
     @Autowired
-    public ApplicationService(ApplicationRepository applicationRepository, EmailService emailService, AdminService adminService, CustomerService customerService, PdfGenerator pdfGenerator, ApplicationStatusHistoryService applicationStatusHistoryService, StatisticsService statisticsService, DownloadTokenService downloadTokenService, EuriborService euriborService) {
+    public ApplicationService(ApplicationRepository applicationRepository, EmailService emailService, AdminService adminService, CustomerService customerService, PdfGenerator pdfGenerator, ApplicationStatusHistoryService applicationStatusHistoryService, StatisticsService statisticsService, DownloadTokenService downloadTokenService, EuriborService euriborService, MessageSender messageSender) {
         this.applicationRepository = applicationRepository;
         this.emailService = emailService;
         this.adminService = adminService;
@@ -79,6 +82,7 @@ public class ApplicationService {
         this.statisticsService = statisticsService;
         this.downloadTokenService = downloadTokenService;
         this.euriborService = euriborService;
+        this.messageSender = messageSender;
     }
 
     public Application findApplicationById(long applicationId) {
@@ -93,7 +97,7 @@ public class ApplicationService {
             populateNewApplicationWithRequest(applicationRequest, application);
             applicationRepository.save(application);
             applicationStatusHistoryService.addApplicationStatusHistory(application);
-            emailService.sendEmail("vrroom.leasing@gmail.com", application.getCustomer().getEmail(), "Application", "Your application has been created successfully.");
+            sendEmail(application,"Application Created. ", "Your application was successfully created");
             return ApplicationMapper.toResponse(application);
         } catch (DataAccessException dae) {
             throw new ApplicationException("Failed to save application data", dae);
@@ -255,6 +259,7 @@ public class ApplicationService {
     private void sendEmail(Application application, String subject, String message) {
         try {
             emailService.sendEmail("vrroom.leasing@gmail.com", application.getCustomer().getEmail(), subject, message);
+            messageSender.sendMessage(subject + "Please check your email.", application.getCustomer().getPhone());
         } catch (MailException me) {
             throw new ApplicationException("Failed to send notification email", me);
         }
