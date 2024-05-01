@@ -26,20 +26,19 @@ public class Calculator {
                 .divide(BigDecimal.valueOf(100), mc);
     }
 
-    public BigDecimal getMonthlyPayment(ApplicationRequest application, Customer customer) {
-        EuriborRate euribor = new EuriborRate();
+    public BigDecimal getMonthlyPayment(ApplicationRequest application, Customer customer, double euribor) {
         BigDecimal price = application.getPrice();
         BigDecimal downPayment = getDownPayment(application);
         BigDecimal residualValue = getResidualValue(application);
         int yearPeriod = application.getYearPeriod();
         double interestRate = getInterestRate(customer);
 
-        BigDecimal p = price.subtract(downPayment).subtract(residualValue);
-        int n = yearPeriod * 12;
-        double r = (interestRate / 100 + euribor.getRate()) / 12;
-        BigDecimal interestWithPayment = BigDecimal.valueOf(Math.pow((1 + r), n));
+        BigDecimal principalAmount = price.subtract(downPayment).subtract(residualValue);
+        int months = yearPeriod * 12;
+        double monthlyInterest = (interestRate / 100 + euribor) / 12;
+        BigDecimal interestWithPayment = BigDecimal.valueOf(Math.pow((1 + monthlyInterest), months));
 
-        BigDecimal up = p.multiply(interestWithPayment).multiply(BigDecimal.valueOf(r));
+        BigDecimal up = principalAmount.multiply(interestWithPayment).multiply(BigDecimal.valueOf(monthlyInterest));
         BigDecimal down = interestWithPayment.subtract(BigDecimal.ONE);
 
         return up.divide(down, mc);

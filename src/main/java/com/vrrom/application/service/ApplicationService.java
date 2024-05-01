@@ -28,6 +28,7 @@ import com.vrrom.customer.service.CustomerService;
 import com.vrrom.dowloadToken.exception.DownloadTokenException;
 import com.vrrom.dowloadToken.service.DownloadTokenService;
 import com.vrrom.email.service.EmailService;
+import com.vrrom.euribor.service.EuriborService;
 import com.vrrom.financialInfo.mapper.FinancialInfoMapper;
 import com.vrrom.financialInfo.model.FinancialInfo;
 import com.vrrom.util.PdfGenerator;
@@ -65,9 +66,10 @@ public class ApplicationService {
     private final ApplicationStatusHistoryService applicationStatusHistoryService;
     private final StatisticsService statisticsService;
     private final DownloadTokenService downloadTokenService;
+    private final EuriborService euriborService;
 
     @Autowired
-    public ApplicationService(ApplicationRepository applicationRepository, EmailService emailService, AdminService adminService, CustomerService customerService, PdfGenerator pdfGenerator, ApplicationStatusHistoryService applicationStatusHistoryService, DownloadTokenService downloadTokenService, StatisticsService statisticsService) {
+    public ApplicationService(ApplicationRepository applicationRepository, EmailService emailService, AdminService adminService, CustomerService customerService, PdfGenerator pdfGenerator, ApplicationStatusHistoryService applicationStatusHistoryService, StatisticsService statisticsService, DownloadTokenService downloadTokenService, EuriborService euriborService) {
         this.applicationRepository = applicationRepository;
         this.emailService = emailService;
         this.adminService = adminService;
@@ -76,6 +78,7 @@ public class ApplicationService {
         this.applicationStatusHistoryService = applicationStatusHistoryService;
         this.statisticsService = statisticsService;
         this.downloadTokenService = downloadTokenService;
+        this.euriborService = euriborService;
     }
 
     public Application findApplicationById(long applicationId) {
@@ -260,7 +263,13 @@ public class ApplicationService {
     private void populateCommonApplicationDetails(ApplicationRequest applicationRequest, Application application, Customer customer, VehicleDetails vehicleDetails, FinancialInfo financialInfo) {
         FinancialInfoMapper.toEntity(financialInfo, applicationRequest.getFinancialInfo(), application);
         VehicleMapper.toEntity(vehicleDetails, applicationRequest.getVehicleDetails(), application);
-        ApplicationMapper.toEntity(application, applicationRequest, customer, financialInfo, vehicleDetails);
+        String term = applicationRequest.getEuribor();
+        euriborService.fetchEuriborRates(term).subscribe(rate -> {
+            ApplicationMapper.toEntity(application, applicationRequest, customer, financialInfo, vehicleDetails, rate);
+            System.out.println(rate);
+        }, error -> {
+            System.err.println("Error: " + error.getMessage());
+        });
     }
 
     public byte[] getLeasingAgreement(String token) throws PdfGenerationException, EntityMappingException, DatabaseException, ApplicationException, DownloadTokenException {

@@ -41,4 +41,5 @@ public class ApplicationRequest {
 
     @Min(value = 1, message = "Year period must be at least 1 year")
     private int yearPeriod;
+    private String euribor;
 }

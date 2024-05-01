@@ -16,6 +16,7 @@ import com.vrrom.customer.Customer;
 import com.vrrom.customer.dtos.CustomerResponse;
 import com.vrrom.customer.mappers.CustomerMapper;
 import com.vrrom.euribor.dto.EuriborRate;
+import com.vrrom.euribor.service.EuriborService;
 import com.vrrom.financialInfo.dtos.FinancialInfoResponse;
 import com.vrrom.financialInfo.mapper.FinancialInfoMapper;
 import com.vrrom.financialInfo.model.FinancialInfo;
@@ -27,7 +28,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class ApplicationMapper {
-    public static void toEntity(Application application, ApplicationRequest applicationRequest, Customer customer, FinancialInfo financialInfo, VehicleDetails vehicleDetails) {
+    public static void toEntity(Application application, ApplicationRequest applicationRequest, Customer customer, FinancialInfo financialInfo, VehicleDetails vehicleDetails, double euribor) {
         Calculator calculator = new Calculator();
 
         application.setCustomer(customer);
@@ -39,7 +40,8 @@ public class ApplicationMapper {
         application.setInterestRate(calculator.getInterestRate(customer));
         application.setAgreementFee(calculator.getAgreementFee(applicationRequest.getPrice()));
         application.setDownPayment(calculator.getDownPayment(applicationRequest));
-        application.setMonthlyPayment(calculator.getMonthlyPayment(applicationRequest, customer));
+        application.setMonthlyPayment(calculator.getMonthlyPayment(applicationRequest, customer, euribor));
+        application.setEuribor(euribor);
         application.setCreatedAt(LocalDateTime.now());
         application.setUpdatedAt(LocalDateTime.now());
         application.setStatus(ApplicationStatus.SUBMITTED);
@@ -70,8 +72,6 @@ public class ApplicationMapper {
         VehicleResponse vehicles = VehicleMapper.toResponse(application.getVehicleDetails());
         AdminDTO admin = AdminMapper.toDTO(application.getManager());
 
-        EuriborRate euribor = new EuriborRate();
-
         ApplicationResponse response = new ApplicationResponse();
         response.setApplicationID(application.getId());
         response.setApplicationStatus(application.getStatus().getApplicationStatusText());
@@ -85,7 +85,7 @@ public class ApplicationMapper {
         response.setInterestRate(application.getInterestRate());
         response.setDownPayment(application.getDownPayment());
         response.setResidualValue(application.getResidualValue());
-        response.setEuribor(euribor.getRate());
+        response.setEuribor(application.getEuribor());
         response.setAgreementFee(application.getAgreementFee());
         return response;
     }
