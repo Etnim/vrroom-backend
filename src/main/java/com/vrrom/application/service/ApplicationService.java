@@ -301,7 +301,7 @@ public class ApplicationService {
                 .orElseThrow(() -> new ApplicationNotFoundException("Application not found", new Throwable("ID: " + id)));
         application.setStatus(status);
         applicationRepository.save(application);
-        applicationStatusHistoryService.addApplicationStatusHistory(application, status);
+        applicationStatusHistoryService.addApplicationStatusHistory(application);
         if (application.getStatus() == ApplicationStatus.WAITING_FOR_SIGNING) {
             String baseUrl = "http://localhost:8080";
             String token = downloadTokenService.generateToken(application);
@@ -313,6 +313,8 @@ public class ApplicationService {
     public void saveSignedAgreement(Long id, MultipartFile signedAgreement) throws ApplicationStatusHistoryException {
         Application application = applicationRepository.findById(id)
                 .orElseThrow(() -> new ApplicationNotFoundException("Application not found", new Throwable("ID: " + id)));
+        application.setStatus(ApplicationStatus.SIGNED);
+        applicationRepository.save(application);
         agreementService.saveAgreement(signedAgreement, application);
         applicationStatusHistoryService.addApplicationStatusHistory(application);
     }
