@@ -83,6 +83,7 @@ public class Customer {
 
         public Customer build() {
             Customer customer = new Customer();
+            customer.assignRandomCreditRating();
             customer.setPersonalId(this.personalId);
             customer.setName(this.name);
             customer.setSurname(this.surname);

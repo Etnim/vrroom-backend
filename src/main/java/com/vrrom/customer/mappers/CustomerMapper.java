@@ -27,6 +27,7 @@ public class CustomerMapper {
         response.setAge(age);
         response.setEmail(customer.getEmail());
         response.setPhone(customer.getPhone());
+        response.setCreditRating(customer.getCreditRating());
         return response;
     }
 }

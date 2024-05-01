@@ -10,6 +10,7 @@ public class FinancialInfoMapper {
         financialInfo.setApplication(application);
         financialInfo.setDependants(financialInfoRequest.getDependants());
         financialInfo.setMaritalStatus(financialInfoRequest.getMaritalStatus());
+        financialInfo.setMonthlyObligations(financialInfoRequest.getMonthlyObligations());
         financialInfo.setMonthlyIncome(financialInfoRequest.getMonthlyIncome());
         financialInfo.setEmploymentStatus(financialInfoRequest.getEmploymentStatus());
         financialInfo.setEmploymentTerm(financialInfoRequest.getEmploymentTerm());

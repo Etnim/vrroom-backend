@@ -48,7 +48,8 @@ public class FinancialInfo {
     private EmploymentStatus employmentStatus;
 
     @Column(name = "employment_term")
-    private int employmentTerm;
+    @Enumerated(EnumType.STRING)
+    private EmploymentTerm employmentTerm;
 
     @Column(name = "dependants")
     private int dependants;
@@ -57,42 +58,11 @@ public class FinancialInfo {
     @OneToOne(mappedBy = "financialInfo", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Application application;
 
-    public static class Builder {
-        private BigDecimal monthlyIncome;
-        private int dependants;
-        private MaritalStatus maritalStatus;
-        private BigDecimal monthlyObligations;
-        private Application application;
-        private EmploymentStatus employmentStatus;
-
-        public Builder withFinancialInfoDTO(FinancialInfoRequest financialInfoRequest) {
-            this.monthlyIncome = financialInfoRequest.getMonthlyIncome();
-            this.dependants = financialInfoRequest.getDependants();
-            this.maritalStatus = financialInfoRequest.getMaritalStatus();
-            this.monthlyObligations = financialInfoRequest.getMonthlyObligations();
-            this.employmentStatus = financialInfoRequest.getEmploymentStatus();
-            return this;
-        }
-
-        public Builder withApplication(Application application) {
-            this.application = application;
-            return this;
-        }
-
-        public FinancialInfo build() {
-            FinancialInfo financialInfo = new FinancialInfo();
-            financialInfo.setMonthlyIncome(this.monthlyIncome);
-            financialInfo.setDependants(this.dependants);
-            financialInfo.setMaritalStatus(this.maritalStatus);
-            financialInfo.setMonthlyObligations(this.monthlyObligations);
-            financialInfo.setApplication(this.application);
-            financialInfo.setEmploymentStatus(this.employmentStatus);
-            return financialInfo;
-        }
-    }
-
     public BigDecimal calculateDisposableIncome(){
-        //Formula required
-        return BigDecimal.valueOf(0);
+        BigDecimal paymentPerDependant = BigDecimal.valueOf(60);
+       return monthlyIncome
+               .subtract(monthlyObligations)
+               .subtract(paymentPerDependant
+                       .multiply(BigDecimal.valueOf(dependants)));
     }
 }
