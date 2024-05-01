@@ -22,6 +22,7 @@ import com.vrrom.validation.annotations.ValidPageSize;
 import com.vrrom.validation.annotations.ValidSortDirection;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
@@ -71,7 +72,7 @@ public class ApplicationController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value="/application")
     @Operation(summary = "Create application")
-    public ApplicationResponse createApplication(@RequestBody ApplicationRequest applicationRequest) {
+    public ApplicationResponse createApplication(@Valid @RequestBody ApplicationRequest applicationRequest) {
         return applicationService.createApplication(applicationRequest);
     }
 
@@ -86,13 +87,13 @@ public class ApplicationController {
     @PutMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Update application")
-    public ApplicationResponse updateApplication(@PathVariable long id, @RequestBody ApplicationRequest applicationRequest) {
+    public ApplicationResponse updateApplication(@PathVariable long id, @Valid @RequestBody ApplicationRequest applicationRequest) {
         return applicationService.updateApplication(id, applicationRequest);
     }
     @PutMapping(value = "/{adminId}/{applicationId}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Update application from admin request")
-    public ApplicationResponseFromAdmin updateApplicationFromAdmin(@PathVariable long applicationId, @PathVariable long adminId, @RequestBody ApplicationRequestFromAdmin applicationRequest) {
+    public ApplicationResponseFromAdmin updateApplicationFromAdmin(@PathVariable long applicationId, @PathVariable long adminId, @Valid @RequestBody ApplicationRequestFromAdmin applicationRequest) {
         return applicationService.updateApplicationFromAdmin(applicationId,applicationRequest, adminId);
     }
 

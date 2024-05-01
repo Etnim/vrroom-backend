@@ -15,4 +15,5 @@ public class CustomerResponse {
     private int age;
     private String email;
     private String phone;
+    private int creditRating;
 }

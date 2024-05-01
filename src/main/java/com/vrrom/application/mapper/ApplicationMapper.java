@@ -24,6 +24,7 @@ import com.vrrom.vehicle.mapper.VehicleMapper;
 import com.vrrom.vehicle.model.VehicleDetails;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class ApplicationMapper {
     public static void toEntity(Application application, ApplicationRequest applicationRequest, Customer customer, FinancialInfo financialInfo, VehicleDetails vehicleDetails) {
@@ -68,6 +69,7 @@ public class ApplicationMapper {
         FinancialInfoResponse financialInfo = FinancialInfoMapper.toResponse(application.getFinancialInfo());
         VehicleResponse vehicles = VehicleMapper.toResponse(application.getVehicleDetails());
         AdminDTO admin = AdminMapper.toDTO(application.getManager());
+
         EuriborRate euribor = new EuriborRate();
 
         ApplicationResponse response = new ApplicationResponse();
