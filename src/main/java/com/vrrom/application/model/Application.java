@@ -1,6 +1,7 @@
 package com.vrrom.application.model;
 
 import com.vrrom.admin.Admin;
+import com.vrrom.agreement.Agreement;
 import com.vrrom.comment.Comment;
 import com.vrrom.customer.model.Customer;
 import com.vrrom.financialInfo.model.FinancialInfo;
@@ -90,6 +91,8 @@ public class Application {
 
     @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Comment> comments;
+    @OneToOne(mappedBy = "application", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Agreement agreement;
 
     @Column
     private double euribor;

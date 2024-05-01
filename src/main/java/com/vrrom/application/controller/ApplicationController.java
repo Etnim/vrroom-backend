@@ -1,5 +1,6 @@
 package com.vrrom.application.controller;
 
+import com.vrrom.agreement.AgreementService;
 import com.vrrom.application.dto.ApplicationPage;
 import com.vrrom.application.dto.ApplicationRequest;
 import com.vrrom.application.dto.ApplicationRequestFromAdmin;
@@ -27,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,6 +40,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 
@@ -47,10 +50,12 @@ import java.time.LocalDateTime;
 @Tag(name = "Application Controller", description = "To work with application data")
 public class ApplicationController {
     private final ApplicationService applicationService;
+    private final AgreementService agreementService;
 
     @Autowired
-    public ApplicationController(ApplicationService applicationService) {
+    public ApplicationController(ApplicationService applicationService, AgreementService agreementService) {
         this.applicationService = applicationService;
+        this.agreementService = agreementService;
     }
 
     @GetMapping
@@ -123,4 +128,26 @@ public class ApplicationController {
                 .body(pdfBytes);
     }
 
+    @PostMapping(value = "/{id}/agreement")
+    @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Upload signed agreement")
+    public ResponseEntity<String> saveSignedAgreement(@RequestParam("file") MultipartFile signedAgreement, @PathVariable Long id) throws ApplicationStatusHistoryException {
+        applicationService.saveSignedAgreement(id, signedAgreement);
+        return ResponseEntity.ok("Status updated successfully");
+    }
+
+    @GetMapping("/{id}/signed-agreement")
+    public ResponseEntity<byte[]> getAgreementContentById(@PathVariable Long id) {
+        return agreementService.getAgreementById(id)
+                .map(agreement -> {
+                    HttpHeaders headers = new HttpHeaders();
+                    headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=agreement.pdf");
+                    headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE);
+
+                    return ResponseEntity.ok()
+                            .headers(headers)
+                            .body(agreement.getAgreementContent());
+                })
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
 }

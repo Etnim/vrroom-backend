@@ -2,6 +2,7 @@ package com.vrrom.applicationStatusHistory.service;
 
 import com.vrrom.application.exception.ApplicationException;
 import com.vrrom.application.model.Application;
+import com.vrrom.application.model.ApplicationStatus;
 import com.vrrom.applicationStatusHistory.exception.ApplicationStatusHistoryException;
 import com.vrrom.applicationStatusHistory.model.ApplicationStatusHistory;
 import com.vrrom.applicationStatusHistory.repository.ApplicationStatusHistoryRepository;

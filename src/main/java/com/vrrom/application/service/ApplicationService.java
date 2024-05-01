@@ -2,6 +2,7 @@ package com.vrrom.application.service;
 
 import com.vrrom.admin.Admin;
 import com.vrrom.admin.service.AdminService;
+import com.vrrom.agreement.AgreementService;
 import com.vrrom.application.dto.ApplicationPage;
 import com.vrrom.application.dto.ApplicationRequest;
 import com.vrrom.application.dto.ApplicationRequestFromAdmin;
@@ -52,6 +53,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.mail.MailException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.Message;
 import java.time.LocalDateTime;
@@ -68,11 +70,12 @@ public class ApplicationService {
     private final ApplicationStatusHistoryService applicationStatusHistoryService;
     private final StatisticsService statisticsService;
     private final DownloadTokenService downloadTokenService;
+    private final AgreementService agreementService;
     private final EuriborService euriborService;
     private final MessageSender messageSender;
 
     @Autowired
-    public ApplicationService(ApplicationRepository applicationRepository, EmailService emailService, AdminService adminService, CustomerService customerService, PdfGenerator pdfGenerator, ApplicationStatusHistoryService applicationStatusHistoryService, StatisticsService statisticsService, DownloadTokenService downloadTokenService, EuriborService euriborService, MessageSender messageSender) {
+    public ApplicationService(ApplicationRepository applicationRepository, EmailService emailService, AdminService adminService, CustomerService customerService, PdfGenerator pdfGenerator, ApplicationStatusHistoryService applicationStatusHistoryService, StatisticsService statisticsService, DownloadTokenService downloadTokenService, AgreementService agreementService, EuriborService euriborService, MessageSender messageSender) {
         this.applicationRepository = applicationRepository;
         this.emailService = emailService;
         this.adminService = adminService;
@@ -83,6 +86,7 @@ public class ApplicationService {
         this.downloadTokenService = downloadTokenService;
         this.euriborService = euriborService;
         this.messageSender = messageSender;
+        this.agreementService = agreementService;
     }
 
     public Application findApplicationById(long applicationId) {
@@ -297,13 +301,20 @@ public class ApplicationService {
                 .orElseThrow(() -> new ApplicationNotFoundException("Application not found", new Throwable("ID: " + id)));
         application.setStatus(status);
         applicationRepository.save(application);
-        applicationStatusHistoryService.addApplicationStatusHistory(application);
+        applicationStatusHistoryService.addApplicationStatusHistory(application, status);
         if (application.getStatus() == ApplicationStatus.WAITING_FOR_SIGNING) {
             String baseUrl = "http://localhost:8080";
             String token = downloadTokenService.generateToken(application);
             String encodedAgreementUrl = UrlBuilder.createEncodedUrl(baseUrl, "applications", token, "agreement");
             emailService.sendEmail("vrroom.leasing@gmail.com", "vrroom.leasing@gmail.com", "Application Approved", "Your application has been approved successfully. Please click here to download your agreement: " + encodedAgreementUrl);
         }
+    }
+
+    public void saveSignedAgreement(Long id, MultipartFile signedAgreement) throws ApplicationStatusHistoryException {
+        Application application = applicationRepository.findById(id)
+                .orElseThrow(() -> new ApplicationNotFoundException("Application not found", new Throwable("ID: " + id)));
+        agreementService.saveAgreement(signedAgreement, application);
+        applicationStatusHistoryService.addApplicationStatusHistory(application);
     }
 }
 
