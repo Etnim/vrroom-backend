@@ -6,7 +6,7 @@ import com.vrrom.admin.mapper.AdminMapper;
 import com.vrrom.application.calculator.Calculator;
 import com.vrrom.application.dto.ApplicationRequest;
 import com.vrrom.application.dto.ApplicationRequestFromAdmin;
-import com.vrrom.application.dto.ApplicationResponse;
+import com.vrrom.application.dto.ApplicationResponseAdminDetails;
 import com.vrrom.application.dto.ApplicationResponseFromAdmin;
 import com.vrrom.application.model.Application;
 import com.vrrom.application.model.ApplicationStatus;
@@ -15,8 +15,6 @@ import com.vrrom.comment.CommentMapper;
 import com.vrrom.customer.Customer;
 import com.vrrom.customer.dtos.CustomerResponse;
 import com.vrrom.customer.mappers.CustomerMapper;
-import com.vrrom.euribor.dto.EuriborRate;
-import com.vrrom.euribor.service.EuriborService;
 import com.vrrom.financialInfo.dtos.FinancialInfoResponse;
 import com.vrrom.financialInfo.mapper.FinancialInfoMapper;
 import com.vrrom.financialInfo.model.FinancialInfo;
@@ -25,7 +23,6 @@ import com.vrrom.vehicle.mapper.VehicleMapper;
 import com.vrrom.vehicle.model.VehicleDetails;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 public class ApplicationMapper {
     public static void toEntity(Application application, ApplicationRequest applicationRequest, Customer customer, FinancialInfo financialInfo, VehicleDetails vehicleDetails, double euribor) {
@@ -66,13 +63,13 @@ public class ApplicationMapper {
                 CommentMapper.toCommentResponses(application.getComments()));
     }
 
-    public static ApplicationResponse toResponse(Application application) {
+    public static ApplicationResponseAdminDetails toResponse(Application application) {
         CustomerResponse customer = CustomerMapper.toResponse(application.getCustomer());
         FinancialInfoResponse financialInfo = FinancialInfoMapper.toResponse(application.getFinancialInfo());
         VehicleResponse vehicles = VehicleMapper.toResponse(application.getVehicleDetails());
         AdminDTO admin = AdminMapper.toDTO(application.getManager());
 
-        ApplicationResponse response = new ApplicationResponse();
+        ApplicationResponseAdminDetails response = new ApplicationResponseAdminDetails();
         response.setApplicationID(application.getId());
         response.setApplicationStatus(application.getStatus().getApplicationStatusText());
         response.setDateOfSubmission(application.getCreatedAt());

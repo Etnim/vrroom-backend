@@ -3,7 +3,7 @@ package com.vrrom.application.controller;
 import com.vrrom.application.dto.ApplicationPage;
 import com.vrrom.application.dto.ApplicationRequest;
 import com.vrrom.application.dto.ApplicationRequestFromAdmin;
-import com.vrrom.application.dto.ApplicationResponse;
+import com.vrrom.application.dto.ApplicationResponseAdminDetails;
 import com.vrrom.application.dto.ApplicationResponseFromAdmin;
 import com.vrrom.application.mapper.ApplicationMapper;
 import com.vrrom.application.model.Application;
@@ -72,14 +72,14 @@ public class ApplicationController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value="/application")
     @Operation(summary = "Create application")
-    public ApplicationResponse createApplication(@Valid @RequestBody ApplicationRequest applicationRequest) {
+    public ApplicationResponseAdminDetails createApplication(@Valid @RequestBody ApplicationRequest applicationRequest) {
         return applicationService.createApplication(applicationRequest);
     }
 
     @GetMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Get application")
-    public ApplicationResponse getApplicationById(@PathVariable long id) {
+    public ApplicationResponseAdminDetails getApplicationById(@PathVariable long id) {
         Application application = applicationService.findApplicationById(id);
         return ApplicationMapper.toResponse(application);
     }
@@ -87,7 +87,7 @@ public class ApplicationController {
     @PutMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Update application")
-    public ApplicationResponse updateApplication(@PathVariable long id, @Valid @RequestBody ApplicationRequest applicationRequest) {
+    public ApplicationResponseAdminDetails updateApplication(@PathVariable long id, @Valid @RequestBody ApplicationRequest applicationRequest) {
         return applicationService.updateApplication(id, applicationRequest);
     }
     @PutMapping(value = "/{adminId}/{applicationId}")

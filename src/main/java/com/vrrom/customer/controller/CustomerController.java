@@ -1,8 +1,5 @@
 package com.vrrom.customer.controller;
 
-import com.vrrom.application.dto.ApplicationResponse;
-import com.vrrom.application.mapper.ApplicationMapper;
-import com.vrrom.application.model.Application;
 import com.vrrom.customer.Customer;
 import com.vrrom.customer.dtos.CustomerResponse;
 import com.vrrom.customer.mappers.CustomerMapper;

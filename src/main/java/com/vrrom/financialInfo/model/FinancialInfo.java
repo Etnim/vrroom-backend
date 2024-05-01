@@ -48,7 +48,8 @@ public class FinancialInfo {
     private EmploymentStatus employmentStatus;
 
     @Column(name = "employment_term")
-    private int employmentTerm;
+    @Enumerated(EnumType.STRING)
+    private EmploymentTerm employmentTerm;
 
     @Column(name = "dependants")
     private int dependants;

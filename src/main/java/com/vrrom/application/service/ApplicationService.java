@@ -5,7 +5,7 @@ import com.vrrom.admin.service.AdminService;
 import com.vrrom.application.dto.ApplicationPage;
 import com.vrrom.application.dto.ApplicationRequest;
 import com.vrrom.application.dto.ApplicationRequestFromAdmin;
-import com.vrrom.application.dto.ApplicationResponse;
+import com.vrrom.application.dto.ApplicationResponseAdminDetails;
 import com.vrrom.application.dto.ApplicationResponseFromAdmin;
 import com.vrrom.application.exception.ApplicationException;
 import com.vrrom.application.exception.ApplicationNotFoundException;
@@ -87,7 +87,7 @@ public class ApplicationService {
     }
 
     @Transactional
-    public ApplicationResponse createApplication(ApplicationRequest applicationRequest) {
+    public ApplicationResponseAdminDetails createApplication(ApplicationRequest applicationRequest) {
         try {
             Application application = new Application();
             populateNewApplicationWithRequest(applicationRequest, application);
@@ -103,7 +103,7 @@ public class ApplicationService {
     }
 
     @Transactional
-    public ApplicationResponse updateApplication(long id, ApplicationRequest applicationRequest) {
+    public ApplicationResponseAdminDetails updateApplication(long id, ApplicationRequest applicationRequest) {
         try {
             Application application = findApplicationById(id);
             populateExistingApplicationWithRequest(applicationRequest, application);
