@@ -2,14 +2,16 @@ package com.vrrom.application.service;
 
 import com.vrrom.admin.Admin;
 import com.vrrom.admin.service.AdminService;
-import com.vrrom.application.dto.ApplicationListDTO;
-import com.vrrom.application.dto.ApplicationListDTOWithHistory;
+import com.vrrom.application.dto.ApplicationPage;
 import com.vrrom.application.dto.ApplicationRequest;
 import com.vrrom.application.dto.ApplicationRequestFromAdmin;
 import com.vrrom.application.dto.ApplicationResponse;
 import com.vrrom.application.dto.ApplicationResponseFromAdmin;
 import com.vrrom.application.exception.ApplicationException;
+import com.vrrom.application.mapper.ApplicationMapper;
+import com.vrrom.application.mapper.ApplicationPageMapper;
 import com.vrrom.application.exception.ApplicationNotFoundException;
+import com.vrrom.applicationStatusHistory.exception.ApplicationStatusHistoryException;
 import com.vrrom.dowloadToken.exception.DownloadTokenException;
 import com.vrrom.dowloadToken.service.DownloadTokenService;
 import com.vrrom.util.UrlBuilder;
@@ -17,17 +19,14 @@ import com.vrrom.util.exceptions.DatabaseException;
 import com.vrrom.util.exceptions.EntityMappingException;
 import com.vrrom.util.exceptions.PdfGenerationException;
 import com.vrrom.application.mapper.AgreementMapper;
-import com.vrrom.application.mapper.ApplicationListDTOMapper;
-import com.vrrom.application.mapper.ApplicationMapper;
 import com.vrrom.application.model.AgreementInfo;
 import com.vrrom.application.model.Application;
 import com.vrrom.application.model.ApplicationSortParameters;
 import com.vrrom.application.model.ApplicationStatus;
 import com.vrrom.application.repository.ApplicationRepository;
 import com.vrrom.application.util.ApplicationSpecifications;
-import com.vrrom.applicationStatusHistory.dto.ApplicationStatusHistoryDTO;
-import com.vrrom.applicationStatusHistory.mapper.ApplicationStatusHistoryMapper;
-import com.vrrom.applicationStatusHistory.model.ApplicationStatusHistory;
+import com.vrrom.application.util.CustomPageWithHistory;
+import com.vrrom.util.StatisticsService;
 import com.vrrom.applicationStatusHistory.service.ApplicationStatusHistoryService;
 import com.vrrom.customer.Customer;
 import com.vrrom.customer.mappers.CustomerMapper;
@@ -35,8 +34,9 @@ import com.vrrom.customer.service.CustomerService;
 import com.vrrom.email.service.EmailService;
 import com.vrrom.financialInfo.mapper.FinancialInfoMapper;
 import com.vrrom.financialInfo.model.FinancialInfo;
-import com.vrrom.util.CustomPage;
+import com.vrrom.application.util.CustomPageBase;
 import com.vrrom.util.PdfGenerator;
+import com.vrrom.util.exceptions.StatisticsException;
 import com.vrrom.validation.ValidationService;
 import com.vrrom.vehicle.mapper.VehicleMapper;
 import com.vrrom.vehicle.model.VehicleDetails;
@@ -51,9 +51,8 @@ import org.springframework.mail.MailException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -64,16 +63,18 @@ public class ApplicationService {
     private final PdfGenerator pdfGenerator;
     private final CustomerService customerService;
     private final ApplicationStatusHistoryService applicationStatusHistoryService;
+    private final StatisticsService statisticsService;
     private final DownloadTokenService downloadTokenService;
 
     @Autowired
-    public ApplicationService(ApplicationRepository applicationRepository, EmailService emailService, AdminService adminService, CustomerService customerService, PdfGenerator pdfGenerator, ApplicationStatusHistoryService applicationStatusHistoryService, DownloadTokenService downloadTokenService) {
+    public ApplicationService(ApplicationRepository applicationRepository, EmailService emailService, AdminService adminService, CustomerService customerService, PdfGenerator pdfGenerator, ApplicationStatusHistoryService applicationStatusHistoryService, DownloadTokenService downloadTokenService, StatisticsService statisticsService) {
         this.applicationRepository = applicationRepository;
         this.emailService = emailService;
         this.adminService = adminService;
         this.pdfGenerator = pdfGenerator;
         this.customerService = customerService;
         this.applicationStatusHistoryService = applicationStatusHistoryService;
+        this.statisticsService = statisticsService;
         this.downloadTokenService = downloadTokenService;
     }
 
@@ -88,6 +89,7 @@ public class ApplicationService {
             Application application = new Application();
             populateNewApplicationWithRequest(applicationRequest, application);
             applicationRepository.save(application);
+            applicationStatusHistoryService.addApplicationStatusHistory(application);
             emailService.sendEmail("vrroom.leasing@gmail.com", application.getCustomer().getEmail(), "Application", "Your application has been created successfully.");
             return ApplicationMapper.toResponse(application);
         } catch (DataAccessException dae) {
@@ -103,6 +105,7 @@ public class ApplicationService {
             Application application = findApplicationById(id);
             populateExistingApplicationWithRequest(applicationRequest, application);
             applicationRepository.save(application);
+            applicationStatusHistoryService.addApplicationStatusHistory(application);
             sendEmail(application, "Application Update", "Your application has been updated successfully.");
             return ApplicationMapper.toResponse(application);
         } catch (DataAccessException dae) {
@@ -125,6 +128,7 @@ public class ApplicationService {
             }
             ApplicationMapper.toEntityFromAdmin(application, applicationRequest, admin);
             applicationRepository.save(application);
+            applicationStatusHistoryService.addApplicationStatusHistory(application);
             sendEmail(application, "Application Update By Admin", "Your application has been updated by admin.");
             return ApplicationMapper.toResponseFromAdmin(application);
         } catch (DataAccessException dae) {
@@ -134,69 +138,51 @@ public class ApplicationService {
         }
     }
 
-    public CustomPage<ApplicationListDTO> findPaginatedApplications(
-            int pageNo, int pageSize,
+    public CustomPageBase<ApplicationPage> findPaginatedApplications(
+            int pageNo,
+            int pageSize,
             ApplicationSortParameters sortField,
             String sortDir,
             Long customerId,
             Long managerId,
             String managerFullName,
             ApplicationStatus status,
-            LocalDate startDate,
-            LocalDate endDate,
-            boolean includeHistory) {
-        try {
-            Sort sort = Sort.by(Sort.Direction.fromString(sortDir), sortField.getValue());
-            Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
-            Specification<Application> spec = buildSpecification(customerId, managerId, managerFullName, status, startDate, endDate);
-            Page<Application> page = applicationRepository.findAll(spec, pageable);
-            CustomPage<ApplicationListDTO> result = toCustomPage(page);
-            if (includeHistory) {
-                List<ApplicationListDTO> enhancedDtos = new ArrayList<>();
-                for (ApplicationListDTO dto : result.getContent()) {
-                    if (dto instanceof ApplicationListDTOWithHistory detailedDto) {
-                        List<ApplicationStatusHistory> history = applicationStatusHistoryService.getApplicationStatusHistory(detailedDto.getApplicationId());
-                        List<ApplicationStatusHistoryDTO> historyDTOs = history.stream()
-                                .map(ApplicationStatusHistoryMapper::toApplicationStatusHistoryDTO)
-                                .collect(Collectors.toList());
-                        detailedDto.setStatusHistory(historyDTOs);
-                        enhancedDtos.add(detailedDto);
-                    } else {
-                        enhancedDtos.add(applicationStatusHistoryService.enhanceDtoWithHistory(dto));
-                    }
-                }
-                result.setContent(enhancedDtos);
-            }
+            LocalDateTime startDate,
+            LocalDateTime endDate,
+            boolean includeHistory) throws StatisticsException {
+        Sort sort = Sort.by(Sort.Direction.fromString(sortDir), sortField.getValue());
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        Specification<Application> spec = buildSpecification(customerId, managerId, managerFullName, status, startDate, endDate);
+        Page<Application> page = applicationRepository.findAll(spec, pageable);
+        if (includeHistory) {
+            CustomPageWithHistory<ApplicationPage> result = new CustomPageWithHistory<>();
+            populateBasePageData(result, page);
+            LocalDateTime startDateTime = startDate != null ? startDate : LocalDateTime.of(1970, 1, 1, 0, 0);
+            LocalDateTime endDateTime = endDate != null ? endDate : LocalDateTime.now();
+            result.setNumberOfApplications(statisticsService.countApplications(Optional.ofNullable(managerId), startDateTime, endDateTime));
+            result.setAverageTimeToSignOrCancel(statisticsService.calculateAverageTimeFromSubmitToSignOrCancel(startDateTime, endDateTime, Optional.ofNullable(managerId)));
+            result.setAverageTimeFromSubmitToAssigned(statisticsService.calculateAverageTimeFromSubmitToAssigned(Optional.ofNullable(managerId), startDateTime, endDateTime));
             return result;
-        } catch (IllegalArgumentException e) {
-            throw new ApplicationException("Invalid request parameters", e);
-        } catch (Exception e) {
-            throw new ApplicationException("An error occurred while processing the applications", e);
+        } else {
+            CustomPageBase<ApplicationPage> result = new CustomPageBase<>();
+            populateBasePageData(result, page);
+            return result;
         }
     }
 
-    private CustomPage<ApplicationListDTO> toCustomPage(Page<Application> page) {
-        List<ApplicationListDTO> content = page.getContent().stream()
-                .map(ApplicationListDTOMapper::toApplicationListDTO)
-                .collect(Collectors.toList());
-        List<String> sortInfo = page.getSort().stream()
-                .map(order -> {
-                    ApplicationSortParameters param = ApplicationSortParameters.fromDisplayName(order.getProperty());
-                    String jsonValue = param != null ? param.getRequestValue() : order.getProperty();
-                    return jsonValue + "," + order.getDirection();
-                })
-                .collect(Collectors.toList());
-        return new CustomPage<>(
-                content,
-                page.getNumber(),
-                page.getSize(),
-                page.getTotalElements(),
-                page.getTotalPages(),
-                sortInfo
-        );
+    private void populateBasePageData(CustomPageBase<ApplicationPage> page, Page<Application> data) {
+        page.setContent(data.getContent().stream().map(ApplicationPageMapper::toApplicationListDTO).collect(Collectors.toList()));
+        page.setPageNumber(data.getNumber());
+        page.setPageSize(data.getSize());
+        page.setTotalElements(data.getTotalElements());
+        page.setTotalPages(data.getTotalPages());
+        page.setSort(data.getSort().stream().map(order -> {
+            ApplicationSortParameters param = ApplicationSortParameters.fromDisplayName(order.getProperty());
+            return (param != null ? param.getRequestValue() : order.getProperty()) + "," + order.getDirection();
+        }).collect(Collectors.toList()));
     }
 
-    private Specification<Application> buildSpecification(Long customerId, Long managerId, String managerFullName, ApplicationStatus status, LocalDate startDate, LocalDate endDate) {
+    private Specification<Application> buildSpecification(Long customerId, Long managerId, String managerFullName, ApplicationStatus status, LocalDateTime startDate, LocalDateTime endDate) {
         Specification<Application> spec = Specification.where(null);
         if (customerId != null) {
             spec = spec.and(ApplicationSpecifications.hasCustomer(customerId));
@@ -228,7 +214,7 @@ public class ApplicationService {
     }
 
     @Transactional
-    public String assignAdmin(long adminId, long applicationId) {
+    public String assignAdmin(long adminId, long applicationId) throws ApplicationStatusHistoryException {
         Application application = findApplicationById(applicationId);
         if (application.getManager() != null) {
             throw new ApplicationException("Application is already assigned to a manager");
@@ -236,8 +222,9 @@ public class ApplicationService {
         Admin admin = adminService.findAdminById(adminId);
         application.setManager(admin);
         application.setStatus(ApplicationStatus.UNDER_REVIEW);
+        applicationStatusHistoryService.addApplicationStatusHistory(application);
         admin.getAssignedApplications().add(application);
-        return "Admin " + application.getManager().getSurname() + " is successfully assigned to: " + application.getId();
+        return "Admin " + application.getManager().getName()+ " is successfully assigned to: " + application.getId();
     }
 
     private void populateNewApplicationWithRequest(ApplicationRequest applicationRequest, Application application) {
@@ -291,11 +278,12 @@ public class ApplicationService {
         return pdfGenerator.generateAgreement(agreementInfo);
     }
 
-    public void updateApplicationStatus(long id, ApplicationStatus status) {
+    public void updateApplicationStatus(long id, ApplicationStatus status) throws ApplicationStatusHistoryException {
         Application application = applicationRepository.findById(id)
                 .orElseThrow(() -> new ApplicationNotFoundException("Application not found", new Throwable("ID: " + id)));
         application.setStatus(status);
         applicationRepository.save(application);
+        applicationStatusHistoryService.addApplicationStatusHistory(application);
         if (application.getStatus() == ApplicationStatus.WAITING_FOR_SIGNING) {
             String baseUrl = "http://localhost:8080";
             String token = downloadTokenService.generateToken(application);

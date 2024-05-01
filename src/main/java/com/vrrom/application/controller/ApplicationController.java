@@ -1,6 +1,6 @@
 package com.vrrom.application.controller;
 
-import com.vrrom.application.dto.ApplicationListDTO;
+import com.vrrom.application.dto.ApplicationPage;
 import com.vrrom.application.dto.ApplicationRequest;
 import com.vrrom.application.dto.ApplicationRequestFromAdmin;
 import com.vrrom.application.dto.ApplicationResponse;
@@ -10,11 +10,13 @@ import com.vrrom.application.model.Application;
 import com.vrrom.application.model.ApplicationSortParameters;
 import com.vrrom.application.model.ApplicationStatus;
 import com.vrrom.application.service.ApplicationService;
+import com.vrrom.application.util.CustomPageBase;
+import com.vrrom.applicationStatusHistory.exception.ApplicationStatusHistoryException;
 import com.vrrom.dowloadToken.exception.DownloadTokenException;
-import com.vrrom.util.CustomPage;
 import com.vrrom.util.exceptions.DatabaseException;
 import com.vrrom.util.exceptions.EntityMappingException;
 import com.vrrom.util.exceptions.PdfGenerationException;
+import com.vrrom.util.exceptions.StatisticsException;
 import com.vrrom.validation.annotations.PositiveLong;
 import com.vrrom.validation.annotations.ValidPageSize;
 import com.vrrom.validation.annotations.ValidSortDirection;
@@ -36,7 +38,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @RestController
 @Validated
@@ -52,17 +54,17 @@ public class ApplicationController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public CustomPage<ApplicationListDTO> getPaginatedApplications(@RequestParam(defaultValue = "0") int page,
-                                                                   @RequestParam(defaultValue = "5") @ValidPageSize Integer size,
-                                                                   @RequestParam(defaultValue = "applicationCreatedDate") ApplicationSortParameters sortField,
-                                                                   @RequestParam(defaultValue = "desc") @ValidSortDirection String sortDir,
-                                                                   @RequestParam(required = false) @PositiveLong Long customerId,
-                                                                   @RequestParam(required = false) @PositiveLong Long managerId,
-                                                                   @RequestParam(required = false) String managerFullName,
-                                                                   @RequestParam(required = false) ApplicationStatus status,
-                                                                   @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-                                                                   @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
-                                                                   @RequestParam(defaultValue = "false") boolean isSuperAdmin) {
+    public CustomPageBase<ApplicationPage> getPaginatedApplications(@RequestParam(defaultValue = "0") int page,
+                                                                    @RequestParam(defaultValue = "5") @ValidPageSize Integer size,
+                                                                    @RequestParam(defaultValue = "applicationCreatedDate") ApplicationSortParameters sortField,
+                                                                    @RequestParam(defaultValue = "desc") @ValidSortDirection String sortDir,
+                                                                    @RequestParam(required = false) @PositiveLong Long customerId,
+                                                                    @RequestParam(required = false) @PositiveLong Long managerId,
+                                                                    @RequestParam(required = false) String managerFullName,
+                                                                    @RequestParam(required = false) ApplicationStatus status,
+                                                                    @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+                                                                    @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
+                                                                    @RequestParam(defaultValue = "false") boolean isSuperAdmin) throws StatisticsException {
         return applicationService.findPaginatedApplications(page, size, sortField, sortDir, customerId, managerId, managerFullName, status, startDate, endDate, isSuperAdmin);
     }
 
@@ -97,13 +99,13 @@ public class ApplicationController {
     @PutMapping("/{applicationId}/assignAdmin/{adminId}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Assign admin to application and change status of the application.")
-    public String assignAdmin(@PathVariable long adminId, @PathVariable long applicationId) {
+    public String assignAdmin(@PathVariable long adminId, @PathVariable long applicationId) throws ApplicationStatusHistoryException {
         return applicationService.assignAdmin(adminId, applicationId);
     }
 
     @PutMapping("/{id}/updateStatus")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> updateApplicationStatus(@PathVariable long id, @RequestParam ApplicationStatus status) {
+    public ResponseEntity<String> updateApplicationStatus(@PathVariable long id, @RequestParam ApplicationStatus status) throws ApplicationStatusHistoryException {
         applicationService.updateApplicationStatus(id, status);
         return ResponseEntity.ok("Status updated successfully");
     }

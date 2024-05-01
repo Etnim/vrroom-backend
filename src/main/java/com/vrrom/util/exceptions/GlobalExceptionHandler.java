@@ -2,6 +2,7 @@ package com.vrrom.util.exceptions;
 
 import com.vrrom.application.exception.ApplicationException;
 import com.vrrom.application.exception.ApplicationNotFoundException;
+import com.vrrom.applicationStatusHistory.exception.ApplicationStatusHistoryException;
 import com.vrrom.dowloadToken.exception.DownloadTokenException;
 import com.vrrom.vehicle.carInfoApi.exception.CarAPIException;
 import jakarta.validation.ConstraintViolation;
@@ -155,6 +156,22 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleDownloadTokenException(DownloadTokenException ex) {
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
+                .body(ex.getMessage() + ex.getCause().getMessage());
+    }
+
+    @ExceptionHandler(StatisticsException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<String> handleStatisticsException(StatisticsException ex) {
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ex.getMessage() + ex.getCause().getMessage());
+    }
+
+    @ExceptionHandler(ApplicationStatusHistoryException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<String> handleApplicationStatusHistoryException(ApplicationStatusHistoryException ex) {
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ex.getMessage() + ex.getCause().getMessage());
     }
 
