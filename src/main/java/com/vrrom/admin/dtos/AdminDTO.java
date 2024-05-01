@@ -1,5 +1,6 @@
 package com.vrrom.admin.dtos;
 
+import com.vrrom.admin.Admin.AdminRole;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,7 +11,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AdminDTO {
-    private long id;
+    private String uid;
+    private String email;
     private String name;
-    private String surname;
+    private AdminRole role;
 }

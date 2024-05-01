@@ -16,7 +16,7 @@ public class ApplicationPageMapper {
         if (application.getManager() != null) {
             dto.setManagerId(application.getManager().getId());
             dto.setManagerName(application.getManager().getName());
-            dto.setManagerSurname(application.getManager().getSurname());
+            dto.setManagerSurname(application.getManager().getName());
         } else {
             dto.setManagerId(null);
             dto.setManagerName(null);
