@@ -35,11 +35,22 @@ public class AdminSyncService {
     private void saveAdminFromFirebaseUser(com.google.firebase.auth.UserRecord firebaseUser) {
         String uid = firebaseUser.getUid();
         String email = firebaseUser.getEmail();
-        String name = firebaseUser.getDisplayName();
+
+        // Retrieve the name and surname from the user's custom claims
+        String name = null;
+        String surname = null;
+        Map<String, Object> customClaims = firebaseUser.getCustomClaims();
+        if (customClaims != null) {
+            if (customClaims.containsKey("name")) {
+                name = (String) customClaims.get("name");
+            }
+            if (customClaims.containsKey("surname")) {
+                surname = (String) customClaims.get("surname");
+            }
+        }
 
         // Retrieve the role from the custom claims
         AdminRole role = null;
-        Map<String, Object> customClaims = firebaseUser.getCustomClaims();
         if (customClaims != null && customClaims.containsKey("role")) {
             String roleString = (String) customClaims.get("role");
             role = convertToAdminRole(roleString);
@@ -51,6 +62,7 @@ public class AdminSyncService {
             admin.setUid(uid);
             admin.setEmail(email);
             admin.setName(name);
+            admin.setSurname(surname);
             admin.setRole(role);
             adminRepository.save(admin);
         }
