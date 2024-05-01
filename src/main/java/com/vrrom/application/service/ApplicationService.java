@@ -231,7 +231,7 @@ public class ApplicationService {
         application.setStatus(ApplicationStatus.UNDER_REVIEW);
         applicationStatusHistoryService.addApplicationStatusHistory(application);
         admin.getAssignedApplications().add(application);
-        return "Admin " + application.getManager().getName()+ " is successfully assigned to: " + application.getId();
+        return "Admin " + application.getManager().getSurname()+ " is successfully assigned to: " + application.getId();
     }
 
     private void populateNewApplicationWithRequest(ApplicationRequest applicationRequest, Application application) {

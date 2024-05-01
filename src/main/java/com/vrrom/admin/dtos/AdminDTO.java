@@ -14,5 +14,6 @@ public class AdminDTO {
     private String uid;
     private String email;
     private String name;
+    private String surname;
     private AdminRole role;
 }

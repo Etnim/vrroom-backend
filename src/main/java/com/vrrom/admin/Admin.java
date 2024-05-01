@@ -42,6 +42,9 @@ public class Admin {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "surname")
+    private String surname;
+
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private AdminRole role;
