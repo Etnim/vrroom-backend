@@ -4,6 +4,8 @@ import com.vrrom.admin.Admin;
 import com.vrrom.admin.dtos.AdminDTO;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+
 @Component
 public class AdminMapper {
 
@@ -15,6 +17,8 @@ public class AdminMapper {
         admin.setRole(adminDTO.getRole());
         admin.setEmail(adminDTO.getEmail());
         admin.setUid(admin.getUid());
+        admin.setAssignedApplications(new ArrayList<>());
+        admin.setComments(new ArrayList<>());
         return admin;
     }
 

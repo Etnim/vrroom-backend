@@ -15,10 +15,8 @@ import java.util.List;
 @Service
 public class AdminService {
     private final AdminRepository adminRepository;
-    private final AdminMapper adminMapper;
-    public AdminService(AdminRepository adminRepository, AdminMapper adminMapper) {
+    public AdminService(AdminRepository adminRepository) {
         this.adminRepository = adminRepository;
-        this.adminMapper = adminMapper;
     }
 
     public Admin findAdminById(long adminId) {
@@ -31,7 +29,7 @@ public class AdminService {
         if (admin == null) {
             throw new AdminNotFoundException("Admin not found with UID: " + uid);
         }
-        return adminMapper.toDTO(admin);
+        return AdminMapper.toDTO(admin);
     }
 
     public AdminDTO findByEmail(String email) {
@@ -39,7 +37,7 @@ public class AdminService {
         if (admin == null) {
             throw new AdminNotFoundException("Admin not found with email: " + email);
         }
-        return adminMapper.toDTO(admin);
+        return AdminMapper.toDTO(admin);
     }
 
     public boolean isSuperAdmin() {

@@ -235,10 +235,11 @@ public class ApplicationService {
             throw new ApplicationException("Application is already assigned to a manager");
         }
         Admin admin = AdminMapper.toEntity(adminService.findByUid(uid));
+        System.out.println(admin.getId());
         application.setManager(admin);
+        admin.getAssignedApplications().add(application);
         application.setStatus(ApplicationStatus.UNDER_REVIEW);
         applicationStatusHistoryService.addApplicationStatusHistory(application);
-        admin.getAssignedApplications().add(application);
         return "Admin " + application.getManager().getSurname() + " is successfully assigned to: " + application.getId();
     }
 
