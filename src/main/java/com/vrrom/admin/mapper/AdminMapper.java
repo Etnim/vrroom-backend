@@ -10,6 +10,7 @@ public class AdminMapper {
     public static Admin toEntity(AdminDTO adminDTO) {
         Admin admin = new Admin();
         admin.setName(adminDTO.getName());
+        admin.setSurname(admin.getSurname());
         admin.setEmail(adminDTO.getEmail());
         admin.setRole(adminDTO.getRole());
         admin.setEmail(adminDTO.getEmail());
@@ -18,8 +19,6 @@ public class AdminMapper {
     }
 
     public static AdminDTO toDTO(Admin admin) {
-
-
         return admin != null
                 ? new AdminDTO(admin.getUid(), admin.getEmail(), admin.getName(), admin.getSurname(), admin.getRole())
                 : null;

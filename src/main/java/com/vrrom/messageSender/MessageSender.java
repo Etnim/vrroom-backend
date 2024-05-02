@@ -27,7 +27,6 @@ public class MessageSender {
                     )
                     .create();
 
-            System.out.println(message.getSid());
         } catch (ApiException e) {
             Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
             System.err.println(e);
