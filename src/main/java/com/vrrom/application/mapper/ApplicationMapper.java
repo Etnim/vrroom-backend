@@ -12,7 +12,7 @@ import com.vrrom.application.model.Application;
 import com.vrrom.application.model.ApplicationStatus;
 import com.vrrom.comment.Comment;
 import com.vrrom.comment.CommentMapper;
-import com.vrrom.customer.Customer;
+import com.vrrom.customer.model.Customer;
 import com.vrrom.customer.dtos.CustomerResponse;
 import com.vrrom.customer.mappers.CustomerMapper;
 import com.vrrom.financialInfo.dtos.FinancialInfoResponse;

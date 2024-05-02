@@ -1,7 +1,7 @@
 package com.vrrom.application.calculator;
 
 import com.vrrom.application.dto.ApplicationRequest;
-import com.vrrom.customer.Customer;
+import com.vrrom.customer.model.Customer;
 import com.vrrom.euribor.dto.EuriborRate;
 import com.vrrom.euribor.service.EuriborService;
 

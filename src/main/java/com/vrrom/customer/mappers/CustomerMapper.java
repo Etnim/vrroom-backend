@@ -1,7 +1,7 @@
 package com.vrrom.customer.mappers;
 
 import com.vrrom.application.model.Application;
-import com.vrrom.customer.Customer;
+import com.vrrom.customer.model.Customer;
 import com.vrrom.customer.dtos.CustomerRequest;
 import com.vrrom.customer.dtos.CustomerResponse;
 
