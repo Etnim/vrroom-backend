@@ -2,6 +2,7 @@ package com.vrrom.application.service;
 
 import com.twilio.exception.ApiException;
 import com.vrrom.admin.Admin;
+import com.vrrom.admin.mapper.AdminMapper;
 import com.vrrom.admin.service.AdminService;
 import com.vrrom.agreement.AgreementService;
 import com.vrrom.application.dto.ApplicationPage;
@@ -24,6 +25,7 @@ import com.vrrom.application.util.CustomPageBase;
 import com.vrrom.application.util.CustomPageWithHistory;
 import com.vrrom.applicationStatusHistory.exception.ApplicationStatusHistoryException;
 import com.vrrom.applicationStatusHistory.service.ApplicationStatusHistoryService;
+import com.vrrom.comment.Comment;
 import com.vrrom.customer.mappers.CustomerMapper;
 import com.vrrom.customer.model.Customer;
 import com.vrrom.customer.service.CustomerService;
@@ -51,6 +53,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -224,12 +227,14 @@ public class ApplicationService {
     }
 
     @Transactional
-    public String assignAdmin(long adminId, long applicationId) throws ApplicationStatusHistoryException {
+    public String assignAdmin(long applicationId) throws ApplicationStatusHistoryException {
+        String uid = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+
         Application application = findApplicationById(applicationId);
         if (application.getManager() != null) {
             throw new ApplicationException("Application is already assigned to a manager");
         }
-        Admin admin = adminService.findAdminById(adminId);
+        Admin admin = AdminMapper.toEntity(adminService.findByUid(uid));
         application.setManager(admin);
         application.setStatus(ApplicationStatus.UNDER_REVIEW);
         applicationStatusHistoryService.addApplicationStatusHistory(application);
@@ -326,6 +331,34 @@ public class ApplicationService {
         applicationRepository.save(application);
         agreementService.saveAgreement(signedAgreement, application);
         applicationStatusHistoryService.addApplicationStatusHistory(application);
+    }
+
+    public String reAssignAdmin(String newAdminUid, long applicationId) {
+        String uid = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        Admin currentAdmin = AdminMapper.toEntity(adminService.findByUid(uid));
+        Admin newAdmin = AdminMapper.toEntity(adminService.findByUid(newAdminUid));
+        Application application = findApplicationById(applicationId);
+
+        Comment comment = new Comment();
+        comment.setApplication(application);
+        comment.setAdmin(currentAdmin);
+        comment.setText("The application was reassigned to admin: " + newAdmin.getId() + " by: " + currentAdmin.getId());
+        comment.setCreatedAt(LocalDateTime.now());
+
+        application.setManager(newAdmin);
+        application.getComments().add(comment);
+        newAdmin.getAssignedApplications().add(application);
+        currentAdmin.getAssignedApplications().remove(application);
+        try {
+            emailService.sendEmail("vrroom.leasing@gmail.com", currentAdmin.getEmail(),
+                    "New application assigned",
+                    "Dear manager, \n Admin:  "
+                            + currentAdmin.getName() + " " + currentAdmin.getSurname() + " "
+                            +currentAdmin.getEmail() + " reassigned to you a new application: "
+                            + application.getId());
+        }catch (Exception ignore){}
+
+        return "Application was successfully reassigned to: " + newAdmin.getId();
     }
 }
 

@@ -9,6 +9,9 @@ import com.vrrom.application.exception.ApplicationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class AdminService {
     private final AdminRepository adminRepository;
@@ -44,5 +47,14 @@ public class AdminService {
 
         AdminDTO adminDTO = findByUid(uid);
         return adminDTO.getRole() == Admin.AdminRole.SUPER_ADMIN;
+    }
+
+    public List<AdminDTO> findAll() {
+       List<Admin> admins = adminRepository.findAll();
+       List<AdminDTO> adminDTOs = new ArrayList<>();
+       for(Admin a : admins){
+           adminDTOs.add(AdminMapper.toDTO(a));
+       }
+       return adminDTOs;
     }
 }

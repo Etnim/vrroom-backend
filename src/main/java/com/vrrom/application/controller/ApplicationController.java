@@ -102,12 +102,20 @@ public class ApplicationController {
         return applicationService.updateApplicationFromAdmin(applicationId,applicationRequest, adminId);
     }
 
-    @PutMapping("/{applicationId}/assignAdmin/{adminId}")
+    @PutMapping("/{applicationId}/assignAdmin")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Assign admin to application and change status of the application.")
-    public String assignAdmin(@PathVariable long adminId, @PathVariable long applicationId) throws ApplicationStatusHistoryException {
-        return applicationService.assignAdmin(adminId, applicationId);
+    public String assignAdmin(@PathVariable long applicationId) throws ApplicationStatusHistoryException {
+        return applicationService.assignAdmin(applicationId);
     }
+
+    @PutMapping("/{applicationId}/assignAdmin/{newAdminUid}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Assign new admin to the application")
+    public String reAssignAdmin(@PathVariable String newAdminUid, @PathVariable long applicationId) {
+        return applicationService.reAssignAdmin(newAdminUid, applicationId);
+    }
+
 
     @PutMapping("/{id}/updateStatus")
     @ResponseStatus(HttpStatus.OK)
