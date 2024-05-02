@@ -1,5 +1,6 @@
 package com.vrrom.application.service;
 
+import com.twilio.exception.ApiException;
 import com.vrrom.admin.Admin;
 import com.vrrom.admin.service.AdminService;
 import com.vrrom.agreement.AgreementService;
@@ -50,7 +51,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.mail.MailException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -100,7 +100,7 @@ public class ApplicationService {
             populateNewApplicationWithRequest(applicationRequest, application);
             applicationRepository.save(application);
             applicationStatusHistoryService.addApplicationStatusHistory(application);
-            sendEmail(application,"Application Created. ", "Your application was successfully created");
+            sendNotification(application, "Application Created. ", "Your application was successfully created");
             return ApplicationMapper.toResponse(application);
         } catch (DataAccessException dae) {
             throw new ApplicationException("Failed to save application data", dae);
@@ -116,7 +116,7 @@ public class ApplicationService {
             populateExistingApplicationWithRequest(applicationRequest, application);
             applicationRepository.save(application);
             applicationStatusHistoryService.addApplicationStatusHistory(application);
-            sendEmail(application, "Application Update", "Your application has been updated successfully.");
+            sendNotification(application, "Application Update", "Your application has been updated successfully.");
             return ApplicationMapper.toResponse(application);
         } catch (DataAccessException dae) {
             throw new ApplicationException("Failed to save application data", dae);
@@ -139,7 +139,7 @@ public class ApplicationService {
             ApplicationMapper.toEntityFromAdmin(application, applicationRequest, admin);
             applicationRepository.save(application);
             applicationStatusHistoryService.addApplicationStatusHistory(application);
-            sendEmail(application, "Application Update By Admin", "Your application has been updated by admin.");
+            sendNotification(application, "Application Update By Admin", "Your application has been updated by admin.");
             return ApplicationMapper.toResponseFromAdmin(application);
         } catch (DataAccessException dae) {
             throw new ApplicationException("Failed to save application data", dae);
@@ -234,7 +234,7 @@ public class ApplicationService {
         application.setStatus(ApplicationStatus.UNDER_REVIEW);
         applicationStatusHistoryService.addApplicationStatusHistory(application);
         admin.getAssignedApplications().add(application);
-        return "Admin " + application.getManager().getSurname()+ " is successfully assigned to: " + application.getId();
+        return "Admin " + application.getManager().getSurname() + " is successfully assigned to: " + application.getId();
     }
 
     private void populateNewApplicationWithRequest(ApplicationRequest applicationRequest, Application application) {
@@ -255,11 +255,11 @@ public class ApplicationService {
         Customer customer = customerService.findCustomerById(applicationRequest.getCustomer().getPersonalId());
         if (customer == null) {
             customer = CustomerMapper.toEntity(applicationRequest.getCustomer(), application);
-        }else{
-            for(Application app : customer.getApplications()){
-                if(app.getStatus() != ApplicationStatus.CANCELLED
+        } else {
+            for (Application app : customer.getApplications()) {
+                if (app.getStatus() != ApplicationStatus.CANCELLED
                         && app.getStatus() != ApplicationStatus.SIGNED
-                        && app.getStatus() != ApplicationStatus.REJECTED){
+                        && app.getStatus() != ApplicationStatus.REJECTED) {
                     throw new ApplicationException("One user can not have more than one pending application at a time");
                 }
             }
@@ -267,12 +267,14 @@ public class ApplicationService {
         return customer;
     }
 
-    private void sendEmail(Application application, String subject, String message) {
+    private void sendNotification(Application application, String subject, String message) {
         try {
-            emailService.sendEmail("vrroom.leasing@gmail.com", application.getCustomer().getEmail(), subject, message);
+            try {
+                emailService.sendEmail("vrroom.leasing@gmail.com", application.getCustomer().getEmail(), subject, message);
+            } catch (Exception ignored) {}
             messageSender.sendMessage(subject + "Please check your email.", application.getCustomer().getPhone());
-        } catch (MailException me) {
-            throw new ApplicationException("Failed to send notification email", me);
+        } catch (ApiException e) {
+            throw new ApplicationException("Notification sending failed", e);
         }
     }
 
@@ -313,7 +315,7 @@ public class ApplicationService {
             String baseUrl = "http://localhost:8080";
             String token = downloadTokenService.generateToken(application);
             String encodedAgreementUrl = UrlBuilder.createEncodedUrl(baseUrl, "applications", token, "agreement");
-            sendEmail(application,"Application Approved","Your application has been approved successfully. Please click here to download your agreement: " + encodedAgreementUrl );
+            sendNotification(application, "Application Approved", "Your application has been approved successfully. Please click here to download your agreement: " + encodedAgreementUrl);
         }
     }
 
