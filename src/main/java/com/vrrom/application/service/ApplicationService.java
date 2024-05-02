@@ -29,6 +29,7 @@ import com.vrrom.customer.model.Customer;
 import com.vrrom.customer.service.CustomerService;
 import com.vrrom.dowloadToken.exception.DownloadTokenException;
 import com.vrrom.dowloadToken.service.DownloadTokenService;
+import com.vrrom.email.service.EmailNotificationService;
 import com.vrrom.email.service.EmailService;
 import com.vrrom.euribor.service.EuriborService;
 import com.vrrom.financialInfo.mapper.FinancialInfoMapper;
@@ -72,9 +73,10 @@ public class ApplicationService {
     private final AgreementService agreementService;
     private final EuriborService euriborService;
     private final MessageSender messageSender;
+    private final EmailNotificationService emailNotificationService;
 
     @Autowired
-    public ApplicationService(ApplicationRepository applicationRepository, EmailService emailService, AdminService adminService, CustomerService customerService, PdfGenerator pdfGenerator, ApplicationStatusHistoryService applicationStatusHistoryService, StatisticsService statisticsService, DownloadTokenService downloadTokenService, AgreementService agreementService, EuriborService euriborService, MessageSender messageSender) {
+    public ApplicationService(ApplicationRepository applicationRepository, EmailService emailService, AdminService adminService, CustomerService customerService, PdfGenerator pdfGenerator, ApplicationStatusHistoryService applicationStatusHistoryService, StatisticsService statisticsService, DownloadTokenService downloadTokenService, AgreementService agreementService, EuriborService euriborService, MessageSender messageSender, EmailNotificationService emailNotificationService) {
         this.applicationRepository = applicationRepository;
         this.emailService = emailService;
         this.adminService = adminService;
@@ -86,6 +88,7 @@ public class ApplicationService {
         this.euriborService = euriborService;
         this.messageSender = messageSender;
         this.agreementService = agreementService;
+        this.emailNotificationService = emailNotificationService;
     }
 
     public Application findApplicationById(long applicationId) {
@@ -100,6 +103,7 @@ public class ApplicationService {
             populateNewApplicationWithRequest(applicationRequest, application);
             applicationRepository.save(application);
             applicationStatusHistoryService.addApplicationStatusHistory(application);
+
             sendNotification(application, "Application Created. ", "Your application was successfully created");
             return ApplicationMapper.toResponse(application);
         } catch (DataAccessException dae) {
@@ -117,6 +121,7 @@ public class ApplicationService {
             applicationRepository.save(application);
             applicationStatusHistoryService.addApplicationStatusHistory(application);
             sendNotification(application, "Application Update", "Your application has been updated successfully.");
+            emailNotificationService.notify("Application Update", "Your application has been updated successfully.", application.getCustomer().getEmail());
             return ApplicationMapper.toResponse(application);
         } catch (DataAccessException dae) {
             throw new ApplicationException("Failed to save application data", dae);

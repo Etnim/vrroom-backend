@@ -1,68 +1,72 @@
 package com.vrrom.email.service;
 
+import com.google.api.client.util.Base64;
+import com.google.api.services.gmail.Gmail;
+import com.google.api.services.gmail.model.Message;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
 import javax.mail.Session;
-import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Properties;
 
 @Service
 public class EmailNotificationService implements NotificationService {
-    private final String userEmail = "vrroom.leasing@gmail.com";
-    private MimeMessage message;
-    @Value("${gmail.passcode}")
-    String accessToken;
     private static final Logger log = LogManager.getLogger(EmailNotificationService.class);
+    private final String userEmail = "vrroom.leasing@gmail.com";
+    private final Gmail gmailService;
 
     @Autowired
-    public EmailNotificationService() {
-        Session session = createSession(userEmail, accessToken);
-        this.message = new MimeMessage(session);
+    public EmailNotificationService(Gmail gmailService) {
+        this.gmailService = gmailService;
     }
 
-    public static Session createSession(String userEmail, String accessToken) {
+    private static Session createSession() {
         Properties properties = new Properties();
         properties.put("mail.smtp.auth", "true");
         properties.put("mail.smtp.starttls.enable", "true");
         properties.put("mail.smtp.host", "smtp.gmail.com");
         properties.put("mail.smtp.port", "587");
         properties.put("mail.mime.address.strict", "false");
-        javax.mail.Authenticator authenticator = new javax.mail.Authenticator() {
-            protected javax.mail.PasswordAuthentication getPasswordAuthentication() {
-                return new javax.mail.PasswordAuthentication(userEmail, accessToken);
-            }
-        };
-        return Session.getInstance(properties, authenticator);
+
+        // Session without an authenticator because we use OAuth2
+        return Session.getInstance(properties);
     }
 
-    public MimeMessage createMessage(String messageSubject, String messageBody, String recipientEmail) throws MessagingException {
+    private MimeMessage createMessage(String subject, String body, String recipientEmail) throws MessagingException {
+        Session session = createSession();
+        MimeMessage message = new MimeMessage(session);
         message.setFrom(new InternetAddress(userEmail));
-        message.setRecipients(MimeMessage.RecipientType.TO, InternetAddress.parse(recipientEmail));
-        message.setSubject(messageSubject);
-        message.setText(messageBody);
+        message.addRecipient(MimeMessage.RecipientType.TO, new InternetAddress(recipientEmail));
+        message.setSubject(subject);
+        message.setText(body);
         return message;
     }
 
     @Override
-    public void notify(String messageSubject, String messageBody, String recipientEmail) {
+    public void notify(String subject, String body, String recipientEmail) {
         try {
-            MimeMessage email = createMessage(messageSubject, messageBody, recipientEmail);
+            MimeMessage email = createMessage(subject, body, recipientEmail);
             sendEmail(email);
-            log.info("Email sent successfully}");
-        } catch (MessagingException e) {
-            log.error("Error sending email: {}", e.getMessage());
+            log.info("Email sent successfully");
+        } catch (MessagingException | IOException e) {
+            log.error("Error sending email: {}", e.getMessage(), e);
         }
     }
 
-    public void sendEmail(MimeMessage message) throws MessagingException {
-        Transport.send(message);
+    private void sendEmail(MimeMessage email) throws MessagingException, IOException {
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        email.writeTo(buffer);
+        byte[] bytes = buffer.toByteArray();
+        String encodedEmail = Base64.encodeBase64URLSafeString(bytes);
+        Message message = new Message();
+        message.setRaw(encodedEmail);
+        gmailService.users().messages().send("me", message).execute();
     }
 }
-

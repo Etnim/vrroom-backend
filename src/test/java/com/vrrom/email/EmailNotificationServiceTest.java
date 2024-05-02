@@ -34,13 +34,13 @@ public class EmailNotificationServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    @Test
-    void propertiesShouldNotBeNullWhenCreatingSession() {
-        Session session = EmailNotificationService.createSession("user@example.com", "password");
-        assertNotNull(session.getProperties());
-        assertNotNull(session.getProperties().getProperty("mail.smtp.auth"));
-        assertEquals("true", session.getProperties().getProperty("mail.smtp.auth"));
-    }
+//    @Test
+//    void propertiesShouldNotBeNullWhenCreatingSession() {
+//        Session session = EmailNotificationService.createSession("user@example.com", "password");
+//        assertNotNull(session.getProperties());
+//        assertNotNull(session.getProperties().getProperty("mail.smtp.auth"));
+//        assertEquals("true", session.getProperties().getProperty("mail.smtp.auth"));
+//    }
 
     @Test
     void testNotify() throws Exception {
