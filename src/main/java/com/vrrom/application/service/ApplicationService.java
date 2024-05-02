@@ -23,8 +23,8 @@ import com.vrrom.application.util.CustomPageBase;
 import com.vrrom.application.util.CustomPageWithHistory;
 import com.vrrom.applicationStatusHistory.exception.ApplicationStatusHistoryException;
 import com.vrrom.applicationStatusHistory.service.ApplicationStatusHistoryService;
-import com.vrrom.customer.model.Customer;
 import com.vrrom.customer.mappers.CustomerMapper;
+import com.vrrom.customer.model.Customer;
 import com.vrrom.customer.service.CustomerService;
 import com.vrrom.dowloadToken.exception.DownloadTokenException;
 import com.vrrom.dowloadToken.service.DownloadTokenService;
@@ -55,7 +55,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.mail.Message;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -256,6 +255,14 @@ public class ApplicationService {
         Customer customer = customerService.findCustomerById(applicationRequest.getCustomer().getPersonalId());
         if (customer == null) {
             customer = CustomerMapper.toEntity(applicationRequest.getCustomer(), application);
+        }else{
+            for(Application app : customer.getApplications()){
+                if(app.getStatus() != ApplicationStatus.CANCELLED
+                        && app.getStatus() != ApplicationStatus.SIGNED
+                        && app.getStatus() != ApplicationStatus.REJECTED){
+                    throw new ApplicationException("One user can not have more than one pending application at a time");
+                }
+            }
         }
         return customer;
     }
@@ -306,7 +313,7 @@ public class ApplicationService {
             String baseUrl = "http://localhost:8080";
             String token = downloadTokenService.generateToken(application);
             String encodedAgreementUrl = UrlBuilder.createEncodedUrl(baseUrl, "applications", token, "agreement");
-            emailService.sendEmail("vrroom.leasing@gmail.com", "vrroom.leasing@gmail.com", "Application Approved", "Your application has been approved successfully. Please click here to download your agreement: " + encodedAgreementUrl);
+            sendEmail(application,"Application Approved","Your application has been approved successfully. Please click here to download your agreement: " + encodedAgreementUrl );
         }
     }
 

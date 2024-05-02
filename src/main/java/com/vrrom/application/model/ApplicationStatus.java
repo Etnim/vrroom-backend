@@ -11,7 +11,7 @@ public enum ApplicationStatus {
     WAITING_FOR_SIGNING("Waiting for signing"),
     SIGNED("Signed"),
     REJECTED("Rejected"),
-    CANCELLED("Canceled");
+    CANCELLED("Cancelled");
 
     private final String applicationStatusText;
 
