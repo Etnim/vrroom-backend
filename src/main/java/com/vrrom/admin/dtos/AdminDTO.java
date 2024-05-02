@@ -1,6 +1,6 @@
 package com.vrrom.admin.dtos;
 
-import com.vrrom.admin.Admin.AdminRole;
+import com.vrrom.admin.model.Admin.AdminRole;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

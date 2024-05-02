@@ -1,8 +1,8 @@
 package com.vrrom.application.mapper;
 
-import com.vrrom.admin.Admin;
 import com.vrrom.admin.dtos.AdminDTO;
 import com.vrrom.admin.mapper.AdminMapper;
+import com.vrrom.admin.model.Admin;
 import com.vrrom.application.calculator.Calculator;
 import com.vrrom.application.dto.ApplicationRequest;
 import com.vrrom.application.dto.ApplicationRequestFromAdmin;
@@ -12,9 +12,9 @@ import com.vrrom.application.model.Application;
 import com.vrrom.application.model.ApplicationStatus;
 import com.vrrom.comment.Comment;
 import com.vrrom.comment.CommentMapper;
-import com.vrrom.customer.model.Customer;
 import com.vrrom.customer.dtos.CustomerResponse;
 import com.vrrom.customer.mappers.CustomerMapper;
+import com.vrrom.customer.model.Customer;
 import com.vrrom.financialInfo.dtos.FinancialInfoResponse;
 import com.vrrom.financialInfo.mapper.FinancialInfoMapper;
 import com.vrrom.financialInfo.model.FinancialInfo;

@@ -4,6 +4,7 @@ import com.vrrom.application.exception.ApplicationException;
 import com.vrrom.application.exception.ApplicationNotFoundException;
 import com.vrrom.applicationStatusHistory.exception.ApplicationStatusHistoryException;
 import com.vrrom.dowloadToken.exception.DownloadTokenException;
+import com.vrrom.email.exception.EmailServiceException;
 import com.vrrom.vehicle.carInfoApi.exception.CarAPIException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -30,7 +31,7 @@ import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    final Logger logger = LogManager.getLogger(GlobalExceptionHandler.class);
+    static final Logger logger = LogManager.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(CarAPIException.class)
     public ResponseEntity<String> handleApiException(CarAPIException ex) {
@@ -57,6 +58,14 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleApplicationException(ApplicationException ex) {
         String cause = ex.getCause() != null ? ex.getCause().getMessage() : "";
         return new ResponseEntity<>("Application processing error " + cause, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(EmailServiceException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<String> handleEmailServiceException(EmailServiceException ex) {
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ex.getCause().getMessage());
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
@@ -184,7 +193,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleException(Exception ex) {
+    public static ResponseEntity<String> handleException(Exception ex) {
         logger.error(ex.getMessage(), ex);
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
