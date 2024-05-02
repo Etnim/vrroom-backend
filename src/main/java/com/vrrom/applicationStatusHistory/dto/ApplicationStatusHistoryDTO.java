@@ -13,8 +13,8 @@ import java.time.LocalDateTime;
 @Setter
 @Builder
 public class ApplicationStatusHistoryDTO {
- private long applicationId;
- private ApplicationStatus status;
- private Long managerId;
- private LocalDateTime changedAt;
+    private long applicationId;
+    private ApplicationStatus status;
+    private Long managerId;
+    private LocalDateTime changedAt;
 }
