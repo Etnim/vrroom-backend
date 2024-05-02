@@ -20,14 +20,13 @@ public class CustomerMapper {
         String fullName = customer.getName() + " " + customer.getSurname();
         LocalDate birthDate = customer.getBirthDate();
         int age = (int) ChronoUnit.YEARS.between(birthDate, LocalDate.now());
-
         CustomerResponse response = new CustomerResponse();
         response.setPersonalId(customer.getPersonalId());
         response.setFullName(fullName);
         response.setAge(age);
         response.setEmail(customer.getEmail());
         response.setPhone(customer.getPhone());
-        response.setCreditRating(customer.getCreditRating());
+        response.setCreditRating((char)(customer.getCreditRating() + 64));
         return response;
     }
 }
