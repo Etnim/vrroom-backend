@@ -19,7 +19,7 @@ public class VehicleRequest {
     @NotBlank(message = "Model must not be blank")
     private String model;
 
-    @Min(value = 1885, message = "Year must be greater than the year the first car was made")
+    @Min(value = 2010, message = "The year of card should be more that 2010")
     private int year;
 
     @NotNull(message = "Fuel type must not be null")

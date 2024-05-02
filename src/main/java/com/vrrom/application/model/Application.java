@@ -91,4 +91,7 @@ public class Application {
 
     @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Comment> comments;
+
+    @Column
+    private double euribor;
 }

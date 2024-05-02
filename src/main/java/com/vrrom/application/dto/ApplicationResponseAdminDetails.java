@@ -10,14 +10,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ApplicationResponse {
+public class ApplicationResponseAdminDetails {
     private long applicationID;
     private String applicationStatus;
     private LocalDateTime dateOfSubmission;
