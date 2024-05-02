@@ -1,8 +1,9 @@
 package com.vrrom.customer.controller;
 
-import com.vrrom.customer.Customer;
+
 import com.vrrom.customer.dtos.CustomerResponse;
 import com.vrrom.customer.mappers.CustomerMapper;
+import com.vrrom.customer.model.Customer;
 import com.vrrom.customer.service.CustomerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

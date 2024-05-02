@@ -1,6 +1,7 @@
 package com.vrrom.applicationStatusHistory.dto;
 
 import com.vrrom.application.model.ApplicationStatus;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
