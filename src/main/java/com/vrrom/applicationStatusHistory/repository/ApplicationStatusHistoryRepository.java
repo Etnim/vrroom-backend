@@ -1,8 +1,10 @@
 package com.vrrom.applicationStatusHistory.repository;
 
 import com.vrrom.admin.Admin;
+import com.vrrom.application.model.Application;
 import com.vrrom.application.model.ApplicationStatus;
 import com.vrrom.applicationStatusHistory.model.ApplicationStatusHistory;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,6 +17,14 @@ import java.util.Optional;
 @Repository
 public interface ApplicationStatusHistoryRepository extends JpaRepository<ApplicationStatusHistory, Long> {
     List<ApplicationStatusHistory> findByApplicationId(Long applicationId);
+
+    @Query("SELECT ash FROM ApplicationStatusHistory ash WHERE ash.application = :application ORDER BY ash.changedAt DESC")
+    List<ApplicationStatusHistory> findLatestHistoryEntriesByApplication(Application application, PageRequest pageable);
+
+    default Optional<ApplicationStatusHistory> findLatestEntryByApplication(Application application) {
+        return findLatestHistoryEntriesByApplication(application, PageRequest.of(0, 1)).stream().findFirst();
+    }
+
     ApplicationStatusHistory findByApplicationIdAndStatus(Long applicationId, ApplicationStatus status);
 
     @Query("SELECT ash FROM ApplicationStatusHistory ash WHERE ash.application.id = :applicationId AND ash.status = :status AND ash.changedAt > :date ORDER BY ash.changedAt ASC")
