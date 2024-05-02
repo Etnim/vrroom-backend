@@ -1,22 +1,45 @@
 package com.vrrom.application.service;
 
-import com.vrrom.application.dto.ApplicationListDTO;
+import com.vrrom.admin.Admin;
+import com.vrrom.admin.service.AdminService;
+import com.vrrom.agreement.AgreementService;
+import com.vrrom.application.dto.ApplicationPage;
 import com.vrrom.application.dto.ApplicationRequest;
-import com.vrrom.application.dto.ApplicationResponse;
+import com.vrrom.application.dto.ApplicationRequestFromAdmin;
+import com.vrrom.application.dto.ApplicationResponseAdminDetails;
+import com.vrrom.application.dto.ApplicationResponseFromAdmin;
 import com.vrrom.application.exception.ApplicationException;
-import com.vrrom.application.mapper.ApplicationListDTOMapper;
+import com.vrrom.application.exception.ApplicationNotFoundException;
+import com.vrrom.application.mapper.AgreementMapper;
 import com.vrrom.application.mapper.ApplicationMapper;
+import com.vrrom.application.mapper.ApplicationPageMapper;
+import com.vrrom.application.model.AgreementInfo;
 import com.vrrom.application.model.Application;
 import com.vrrom.application.model.ApplicationSortParameters;
 import com.vrrom.application.model.ApplicationStatus;
 import com.vrrom.application.repository.ApplicationRepository;
 import com.vrrom.application.util.ApplicationSpecifications;
-import com.vrrom.customer.Customer;
+import com.vrrom.application.util.CustomPageBase;
+import com.vrrom.application.util.CustomPageWithHistory;
+import com.vrrom.applicationStatusHistory.exception.ApplicationStatusHistoryException;
+import com.vrrom.applicationStatusHistory.service.ApplicationStatusHistoryService;
 import com.vrrom.customer.mappers.CustomerMapper;
+import com.vrrom.customer.model.Customer;
+import com.vrrom.customer.service.CustomerService;
+import com.vrrom.dowloadToken.exception.DownloadTokenException;
+import com.vrrom.dowloadToken.service.DownloadTokenService;
 import com.vrrom.email.service.EmailService;
+import com.vrrom.euribor.service.EuriborService;
 import com.vrrom.financialInfo.mapper.FinancialInfoMapper;
 import com.vrrom.financialInfo.model.FinancialInfo;
-import com.vrrom.util.CustomPage;
+import com.vrrom.messageSender.MessageSender;
+import com.vrrom.util.PdfGenerator;
+import com.vrrom.util.StatisticsService;
+import com.vrrom.util.UrlBuilder;
+import com.vrrom.util.exceptions.DatabaseException;
+import com.vrrom.util.exceptions.EntityMappingException;
+import com.vrrom.util.exceptions.PdfGenerationException;
+import com.vrrom.util.exceptions.StatisticsException;
 import com.vrrom.validation.ValidationService;
 import com.vrrom.vehicle.mapper.VehicleMapper;
 import com.vrrom.vehicle.model.VehicleDetails;
@@ -30,9 +53,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.mail.MailException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDate;
-import java.util.List;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -40,59 +63,136 @@ import java.util.stream.Collectors;
 public class ApplicationService {
     private final ApplicationRepository applicationRepository;
     private final EmailService emailService;
+    private final AdminService adminService;
+    private final PdfGenerator pdfGenerator;
+    private final CustomerService customerService;
+    private final ApplicationStatusHistoryService applicationStatusHistoryService;
+    private final StatisticsService statisticsService;
+    private final DownloadTokenService downloadTokenService;
+    private final AgreementService agreementService;
+    private final EuriborService euriborService;
+    private final MessageSender messageSender;
 
     @Autowired
-    public ApplicationService(ApplicationRepository applicationRepository, EmailService emailService) {
+    public ApplicationService(ApplicationRepository applicationRepository, EmailService emailService, AdminService adminService, CustomerService customerService, PdfGenerator pdfGenerator, ApplicationStatusHistoryService applicationStatusHistoryService, StatisticsService statisticsService, DownloadTokenService downloadTokenService, AgreementService agreementService, EuriborService euriborService, MessageSender messageSender) {
         this.applicationRepository = applicationRepository;
         this.emailService = emailService;
+        this.adminService = adminService;
+        this.pdfGenerator = pdfGenerator;
+        this.customerService = customerService;
+        this.applicationStatusHistoryService = applicationStatusHistoryService;
+        this.statisticsService = statisticsService;
+        this.downloadTokenService = downloadTokenService;
+        this.euriborService = euriborService;
+        this.messageSender = messageSender;
+        this.agreementService = agreementService;
+    }
+
+    public Application findApplicationById(long applicationId) {
+        return applicationRepository.findById(applicationId)
+                .orElseThrow(() -> new ApplicationException("No such application found"));
     }
 
     @Transactional
-    public ApplicationResponse createApplication(ApplicationRequest applicationRequest) {
+    public ApplicationResponseAdminDetails createApplication(ApplicationRequest applicationRequest) {
         try {
             Application application = new Application();
-            updateApplication(applicationRequest, application);
-            emailService.sendEmail("vrroom.leasing@gmail.com", application.getCustomer().getEmail(), "Application", "Your application has been created successfully.");
+            populateNewApplicationWithRequest(applicationRequest, application);
+            applicationRepository.save(application);
+            applicationStatusHistoryService.addApplicationStatusHistory(application);
+            sendEmail(application,"Application Created. ", "Your application was successfully created");
             return ApplicationMapper.toResponse(application);
         } catch (DataAccessException dae) {
             throw new ApplicationException("Failed to save application data", dae);
-        } catch (MailException me) {
-            throw new ApplicationException("Failed to send notification email", me);
         } catch (Exception e) {
             throw new ApplicationException("An unexpected error occurred while creating the application", e);
         }
     }
 
-    public CustomPage<ApplicationListDTO> findPaginatedApplications(int pageNo, int pageSize, ApplicationSortParameters sortField, String sortDir, Long customerId, Long managerId, String managerFullName, ApplicationStatus status, LocalDate startDate, LocalDate endDate) {
+    @Transactional
+    public ApplicationResponseAdminDetails updateApplication(long id, ApplicationRequest applicationRequest) {
+        try {
+            Application application = findApplicationById(id);
+            populateExistingApplicationWithRequest(applicationRequest, application);
+            applicationRepository.save(application);
+            applicationStatusHistoryService.addApplicationStatusHistory(application);
+            sendEmail(application, "Application Update", "Your application has been updated successfully.");
+            return ApplicationMapper.toResponse(application);
+        } catch (DataAccessException dae) {
+            throw new ApplicationException("Failed to save application data", dae);
+        } catch (Exception e) {
+            throw new ApplicationException("An unexpected error occurred while updating the application", e);
+        }
+    }
+
+    @Transactional
+    public ApplicationResponseFromAdmin updateApplicationFromAdmin(long applicationId, ApplicationRequestFromAdmin applicationRequest, long adminId) {
+        try {
+            Application application = findApplicationById(applicationId);
+            Admin admin = adminService.findAdminById(adminId);
+            if (application.getManager() == null) {
+                throw new ApplicationException("Admin is not assigned to this application");
+            }
+            if (application.getManager().getId() != adminId) {
+                throw new ApplicationException("This admin is not assigned to this application");
+            }
+            ApplicationMapper.toEntityFromAdmin(application, applicationRequest, admin);
+            applicationRepository.save(application);
+            applicationStatusHistoryService.addApplicationStatusHistory(application);
+            sendEmail(application, "Application Update By Admin", "Your application has been updated by admin.");
+            return ApplicationMapper.toResponseFromAdmin(application);
+        } catch (DataAccessException dae) {
+            throw new ApplicationException("Failed to save application data", dae);
+        } catch (Exception e) {
+            throw new ApplicationException("An unexpected error occurred while updating the application", e);
+        }
+    }
+
+    public CustomPageBase<ApplicationPage> findPaginatedApplications(
+            int pageNo,
+            int pageSize,
+            ApplicationSortParameters sortField,
+            String sortDir,
+            Long customerId,
+            Long managerId,
+            String managerFullName,
+            ApplicationStatus status,
+            LocalDateTime startDate,
+            LocalDateTime endDate,
+            boolean includeHistory) throws StatisticsException {
         Sort sort = Sort.by(Sort.Direction.fromString(sortDir), sortField.getValue());
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
         Specification<Application> spec = buildSpecification(customerId, managerId, managerFullName, status, startDate, endDate);
         Page<Application> page = applicationRepository.findAll(spec, pageable);
-        return toCustomPage(page);
+        if (includeHistory) {
+            CustomPageWithHistory<ApplicationPage> result = new CustomPageWithHistory<>();
+            populateBasePageData(result, page);
+            LocalDateTime startDateTime = startDate != null ? startDate : LocalDateTime.of(1970, 1, 1, 0, 0);
+            LocalDateTime endDateTime = endDate != null ? endDate : LocalDateTime.now();
+            result.setNumberOfApplications(statisticsService.countApplications(Optional.ofNullable(managerId), startDateTime, endDateTime));
+            result.setAverageTimeToSignOrCancel(statisticsService.calculateAverageTimeFromSubmitToSignOrCancel(startDateTime, endDateTime, Optional.ofNullable(managerId)));
+            result.setAverageTimeFromSubmitToAssigned(statisticsService.calculateAverageTimeFromSubmitToAssigned(Optional.ofNullable(managerId), startDateTime, endDateTime));
+            return result;
+        } else {
+            CustomPageBase<ApplicationPage> result = new CustomPageBase<>();
+            populateBasePageData(result, page);
+            return result;
+        }
     }
 
-    private CustomPage<ApplicationListDTO> toCustomPage(Page<Application> page) {
-        List<ApplicationListDTO> content = page.getContent().stream()
-                .map(ApplicationListDTOMapper::toApplicationListDTO)
-                .collect(Collectors.toList());
-        List<String> sortInfo = page.getSort().stream()
-                .map(order -> {
-                    ApplicationSortParameters param = ApplicationSortParameters.fromDisplayName(order.getProperty());
-                    String jsonValue = param != null ? param.getRequestValue() : order.getProperty();
-                    return jsonValue + "," + order.getDirection();
-                })
-                .collect(Collectors.toList());
-        return new CustomPage<>(
-                content,
-                page.getNumber(),
-                page.getSize(),
-                page.getTotalElements(),
-                page.getTotalPages(),
-                sortInfo
-        );
+    private void populateBasePageData(CustomPageBase<ApplicationPage> page, Page<Application> data) {
+        page.setContent(data.getContent().stream().map(ApplicationPageMapper::toApplicationListDTO).collect(Collectors.toList()));
+        page.setPageNumber(data.getNumber());
+        page.setPageSize(data.getSize());
+        page.setTotalElements(data.getTotalElements());
+        page.setTotalPages(data.getTotalPages());
+        page.setSort(data.getSort().stream().map(order -> {
+            ApplicationSortParameters param = ApplicationSortParameters.fromDisplayName(order.getProperty());
+            return (param != null ? param.getRequestValue() : order.getProperty()) + "," + order.getDirection();
+        }).collect(Collectors.toList()));
     }
 
-    private Specification<Application> buildSpecification(Long customerId, Long managerId, String managerFullName, ApplicationStatus status, LocalDate startDate, LocalDate endDate) {
+    private Specification<Application> buildSpecification(Long customerId, Long managerId, String managerFullName, ApplicationStatus status, LocalDateTime startDate, LocalDateTime endDate) {
         Specification<Application> spec = Specification.where(null);
         if (customerId != null) {
             spec = spec.and(ApplicationSpecifications.hasCustomer(customerId));
@@ -124,42 +224,106 @@ public class ApplicationService {
     }
 
     @Transactional
-    public ApplicationResponse findApplicationById(long id) {
-        Optional<Application> application = applicationRepository.findById(id);
-        return ApplicationMapper.toResponse(application.orElseThrow());
+    public String assignAdmin(long adminId, long applicationId) throws ApplicationStatusHistoryException {
+        Application application = findApplicationById(applicationId);
+        if (application.getManager() != null) {
+            throw new ApplicationException("Application is already assigned to a manager");
+        }
+        Admin admin = adminService.findAdminById(adminId);
+        application.setManager(admin);
+        application.setStatus(ApplicationStatus.UNDER_REVIEW);
+        applicationStatusHistoryService.addApplicationStatusHistory(application);
+        admin.getAssignedApplications().add(application);
+        return "Admin " + application.getManager().getSurname()+ " is successfully assigned to: " + application.getId();
     }
 
-    @Transactional
-    public ApplicationResponse updateApplication(long id, ApplicationRequest applicationRequest) {
-        try {
-            Optional<Application> optionalApplication = applicationRepository.findById(id);
-            if (optionalApplication.isEmpty()) {
-                throw new ApplicationException("Application not found with id: " + id);
+    private void populateNewApplicationWithRequest(ApplicationRequest applicationRequest, Application application) {
+        Customer customer = resolveCustomer(applicationRequest, application);
+        VehicleDetails vehicleDetails = new VehicleDetails();
+        FinancialInfo financialInfo = new FinancialInfo();
+        populateCommonApplicationDetails(applicationRequest, application, customer, vehicleDetails, financialInfo);
+    }
+
+    private void populateExistingApplicationWithRequest(ApplicationRequest applicationRequest, Application application) {
+        Customer customer = CustomerMapper.toEntity(applicationRequest.getCustomer(), application);
+        FinancialInfo financialInfo = application.getFinancialInfo();
+        VehicleDetails vehicleDetails = application.getVehicleDetails();
+        populateCommonApplicationDetails(applicationRequest, application, customer, vehicleDetails, financialInfo);
+    }
+
+    private Customer resolveCustomer(ApplicationRequest applicationRequest, Application application) {
+        Customer customer = customerService.findCustomerById(applicationRequest.getCustomer().getPersonalId());
+        if (customer == null) {
+            customer = CustomerMapper.toEntity(applicationRequest.getCustomer(), application);
+        }else{
+            for(Application app : customer.getApplications()){
+                if(app.getStatus() != ApplicationStatus.CANCELLED
+                        && app.getStatus() != ApplicationStatus.SIGNED
+                        && app.getStatus() != ApplicationStatus.REJECTED){
+                    throw new ApplicationException("One user can not have more than one pending application at a time");
+                }
             }
-            Application existingApplication = optionalApplication.get();
-            updateApplication(applicationRequest, existingApplication);
-            emailService.sendEmail("vrroom.leasing@gmail.com", existingApplication.getCustomer().getEmail(), "Application Update", "Your application has been updated successfully.");
-            return ApplicationMapper.toResponse(existingApplication);
-        } catch (DataAccessException dae) {
-            throw new ApplicationException("Failed to save application data", dae);
+        }
+        return customer;
+    }
+
+    private void sendEmail(Application application, String subject, String message) {
+        try {
+            emailService.sendEmail("vrroom.leasing@gmail.com", application.getCustomer().getEmail(), subject, message);
+            messageSender.sendMessage(subject + "Please check your email.", application.getCustomer().getPhone());
         } catch (MailException me) {
             throw new ApplicationException("Failed to send notification email", me);
-        } catch (Exception e) {
-            throw new ApplicationException("An unexpected error occurred while updating the application", e);
         }
     }
 
-    private void updateApplication(ApplicationRequest applicationRequest, Application application) {
-        Customer customer = CustomerMapper.toEntity(applicationRequest.getCustomer(), application);
-        FinancialInfo financialInfo = FinancialInfoMapper.toEntity(applicationRequest.getFinancialInfo(), application);
-        List<VehicleDetails> vehicleDetails = VehicleMapper.toEntityList(applicationRequest.getVehicleDetails(), application);
-        ApplicationMapper.toEntity(
-                application,
-                applicationRequest,
-                customer,
-                financialInfo,
-                vehicleDetails);
+    private void populateCommonApplicationDetails(ApplicationRequest applicationRequest, Application application, Customer customer, VehicleDetails vehicleDetails, FinancialInfo financialInfo) {
+        FinancialInfoMapper.toEntity(financialInfo, applicationRequest.getFinancialInfo(), application);
+        VehicleMapper.toEntity(vehicleDetails, applicationRequest.getVehicleDetails(), application);
+        String term = applicationRequest.getEuribor();
+        euriborService.fetchEuriborRates(term).subscribe(rate -> {
+            ApplicationMapper.toEntity(application, applicationRequest, customer, financialInfo, vehicleDetails, rate);
+            System.out.println(rate);
+        }, error -> {
+            System.err.println("Error: " + error.getMessage());
+        });
+    }
+
+    public byte[] getLeasingAgreement(String token) throws PdfGenerationException, EntityMappingException, DatabaseException, ApplicationException, DownloadTokenException {
+        Application application;
+        AgreementInfo agreementInfo;
+        try {
+            long applicationId = downloadTokenService.getApplicationId(token);
+            application = applicationRepository.findById(applicationId).orElseThrow(() -> new ApplicationNotFoundException("No such application found ", new Throwable("ID: " + applicationId)));
+            agreementInfo = AgreementMapper.mapToAgreementInfo(application);
+        } catch (DataAccessException e) {
+            throw new DatabaseException("Database access error while retrieving application", e.getCause());
+        } catch (NullPointerException | IllegalArgumentException e) {
+            throw new EntityMappingException("Error mapping application to agreement info", e.getCause());
+        }
+        return pdfGenerator.generateAgreement(agreementInfo);
+    }
+
+    public void updateApplicationStatus(long id, ApplicationStatus status) throws ApplicationStatusHistoryException {
+        Application application = applicationRepository.findById(id)
+                .orElseThrow(() -> new ApplicationNotFoundException("Application not found", new Throwable("ID: " + id)));
+        application.setStatus(status);
         applicationRepository.save(application);
+        applicationStatusHistoryService.addApplicationStatusHistory(application);
+        if (application.getStatus() == ApplicationStatus.WAITING_FOR_SIGNING) {
+            String baseUrl = "http://localhost:8080";
+            String token = downloadTokenService.generateToken(application);
+            String encodedAgreementUrl = UrlBuilder.createEncodedUrl(baseUrl, "applications", token, "agreement");
+            sendEmail(application,"Application Approved","Your application has been approved successfully. Please click here to download your agreement: " + encodedAgreementUrl );
+        }
+    }
+
+    public void saveSignedAgreement(Long id, MultipartFile signedAgreement) throws ApplicationStatusHistoryException {
+        Application application = applicationRepository.findById(id)
+                .orElseThrow(() -> new ApplicationNotFoundException("Application not found", new Throwable("ID: " + id)));
+        application.setStatus(ApplicationStatus.SIGNED);
+        applicationRepository.save(application);
+        agreementService.saveAgreement(signedAgreement, application);
+        applicationStatusHistoryService.addApplicationStatusHistory(application);
     }
 }
 

@@ -7,6 +7,7 @@ import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class ApplicationSpecifications {
     public static Specification<Application> hasCustomer(Long customerId) {
@@ -54,21 +55,21 @@ public class ApplicationSpecifications {
         };
     }
 
-    public static Specification<Application> isCreatedBetween(LocalDate startDate, LocalDate endDate) {
+    public static Specification<Application> isCreatedBetween(LocalDateTime startDate, LocalDateTime endDate) {
         return (root, query, cb) -> {
             if (startDate == null || endDate == null) return cb.isTrue(cb.literal(true));
             return cb.between(root.get("createdAt"), startDate, endDate);
         };
     }
 
-    public static Specification<Application> isCreatedAfter(LocalDate startDate) {
+    public static Specification<Application> isCreatedAfter(LocalDateTime startDate) {
         return (root, query, cb) -> {
             if (startDate == null) return cb.isTrue(cb.literal(true));
             return cb.greaterThanOrEqualTo(root.get("createdAt"), startDate);
         };
     }
 
-    public static Specification<Application> isCreatedBefore(LocalDate endDate) {
+    public static Specification<Application> isCreatedBefore(LocalDateTime endDate) {
         return (root, query, cb) -> {
             if (endDate == null) return cb.isTrue(cb.literal(true));
             return cb.lessThanOrEqualTo(root.get("createdAt"), endDate);

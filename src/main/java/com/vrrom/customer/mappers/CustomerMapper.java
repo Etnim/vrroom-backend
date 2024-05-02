@@ -1,7 +1,7 @@
 package com.vrrom.customer.mappers;
 
 import com.vrrom.application.model.Application;
-import com.vrrom.customer.Customer;
+import com.vrrom.customer.model.Customer;
 import com.vrrom.customer.dtos.CustomerRequest;
 import com.vrrom.customer.dtos.CustomerResponse;
 
@@ -16,17 +16,18 @@ public class CustomerMapper {
                 .build();
     }
 
-    public static CustomerResponse toResponse(Customer customer){
-        String fullName = customer.getName() +" "+customer.getSurname();
+    public static CustomerResponse toResponse(Customer customer) {
+        String fullName = customer.getName() + " " + customer.getSurname();
         LocalDate birthDate = customer.getBirthDate();
         int age = (int) ChronoUnit.YEARS.between(birthDate, LocalDate.now());
 
         CustomerResponse response = new CustomerResponse();
-        response.setPid(customer.getPid());
+        response.setPersonalId(customer.getPersonalId());
         response.setFullName(fullName);
         response.setAge(age);
         response.setEmail(customer.getEmail());
         response.setPhone(customer.getPhone());
+        response.setCreditRating(customer.getCreditRating());
         return response;
     }
 }

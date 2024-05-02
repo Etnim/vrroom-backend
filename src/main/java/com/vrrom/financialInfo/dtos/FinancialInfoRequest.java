@@ -1,6 +1,7 @@
 package com.vrrom.financialInfo.dtos;
 
 import com.vrrom.financialInfo.model.EmploymentStatus;
+import com.vrrom.financialInfo.model.EmploymentTerm;
 import com.vrrom.financialInfo.model.MaritalStatus;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.EnumType;
@@ -18,10 +19,10 @@ import java.math.BigDecimal;
 @Setter
 @AllArgsConstructor
 public class FinancialInfoRequest {
-    @DecimalMin(value = "0.0", inclusive = false, message = "Monthly income must be greater than 0")
+    @DecimalMin(value = "0.0", message = "Monthly income must be greater than 0")
     private BigDecimal monthlyIncome;
 
-    @DecimalMin(value = "0.0", inclusive = false, message = "Monthly obligations must be greater than 0")
+    @DecimalMin(value = "0.0", message = "Monthly obligations must be greater than 0")
     private BigDecimal monthlyObligations;
 
     @ElementCollection(targetClass = MaritalStatus.class)
@@ -35,7 +36,9 @@ public class FinancialInfoRequest {
     private EmploymentStatus employmentStatus;
 
     @NotNull
-    private int employmentTerm;
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private EmploymentTerm employmentTerm;
 
     @Min(value = 0, message = "Number of dependants must be non-negative")
     private int dependants;

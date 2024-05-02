@@ -1,22 +1,23 @@
 package com.vrrom.application.dto;
 
 import com.vrrom.application.model.ApplicationStatus;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@Builder
-public class ApplicationListDTO {
+@SuperBuilder(toBuilder = true)
+public class ApplicationPage {
     private long applicationId;
     private String customerName;
     private String customerSurname;
     private BigDecimal leasingAmount;
-    private LocalDate applicationCreatedDate;
+    private LocalDateTime applicationCreatedDate;
     private ApplicationStatus applicationStatus;
     private Long managerId;
     private String managerName;

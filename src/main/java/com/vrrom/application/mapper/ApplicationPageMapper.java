@@ -1,11 +1,11 @@
 package com.vrrom.application.mapper;
 
+import com.vrrom.application.dto.ApplicationPage;
 import com.vrrom.application.model.Application;
-import com.vrrom.application.dto.ApplicationListDTO;
 
-public class ApplicationListDTOMapper {
-    public static ApplicationListDTO toApplicationListDTO(Application application) {
-        ApplicationListDTO dto = ApplicationListDTO.builder()
+public class ApplicationPageMapper {
+    public static ApplicationPage toApplicationListDTO(Application application) {
+        ApplicationPage dto = ApplicationPage.builder()
                 .applicationId(application.getId())
                 .customerName(application.getCustomer().getName())
                 .customerSurname(application.getCustomer().getSurname())
@@ -13,7 +13,6 @@ public class ApplicationListDTOMapper {
                 .applicationCreatedDate(application.getCreatedAt())
                 .applicationStatus(application.getStatus())
                 .build();
-      
         if (application.getManager() != null) {
             dto.setManagerId(application.getManager().getId());
             dto.setManagerName(application.getManager().getName());
