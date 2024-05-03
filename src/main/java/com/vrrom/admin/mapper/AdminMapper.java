@@ -4,18 +4,20 @@ import com.vrrom.admin.dtos.AdminDTO;
 import com.vrrom.admin.model.Admin;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+
 @Component
 public class AdminMapper {
 
-    public static Admin toEntity(AdminDTO adminDTO) {
-        Admin admin = new Admin();
+    public static void toEntity(Admin admin, AdminDTO adminDTO) {
         admin.setName(adminDTO.getName());
         admin.setSurname(admin.getSurname());
         admin.setEmail(adminDTO.getEmail());
         admin.setRole(adminDTO.getRole());
         admin.setEmail(adminDTO.getEmail());
-        admin.setUid(admin.getUid());
-        return admin;
+        admin.setUid(adminDTO.getUid());
+        admin.setAssignedApplications(new ArrayList<>());
+        admin.setComments(new ArrayList<>());
     }
 
     public static AdminDTO toDTO(Admin admin) {

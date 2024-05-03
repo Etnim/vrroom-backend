@@ -25,6 +25,7 @@ import com.vrrom.application.util.CustomPageBase;
 import com.vrrom.application.util.CustomPageWithHistory;
 import com.vrrom.applicationStatusHistory.exception.ApplicationStatusHistoryException;
 import com.vrrom.applicationStatusHistory.service.ApplicationStatusHistoryService;
+import com.vrrom.comment.Comment;
 import com.vrrom.customer.mappers.CustomerMapper;
 import com.vrrom.customer.model.Customer;
 import com.vrrom.customer.service.CustomerService;
@@ -53,6 +54,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -228,17 +230,50 @@ public class ApplicationService {
     }
 
     @Transactional
-    public String assignAdmin(long adminId, long applicationId) throws ApplicationStatusHistoryException {
+    public String assignAdmin(long applicationId) throws ApplicationStatusHistoryException {
+        String uid = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
         Application application = findApplicationById(applicationId);
+
         if (application.getManager() != null) {
             throw new ApplicationException("Application is already assigned to a manager");
         }
-        Admin admin = adminService.findAdminById(adminId);
+        Admin admin = adminService.findByUid(uid);
+        admin.getAssignedApplications().add(application);
         application.setManager(admin);
         application.setStatus(ApplicationStatus.UNDER_REVIEW);
         applicationStatusHistoryService.addApplicationStatusHistory(application);
-        admin.getAssignedApplications().add(application);
+        applicationRepository.save(application);
         return "Admin " + application.getManager().getSurname() + " is successfully assigned to: " + application.getId();
+    }
+
+    @Transactional
+    public String reAssignAdmin(String newAdminUid, long applicationId) {
+        String uid = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        Admin currentAdmin = adminService.findByUid(uid);
+        Admin newAdmin = adminService.findByUid(newAdminUid);
+        Application application = findApplicationById(applicationId);
+
+        Comment comment = new Comment();
+        comment.setApplication(application);
+        comment.setAdmin(currentAdmin);
+        comment.setText("The application was reassigned to admin: " + newAdmin.getId() + " by: " + currentAdmin.getId());
+        comment.setCreatedAt(LocalDateTime.now());
+
+        application.setManager(newAdmin);
+        application.getComments().add(comment);
+        newAdmin.getAssignedApplications().add(application);
+        currentAdmin.getAssignedApplications().remove(application);
+        try {
+            emailService.notify(
+                    "New application assigned",
+                    "Dear manager, \n Admin:  "
+                            + currentAdmin.getName() + " " + currentAdmin.getSurname() + " "
+                            +currentAdmin.getEmail() + " reassigned to you a new application: "
+                            + application.getId(),
+                    currentAdmin.getEmail());
+        }catch (Exception ignore){}
+        applicationRepository.save(application);
+        return "Application was successfully reassigned to: " + newAdmin.getId();
     }
 
     private void populateNewApplicationWithRequest(ApplicationRequest applicationRequest, Application application) {
@@ -271,7 +306,7 @@ public class ApplicationService {
         return customer;
     }
 
-    private void sendNotification(Application application, String subject, String message) throws EmailServiceException {
+    private void sendNotification(Application application, String subject, String message) throws EmailServiceException, EmailServiceException {
         emailNotificationService.notify(subject, message, application.getCustomer().getEmail());
         try {
             messageSender.sendMessage(subject + "Please check your email.", application.getCustomer().getPhone());
@@ -321,7 +356,7 @@ public class ApplicationService {
         }
     }
 
-    public void saveSignedAgreement(Long id, MultipartFile signedAgreement) throws ApplicationStatusHistoryException, AgreementException {
+    public void saveSignedAgreement(Long id, MultipartFile signedAgreement) throws ApplicationStatusHistoryException, AgreementException, AgreementException {
         Application application = applicationRepository.findById(id)
                 .orElseThrow(() -> new ApplicationNotFoundException("Application not found", new Throwable("ID: " + id)));
         application.setStatus(ApplicationStatus.SIGNED);
@@ -329,6 +364,8 @@ public class ApplicationService {
         agreementService.saveAgreement(signedAgreement, application);
         applicationStatusHistoryService.addApplicationStatusHistory(application);
     }
+
+
 }
 
 

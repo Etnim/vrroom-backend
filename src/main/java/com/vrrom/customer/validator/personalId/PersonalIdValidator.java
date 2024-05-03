@@ -5,10 +5,13 @@ import jakarta.validation.ConstraintValidatorContext;
 
 public class PersonalIdValidator implements ConstraintValidator<PersonalId, Long> {
     private int numberOfDigits;
+    private String regex;
+
 
     @Override
     public void initialize(PersonalId constraintAnnotation) {
         this.numberOfDigits = constraintAnnotation.value();
+        this.regex = "^[3-6][0-9]{2}(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])\\d{4}$";
     }
 
     @Override
@@ -16,7 +19,14 @@ public class PersonalIdValidator implements ConstraintValidator<PersonalId, Long
         if (value == null) {
             return false;
         }
-        int digitCount = String.valueOf(Math.abs(value)).length();
-        return digitCount == numberOfDigits;
+
+        String id = value.toString();
+        int digitCount = id.length();
+
+        if (digitCount != numberOfDigits) {
+            return false;
+        }
+
+        return id.matches(regex);
     }
 }
