@@ -1,0 +1,258 @@
+[33m4b77eb5[m[33m ([m[1;36mHEAD -> [m[1;32mfeature/assignAdmin[m[33m)[m HEAD@{0}: rebase (finish): returning to refs/heads/feature/assignAdmin
+[33m4b77eb5[m[33m ([m[1;36mHEAD -> [m[1;32mfeature/assignAdmin[m[33m)[m HEAD@{1}: commit: rebase 4
+[33mfbad90b[m HEAD@{2}: commit: Reabse 3
+[33m93de384[m HEAD@{3}: commit: Reabse 2
+[33mc63c549[m HEAD@{4}: commit: Rebase 1
+[33mf9483af[m[33m ([m[1;31morigin/dev-new[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mdev-new[m[33m)[m HEAD@{5}: rebase (start): checkout dev-new
+[33m873fa77[m HEAD@{6}: rebase (abort): returning to refs/heads/feature/assignAdmin
+[33mf9483af[m[33m ([m[1;31morigin/dev-new[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mdev-new[m[33m)[m HEAD@{7}: rebase (start): checkout dev-new
+[33m873fa77[m HEAD@{8}: rebase (abort): returning to refs/heads/feature/assignAdmin
+[33m579b38a[m HEAD@{9}: commit: Rebase 3
+[33m94480d4[m HEAD@{10}: commit: Rebase 2
+[33me38d54a[m HEAD@{11}: commit: Rebase stage 1
+[33mf9483af[m[33m ([m[1;31morigin/dev-new[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mdev-new[m[33m)[m HEAD@{12}: rebase (start): checkout dev-new
+[33m873fa77[m HEAD@{13}: checkout: moving from dev-new to feature/assignAdmin
+[33mf9483af[m[33m ([m[1;31morigin/dev-new[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mdev-new[m[33m)[m HEAD@{14}: pull: Fast-forward
+[33m2d1c399[m HEAD@{15}: checkout: moving from feature/adminAssigment to dev-new
+[33meeabfd3[m[33m ([m[1;31morigin/feature/adminAssigment[m[33m, [m[1;32mfeature/adminAssigment[m[33m)[m HEAD@{16}: commit: Save updated application to db after assigning admin
+[33m9b6cdb2[m HEAD@{17}: checkout: moving from dev-new to feature/adminAssigment
+[33m2d1c399[m HEAD@{18}: checkout: moving from feature/adminAssigment to dev-new
+[33m9b6cdb2[m HEAD@{19}: commit: Fixed admin mapper class
+[33m60c30df[m HEAD@{20}: commit: Created error null uid
+[33m19be573[m HEAD@{21}: commit: Implemented new admin assigment
+[33m7f76ef1[m[33m ([m[1;31morigin/feature/fixCreditRating[m[33m, [m[1;31morigin/feature/changeDBSettings[m[33m, [m[1;32mfeature/fixCreditRating[m[33m, [m[1;32mfeature/changeDBSettings[m[33m)[m HEAD@{22}: checkout: moving from feature/changeDBSettings to feature/adminAssigment
+[33m7f76ef1[m[33m ([m[1;31morigin/feature/fixCreditRating[m[33m, [m[1;31morigin/feature/changeDBSettings[m[33m, [m[1;32mfeature/fixCreditRating[m[33m, [m[1;32mfeature/changeDBSettings[m[33m)[m HEAD@{23}: checkout: moving from feature/fixCreditRating to feature/changeDBSettings
+[33m7f76ef1[m[33m ([m[1;31morigin/feature/fixCreditRating[m[33m, [m[1;31morigin/feature/changeDBSettings[m[33m, [m[1;32mfeature/fixCreditRating[m[33m, [m[1;32mfeature/changeDBSettings[m[33m)[m HEAD@{24}: commit: change update to create-drop database settings
+[33m6585362[m HEAD@{25}: commit: Changed create-drop to update
+[33m7e7a1a1[m HEAD@{26}: commit: Show rating with char instead number
+[33mf08e3c3[m HEAD@{27}: rebase (finish): returning to refs/heads/feature/fixCreditRating
+[33mf08e3c3[m HEAD@{28}: rebase (pick): Allowed unverified emails
+[33m2d1c399[m HEAD@{29}: rebase (start): checkout dev-new
+[33me3b15bb[m[33m ([m[1;31morigin/feature/AllowUnverifiedEmails[m[33m, [m[1;32mfeature/AllowUnverifiedEmails[m[33m)[m HEAD@{30}: checkout: moving from dev-new to feature/fixCreditRating
+[33m2d1c399[m HEAD@{31}: pull: Fast-forward
+[33mf22a669[m HEAD@{32}: checkout: moving from feature/fixCreditRating to dev-new
+[33me3b15bb[m[33m ([m[1;31morigin/feature/AllowUnverifiedEmails[m[33m, [m[1;32mfeature/AllowUnverifiedEmails[m[33m)[m HEAD@{33}: checkout: moving from feature/AllowUnverifiedEmails to feature/fixCreditRating
+[33me3b15bb[m[33m ([m[1;31morigin/feature/AllowUnverifiedEmails[m[33m, [m[1;32mfeature/AllowUnverifiedEmails[m[33m)[m HEAD@{34}: commit: Allowed unverified emails
+[33mf22a669[m HEAD@{35}: checkout: moving from dev-new to feature/AllowUnverifiedEmails
+[33mf22a669[m HEAD@{36}: checkout: moving from feature/fixingBugs to dev-new
+[33me466cf1[m[33m ([m[1;31morigin/feature/fixingBugs[m[33m, [m[1;32mfeature/fixingBugs[m[33m)[m HEAD@{37}: checkout: moving from feature/fixEmalMessage to feature/fixingBugs
+[33m51bb034[m HEAD@{38}: checkout: moving from dev-new to feature/fixEmalMessage
+[33mf22a669[m HEAD@{39}: pull: Fast-forward
+[33md093bf2[m HEAD@{40}: checkout: moving from feature/fixEmalMessage to dev-new
+[33m51bb034[m HEAD@{41}: commit: fix later
+[33m58ae5a4[m[33m ([m[1;31morigin/feature/oneSubmittedApplicationPerUser[m[33m, [m[1;32mfeature/oneSubmittedApplicationPerUser[m[33m)[m HEAD@{42}: checkout: moving from feature/oneSubmittedApplicationPerUser to feature/fixEmalMessage
+[33m58ae5a4[m[33m ([m[1;31morigin/feature/oneSubmittedApplicationPerUser[m[33m, [m[1;32mfeature/oneSubmittedApplicationPerUser[m[33m)[m HEAD@{43}: commit: Fixed min value for maonthly obligations and income
+[33m5187ee7[m HEAD@{44}: commit: Added surname to Admin
+[33m5875f0e[m HEAD@{45}: commit: Added restrictions for user to have only one pending application
+[33md093bf2[m HEAD@{46}: checkout: moving from dev-new to feature/oneSubmittedApplicationPerUser
+[33md093bf2[m HEAD@{47}: pull: Fast-forward
+[33m891ec76[m[33m ([m[1;32mfeature/updateStatusBugFix[m[33m)[m HEAD@{48}: checkout: moving from feature/updateStatusBugFix to dev-new
+[33m891ec76[m[33m ([m[1;32mfeature/updateStatusBugFix[m[33m)[m HEAD@{49}: rebase (finish): returning to refs/heads/feature/updateStatusBugFix
+[33m891ec76[m[33m ([m[1;32mfeature/updateStatusBugFix[m[33m)[m HEAD@{50}: rebase (start): checkout dev-new
+[33m32f0c35[m[33m ([m[1;31morigin/feature/phoneMessages[m[33m, [m[1;32mfeature/phoneMessages[m[33m)[m HEAD@{51}: checkout: moving from dev-new to feature/updateStatusBugFix
+[33m891ec76[m[33m ([m[1;32mfeature/updateStatusBugFix[m[33m)[m HEAD@{52}: pull: Fast-forward
+[33md32a23d[m HEAD@{53}: checkout: moving from feature/updateStatusBugFix to dev-new
+[33m32f0c35[m[33m ([m[1;31morigin/feature/phoneMessages[m[33m, [m[1;32mfeature/phoneMessages[m[33m)[m HEAD@{54}: checkout: moving from feature/phoneMessages to feature/updateStatusBugFix
+[33m32f0c35[m[33m ([m[1;31morigin/feature/phoneMessages[m[33m, [m[1;32mfeature/phoneMessages[m[33m)[m HEAD@{55}: checkout: moving from dev-new to feature/phoneMessages
+[33md32a23d[m HEAD@{56}: checkout: moving from feature/phoneMessages to dev-new
+[33m32f0c35[m[33m ([m[1;31morigin/feature/phoneMessages[m[33m, [m[1;32mfeature/phoneMessages[m[33m)[m HEAD@{57}: commit: Added message sending
+[33me466cf1[m[33m ([m[1;31morigin/feature/fixingBugs[m[33m, [m[1;32mfeature/fixingBugs[m[33m)[m HEAD@{58}: checkout: moving from feature/fixingBugs to feature/phoneMessages
+[33me466cf1[m[33m ([m[1;31morigin/feature/fixingBugs[m[33m, [m[1;32mfeature/fixingBugs[m[33m)[m HEAD@{59}: commit: Changed type of employment term from int to enum
+[33m2771f1d[m HEAD@{60}: commit: Added more validations for fields
+[33mb56964b[m HEAD@{61}: rebase (finish): returning to refs/heads/feature/fixingBugs
+[33mb56964b[m HEAD@{62}: commit: Rebased
+[33mcfef81c[m HEAD@{63}: commit (amend): Rebase 2
+[33md605e88[m HEAD@{64}: commit: Rebased 1
+[33md32a23d[m HEAD@{65}: rebase (start): checkout dev-new
+[33m3f4c6f6[m HEAD@{66}: checkout: moving from dev-new to feature/fixingBugs
+[33md32a23d[m HEAD@{67}: pull: Merge made by the 'ort' strategy.
+[33mcd56db0[m HEAD@{68}: checkout: moving from feature/fixingBugs to dev-new
+[33m3f4c6f6[m HEAD@{69}: commit: Fixed Euribor
+[33mf8a045f[m HEAD@{70}: commit: Fix validations
+[33m0252c91[m HEAD@{71}: checkout: moving from feature/fixBugs to feature/fixingBugs
+[33mb8e045c[m[33m ([m[1;32mfeature/fixBugs[m[33m)[m HEAD@{72}: checkout: moving from 3f3d7bb177f4111bf3e481b15f4808f3a94d9a1e to feature/fixBugs
+[33m3f3d7bb[m[33m ([m[1;31morigin/feature/managingAdminDetails[m[33m, [m[1;32mfeature/managingAdminDetails[m[33m)[m HEAD@{73}: checkout: moving from feature/managingAdminDetails to 3f3d7bb
+[33m3f3d7bb[m[33m ([m[1;31morigin/feature/managingAdminDetails[m[33m, [m[1;32mfeature/managingAdminDetails[m[33m)[m HEAD@{74}: checkout: moving from feature/assignAdmin to feature/managingAdminDetails
+[33m873fa77[m HEAD@{75}: checkout: moving from feature/assignAdmin to feature/assignAdmin
+[33m873fa77[m HEAD@{76}: checkout: moving from feature/chnagesForFrontend to feature/assignAdmin
+[33mf6e15a3[m[33m ([m[1;32mfeature/chnagesForFrontend[m[33m)[m HEAD@{77}: checkout: moving from 3f3d7bb177f4111bf3e481b15f4808f3a94d9a1e to feature/chnagesForFrontend
+[33m3f3d7bb[m[33m ([m[1;31morigin/feature/managingAdminDetails[m[33m, [m[1;32mfeature/managingAdminDetails[m[33m)[m HEAD@{78}: checkout: moving from d2c5ec72b79eac28a4936167c9027095f66ba66d to 3f3d7bb
+[33md2c5ec7[m HEAD@{79}: checkout: moving from feature/managingAdminDetails to d2c5ec7
+[33m3f3d7bb[m[33m ([m[1;31morigin/feature/managingAdminDetails[m[33m, [m[1;32mfeature/managingAdminDetails[m[33m)[m HEAD@{80}: checkout: moving from f6e15a316e20f429e0aeea3c2d7ba1f89a756349 to feature/managingAdminDetails
+[33mf6e15a3[m[33m ([m[1;32mfeature/chnagesForFrontend[m[33m)[m HEAD@{81}: checkout: moving from 885d9fbcfe2252d1c58d579cde02e1aa3387e7f4 to f6e15a3
+[33m885d9fb[m HEAD@{82}: checkout: moving from f6e15a316e20f429e0aeea3c2d7ba1f89a756349 to 885d9fb
+[33mf6e15a3[m[33m ([m[1;32mfeature/chnagesForFrontend[m[33m)[m HEAD@{83}: checkout: moving from feature/managingAdminDetails to f6e15a3
+[33m3f3d7bb[m[33m ([m[1;31morigin/feature/managingAdminDetails[m[33m, [m[1;32mfeature/managingAdminDetails[m[33m)[m HEAD@{84}: checkout: moving from feature/fixingBugs to feature/managingAdminDetails
+[33m0252c91[m HEAD@{85}: commit: Fixed disposable Income
+[33mcd56db0[m HEAD@{86}: checkout: moving from dev-new to feature/fixingBugs
+[33mcd56db0[m HEAD@{87}: checkout: moving from feature/fixBugs to dev-new
+[33mb8e045c[m[33m ([m[1;32mfeature/fixBugs[m[33m)[m HEAD@{88}: checkout: moving from feature/managingAdminDetails to feature/fixBugs
+[33mb8e045c[m[33m ([m[1;32mfeature/fixBugs[m[33m)[m HEAD@{89}: commit: changed euribor retrieval
+[33m593be74[m HEAD@{90}: rebase (finish): returning to refs/heads/feature/managingAdminDetails
+[33m593be74[m HEAD@{91}: rebase (pick): Changed euribor fetch
+[33m0206e49[m HEAD@{92}: rebase (pick): Deleted comment from admin
+[33mcd56db0[m HEAD@{93}: rebase (start): checkout dev-new
+[33m300a954[m HEAD@{94}: commit: Changed euribor fetch
+[33m3f3d7bb[m[33m ([m[1;31morigin/feature/managingAdminDetails[m[33m, [m[1;32mfeature/managingAdminDetails[m[33m)[m HEAD@{95}: checkout: moving from dev-new to feature/managingAdminDetails
+[33mcd56db0[m HEAD@{96}: pull: Merge made by the 'ort' strategy.
+[33mf6e15a3[m[33m ([m[1;32mfeature/chnagesForFrontend[m[33m)[m HEAD@{97}: checkout: moving from feature/managingAdminDetails to dev-new
+[33m3f3d7bb[m[33m ([m[1;31morigin/feature/managingAdminDetails[m[33m, [m[1;32mfeature/managingAdminDetails[m[33m)[m HEAD@{98}: checkout: moving from dev-new to feature/managingAdminDetails
+[33mf6e15a3[m[33m ([m[1;32mfeature/chnagesForFrontend[m[33m)[m HEAD@{99}: checkout: moving from feature/managingAdminDetails to dev-new
+[33m3f3d7bb[m[33m ([m[1;31morigin/feature/managingAdminDetails[m[33m, [m[1;32mfeature/managingAdminDetails[m[33m)[m HEAD@{100}: checkout: moving from feature/chnagesForFrontend to feature/managingAdminDetails
+[33mf6e15a3[m[33m ([m[1;32mfeature/chnagesForFrontend[m[33m)[m HEAD@{101}: rebase (finish): returning to refs/heads/feature/chnagesForFrontend
+[33mf6e15a3[m[33m ([m[1;32mfeature/chnagesForFrontend[m[33m)[m HEAD@{102}: rebase (start): checkout dev-new
+[33me108c93[m HEAD@{103}: checkout: moving from feature/managingAdminDetails to feature/chnagesForFrontend
+[33m3f3d7bb[m[33m ([m[1;31morigin/feature/managingAdminDetails[m[33m, [m[1;32mfeature/managingAdminDetails[m[33m)[m HEAD@{104}: commit: Deleted comment from admin
+[33mf6e15a3[m[33m ([m[1;32mfeature/chnagesForFrontend[m[33m)[m HEAD@{105}: rebase (finish): returning to refs/heads/feature/managingAdminDetails
+[33mf6e15a3[m[33m ([m[1;32mfeature/chnagesForFrontend[m[33m)[m HEAD@{106}: rebase (start): checkout dev-new
+[33mc2a30c6[m HEAD@{107}: checkout: moving from dev-new to feature/managingAdminDetails
+[33mf6e15a3[m[33m ([m[1;32mfeature/chnagesForFrontend[m[33m)[m HEAD@{108}: pull: Merge made by the 'ort' strategy.
+[33md2c5ec7[m HEAD@{109}: checkout: moving from feature/chnagesForFrontend to dev-new
+[33me108c93[m HEAD@{110}: commit: Deleted comment
+[33mc2a30c6[m HEAD@{111}: checkout: moving from feature/managingAdminDetails to feature/chnagesForFrontend
+[33mc2a30c6[m HEAD@{112}: commit (amend): Send message to applicant
+[33m6fe2aa3[m HEAD@{113}: rebase (finish): returning to refs/heads/feature/managingAdminDetails
+[33m6fe2aa3[m HEAD@{114}: commit (amend): Rebased
+[33mb5513d2[m HEAD@{115}: commit (amend): Rebased
+[33md2c5ec7[m HEAD@{116}: rebase (start): checkout dev-new
+[33macdd5d3[m HEAD@{117}: checkout: moving from dev-new to feature/managingAdminDetails
+[33md2c5ec7[m HEAD@{118}: checkout: moving from feature/managingAdminDetails to dev-new
+[33macdd5d3[m HEAD@{119}: rebase (abort): returning to refs/heads/feature/managingAdminDetails
+[33mbae7541[m HEAD@{120}: commit: Rebased
+[33md2c5ec7[m HEAD@{121}: rebase (start): checkout dev-new
+[33macdd5d3[m HEAD@{122}: checkout: moving from dev-new to feature/managingAdminDetails
+[33md2c5ec7[m HEAD@{123}: pull: Merge made by the 'ort' strategy.
+[33m48191a6[m HEAD@{124}: checkout: moving from feature/managingAdminDetails to dev-new
+[33macdd5d3[m HEAD@{125}: commit: Added phone Notifications
+[33me0b643f[m HEAD@{126}: rebase (finish): returning to refs/heads/feature/managingAdminDetails
+[33me0b643f[m HEAD@{127}: commit: Resolved conflicts
+[33m48191a6[m HEAD@{128}: rebase (start): checkout dev-new
+[33m660e4b1[m HEAD@{129}: rebase (abort): returning to refs/heads/feature/managingAdminDetails
+[33m48191a6[m HEAD@{130}: rebase (start): checkout dev-new
+[33m660e4b1[m HEAD@{131}: rebase (abort): returning to refs/heads/feature/managingAdminDetails
+[33m48191a6[m HEAD@{132}: rebase (start): checkout dev-new
+[33m660e4b1[m HEAD@{133}: rebase (abort): returning to refs/heads/feature/managingAdminDetails
+[33m48191a6[m HEAD@{134}: rebase (start): checkout dev-new
+[33m660e4b1[m HEAD@{135}: checkout: moving from dev-new to feature/managingAdminDetails
+[33m48191a6[m HEAD@{136}: pull: Merge made by the 'ort' strategy.
+[33mf81e5fb[m HEAD@{137}: checkout: moving from feature/managingAdminDetails to dev-new
+[33m660e4b1[m HEAD@{138}: checkout: moving from feature/application-list to feature/managingAdminDetails
+[33md95709e[m[33m ([m[1;32mfeature/application-list[m[33m)[m HEAD@{139}: pull: Fast-forward
+[33mc7169f1[m HEAD@{140}: checkout: moving from feature/managingAdminDetails to feature/application-list
+[33m660e4b1[m HEAD@{141}: commit (amend): Fix comment's response
+[33md86dbda[m HEAD@{142}: commit (amend): Fix update request
+[33m5624e9f[m HEAD@{143}: checkout: moving from dev-new to feature/managingAdminDetails
+[33mf81e5fb[m HEAD@{144}: checkout: moving from feature/managingAdminDetails to dev-new
+[33m5624e9f[m HEAD@{145}: commit (amend): Update works witout customer
+[33m332bd42[m HEAD@{146}: rebase (finish): returning to refs/heads/feature/managingAdminDetails
+[33m332bd42[m HEAD@{147}: commit: Rebased
+[33mf81e5fb[m HEAD@{148}: rebase (start): checkout dev-new
+[33mca5fb5e[m HEAD@{149}: rebase (abort): returning to refs/heads/feature/managingAdminDetails
+[33mf81e5fb[m HEAD@{150}: rebase (start): checkout dev-new
+[33mca5fb5e[m HEAD@{151}: rebase (abort): returning to refs/heads/feature/managingAdminDetails
+[33mf81e5fb[m HEAD@{152}: rebase (start): checkout dev-new
+[33mca5fb5e[m HEAD@{153}: commit (amend): Fixed db relations, added comment entity
+[33mb3d82d3[m HEAD@{154}: reset: moving to head~10
+[33mc784dfc[m HEAD@{155}: commit (amend): ШFix relations databases, added comment entity
+[33ma657195[m HEAD@{156}: checkout: moving from dev-new to feature/managingAdminDetails
+[33mf81e5fb[m HEAD@{157}: checkout: moving from feature/managingAdminDetails to dev-new
+[33ma657195[m HEAD@{158}: commit: Added comments
+[33m525ecac[m HEAD@{159}: commit: Update database relations, added comments
+[33mb524a89[m HEAD@{160}: commit: ÐReplaced list of vehicles with one vehicle
+[33m873fa77[m HEAD@{161}: checkout: moving from feature/assignAdmin to feature/managingAdminDetails
+[33m873fa77[m HEAD@{162}: commit: Added responses to methods
+[33m3d003d1[m[33m ([m[1;31morigin/feature/assignAdmin[m[33m)[m HEAD@{163}: commit: Fixied assign admin
+[33m2db7615[m HEAD@{164}: reset: moving to head~3
+[33mcd1fbda[m HEAD@{165}: commit: Changed application status when assigning admin
+[33m53629c4[m HEAD@{166}: rebase (finish): returning to refs/heads/feature/assignAdmin
+[33m53629c4[m HEAD@{167}: rebase (pick): Rebased
+[33m5b6d32f[m HEAD@{168}: commit: Rebase 2
+[33m2db7615[m HEAD@{169}: rebase (pick): Fixed remove/assign admin, added API for admin
+[33mf482419[m HEAD@{170}: commit: Rebased stage 1
+[33mf81e5fb[m HEAD@{171}: rebase (start): checkout dev-new
+[33m77c4bf2[m HEAD@{172}: rebase (abort): returning to refs/heads/feature/assignAdmin
+[33mf81e5fb[m HEAD@{173}: rebase (start): checkout dev-new
+[33m77c4bf2[m HEAD@{174}: checkout: moving from feature/assignAdmin to feature/assignAdmin
+[33m77c4bf2[m HEAD@{175}: commit: Rebased
+[33mc196953[m HEAD@{176}: checkout: moving from dev-new to feature/assignAdmin
+[33mf81e5fb[m HEAD@{177}: pull: Merge made by the 'ort' strategy.
+[33m766279a[m HEAD@{178}: checkout: moving from feature/assignAdmin to dev-new
+[33mc196953[m HEAD@{179}: checkout: moving from dev-new to feature/assignAdmin
+[33m766279a[m HEAD@{180}: checkout: moving from feature/assignAdmin to dev-new
+[33mc196953[m HEAD@{181}: commit: Fixe naming
+[33mbbf95d9[m HEAD@{182}: commit (amend): Fixed remove/assign admin, added API for admin
+[33m008a79f[m HEAD@{183}: rebase (finish): returning to refs/heads/feature/assignAdmin
+[33m008a79f[m HEAD@{184}: commit: Resolved conflicts
+[33m6b8f1f4[m HEAD@{185}: commit: Fixed rebasement
+[33m766279a[m HEAD@{186}: rebase (start): checkout dev-new
+[33me148a48[m HEAD@{187}: checkout: moving from dev-new to feature/assignAdmin
+[33m766279a[m HEAD@{188}: checkout: moving from feature/assignAdmin to dev-new
+[33me148a48[m HEAD@{189}: rebase (abort): returning to refs/heads/feature/assignAdmin
+[33m766279a[m HEAD@{190}: rebase (start): checkout dev-new
+[33me148a48[m HEAD@{191}: commit: Added assign/remove admin to application
+[33mef75978[m HEAD@{192}: reset: moving to head~4
+[33m650443f[m HEAD@{193}: commit (amend): Added assign/remove admin
+[33m3422e0e[m HEAD@{194}: rebase (finish): returning to refs/heads/feature/assignAdmin
+[33m3422e0e[m HEAD@{195}: rebase (pick): Added assisgn/remove admin and changed responses for frontend
+[33m766279a[m HEAD@{196}: rebase (start): checkout dev-new
+[33m56aa9f2[m HEAD@{197}: checkout: moving from dev-new to feature/assignAdmin
+[33m766279a[m HEAD@{198}: pull: Merge made by the 'ort' strategy.
+[33m0a1f914[m HEAD@{199}: checkout: moving from feature/assignAdmin to dev-new
+[33m56aa9f2[m HEAD@{200}: commit (amend): Added assisgn/remove admin and changed responses for frontend
+[33m56c7417[m HEAD@{201}: commit: Changed responses for frontend
+[33m0773dcf[m[33m ([m[1;31morigin/feature/putApplicationAPI[m[33m, [m[1;32mfeature/putApplicationAPI[m[33m)[m HEAD@{202}: checkout: moving from feature/putApplicationAPI to feature/assignAdmin
+[33m0773dcf[m[33m ([m[1;31morigin/feature/putApplicationAPI[m[33m, [m[1;32mfeature/putApplicationAPI[m[33m)[m HEAD@{203}: rebase (finish): returning to refs/heads/feature/putApplicationAPI
+[33m0773dcf[m[33m ([m[1;31morigin/feature/putApplicationAPI[m[33m, [m[1;32mfeature/putApplicationAPI[m[33m)[m HEAD@{204}: rebase (pick): Delted update in put url
+[33m0a1f914[m HEAD@{205}: rebase (start): checkout dev-new
+[33m51c757b[m HEAD@{206}: checkout: moving from feature/updateApplicationAPI to feature/putApplicationAPI
+[33mf1bb98b[m[33m ([m[1;31morigin/feature/updateApplicationAPI[m[33m)[m HEAD@{207}: checkout: moving from dev-new to feature/updateApplicationAPI
+[33m0a1f914[m HEAD@{208}: pull: Merge made by the 'ort' strategy.
+[33mb3d82d3[m HEAD@{209}: checkout: moving from feature/putApplicationAPI to dev-new
+[33m51c757b[m HEAD@{210}: commit: Delted update in put url
+[33m3efdd10[m HEAD@{211}: commit: Implemented put functionality and rebased
+[33mef75978[m HEAD@{212}: reset: moving to head~3
+[33ma8509e6[m HEAD@{213}: rebase (finish): returning to refs/heads/feature/putApplicationAPI
+[33ma8509e6[m HEAD@{214}: rebase (pick): Fixed full name
+[33mf757465[m HEAD@{215}: commit: Rebase stage 1/2
+[33mb3d82d3[m HEAD@{216}: rebase (start): checkout dev-new
+[33mf0e42fa[m HEAD@{217}: commit: Fixed full name
+[33mada90c8[m HEAD@{218}: checkout: moving from feature/updateApplicationAPI to feature/putApplicationAPI
+[33mf1bb98b[m[33m ([m[1;31morigin/feature/updateApplicationAPI[m[33m)[m HEAD@{219}: checkout: moving from dev-new to feature/updateApplicationAPI
+[33mb3d82d3[m HEAD@{220}: commit: Deleted redunant spaces
+[33mef75978[m HEAD@{221}: pull: Fast-forward
+[33m3780b6c[m HEAD@{222}: checkout: moving from feature/putApplicationAPI to dev-new
+[33mada90c8[m HEAD@{223}: commit: Implemented put application API
+[33m0cc2c04[m[33m ([m[1;31morigin/feature/getApplicationAPI[m[33m, [m[1;32mfeature/getApplicationAPI[m[33m)[m HEAD@{224}: checkout: moving from feature/getApplicationAPI to feature/putApplicationAPI
+[33m0cc2c04[m[33m ([m[1;31morigin/feature/getApplicationAPI[m[33m, [m[1;32mfeature/getApplicationAPI[m[33m)[m HEAD@{225}: commit: Refactored reaolving conflicts
+[33mb95d5d4[m HEAD@{226}: rebase (finish): returning to refs/heads/feature/getApplicationAPI
+[33mb95d5d4[m HEAD@{227}: commit: Solved conflicts rebase2
+[33m4afc175[m HEAD@{228}: commit: Solved forst rebase
+[33m3780b6c[m HEAD@{229}: rebase (start): checkout dev-new
+[33m0732b55[m HEAD@{230}: checkout: moving from feature/putApplicationAPI to feature/getApplicationAPI
+[33m0732b55[m HEAD@{231}: checkout: moving from dev-new to feature/putApplicationAPI
+[33m3780b6c[m HEAD@{232}: checkout: moving from feature/putApplicationAPI to dev-new
+[33m0732b55[m HEAD@{233}: rebase (finish): returning to refs/heads/feature/putApplicationAPI
+[33m0732b55[m HEAD@{234}: rebase (start): checkout feature/getApplicationAPI
+[33m3780b6c[m HEAD@{235}: checkout: moving from dev-new to feature/putApplicationAPI
+[33m3780b6c[m HEAD@{236}: checkout: moving from feature/putApplicationAPI to dev-new
+[33m0732b55[m HEAD@{237}: reset: moving to HEAD
+[33m0732b55[m HEAD@{238}: reset: moving to HEAD
+[33m0732b55[m HEAD@{239}: merge feature/getApplicationAPI: Fast-forward
+[33m3780b6c[m HEAD@{240}: checkout: moving from feature/getApplicationAPI to feature/putApplicationAPI
+[33m0732b55[m HEAD@{241}: checkout: moving from feature/putApplicationAPI to feature/getApplicationAPI
+[33m3780b6c[m HEAD@{242}: checkout: moving from dev-new to feature/putApplicationAPI
+[33m3780b6c[m HEAD@{243}: checkout: moving from feature/updateApplicationAPI to dev-new
+[33mf1bb98b[m[33m ([m[1;31morigin/feature/updateApplicationAPI[m[33m)[m HEAD@{244}: rebase (abort): returning to refs/heads/feature/updateApplicationAPI
+[33m3780b6c[m HEAD@{245}: rebase (start): checkout dev-new
+[33mf1bb98b[m[33m ([m[1;31morigin/feature/updateApplicationAPI[m[33m)[m HEAD@{246}: checkout: moving from dev-new to feature/updateApplicationAPI
+[33m3780b6c[m HEAD@{247}: checkout: moving from feature/updateApplicationAPI to dev-new
+[33mf1bb98b[m[33m ([m[1;31morigin/feature/updateApplicationAPI[m[33m)[m HEAD@{248}: rebase (abort): returning to refs/heads/feature/updateApplicationAPI
+[33m3780b6c[m HEAD@{249}: rebase (start): checkout dev-new
+[33mf1bb98b[m[33m ([m[1;31morigin/feature/updateApplicationAPI[m[33m)[m HEAD@{250}: checkout: moving from dev-new to feature/updateApplicationAPI
+[33m3780b6c[m HEAD@{251}: checkout: moving from feature/updateApplicationAPI to dev-new
+[33mf1bb98b[m[33m ([m[1;31morigin/feature/updateApplicationAPI[m[33m)[m HEAD@{252}: checkout: moving from dev-new to feature/updateApplicationAPI
+[33m3780b6c[m HEAD@{253}: checkout: moving from feature/updateApplicationAPI to dev-new
+[33mf1bb98b[m[33m ([m[1;31morigin/feature/updateApplicationAPI[m[33m)[m HEAD@{254}: checkout: moving from feature/getApplicationAPI to feature/updateApplicationAPI
+[33m0732b55[m HEAD@{255}: commit: Refactored code
+[33m8fe8f24[m HEAD@{256}: checkout: moving from dev-new to feature/getApplicationAPI
+[33m3780b6c[m HEAD@{257}: clone: from https://github.com/Etnim/vrroom-backend.git

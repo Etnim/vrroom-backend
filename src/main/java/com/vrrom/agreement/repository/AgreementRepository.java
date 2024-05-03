@@ -1,6 +1,6 @@
-package com.vrrom.agreement;
+package com.vrrom.agreement.repository;
 
-import com.vrrom.application.model.Application;
+import com.vrrom.agreement.model.Agreement;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

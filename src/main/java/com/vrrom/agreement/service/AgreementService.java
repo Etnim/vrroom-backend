@@ -1,5 +1,8 @@
-package com.vrrom.agreement;
+package com.vrrom.agreement.service;
 
+import com.vrrom.agreement.exception.AgreementException;
+import com.vrrom.agreement.model.Agreement;
+import com.vrrom.agreement.repository.AgreementRepository;
 import com.vrrom.application.model.Application;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,7 +19,7 @@ public class AgreementService {
         this.agreementRepository = agreementRepository;
     }
 
-    public void saveAgreement(MultipartFile file, Application application) {
+    public void saveAgreement(MultipartFile file, Application application) throws AgreementException {
         try {
             Agreement agreement = new Agreement();
             agreement.setApplication(application);
@@ -24,7 +27,7 @@ public class AgreementService {
             agreement.setUploadDate(LocalDateTime.now());
             agreementRepository.save(agreement);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new AgreementException("Error saving agreement", e.getCause());
         }
     }
 

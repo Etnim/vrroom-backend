@@ -1,7 +1,7 @@
 package com.vrrom.application.model;
 
-import com.vrrom.admin.Admin;
-import com.vrrom.agreement.Agreement;
+import com.vrrom.admin.model.Admin;
+import com.vrrom.agreement.model.Agreement;
 import com.vrrom.comment.Comment;
 import com.vrrom.customer.model.Customer;
 import com.vrrom.financialInfo.model.FinancialInfo;
