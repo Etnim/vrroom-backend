@@ -109,12 +109,12 @@ public class ApplicationController {
         return applicationService.assignAdmin(applicationId);
     }
 
-    @PutMapping("/{applicationId}/assignAdmin/{newAdminUid}")
-    @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Assign new admin to the application")
-    public String reAssignAdmin(@PathVariable String newAdminUid, @PathVariable long applicationId) {
-        return applicationService.reAssignAdmin(newAdminUid, applicationId);
-    }
+//    @PutMapping("/{applicationId}/assignAdmin/{newAdminUid}")
+//    @ResponseStatus(HttpStatus.OK)
+//    @Operation(summary = "Assign new admin to the application")
+//    public String reAssignAdmin(@PathVariable String newAdminUid, @PathVariable long applicationId) {
+//        return applicationService.reAssignAdmin(newAdminUid, applicationId);
+//    }
 
 
     @PutMapping("/{id}/updateStatus")

@@ -16,7 +16,7 @@ public class AdminMapper {
         admin.setEmail(adminDTO.getEmail());
         admin.setRole(adminDTO.getRole());
         admin.setEmail(adminDTO.getEmail());
-        admin.setUid(admin.getUid());
+        admin.setUid(adminDTO.getUid());
         admin.setAssignedApplications(new ArrayList<>());
         admin.setComments(new ArrayList<>());
         return admin;

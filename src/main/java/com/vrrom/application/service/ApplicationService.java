@@ -235,7 +235,6 @@ public class ApplicationService {
             throw new ApplicationException("Application is already assigned to a manager");
         }
         Admin admin = AdminMapper.toEntity(adminService.findByUid(uid));
-        System.out.println(admin.getId());
         application.setManager(admin);
         admin.getAssignedApplications().add(application);
         application.setStatus(ApplicationStatus.UNDER_REVIEW);
@@ -334,33 +333,33 @@ public class ApplicationService {
         applicationStatusHistoryService.addApplicationStatusHistory(application);
     }
 
-    public String reAssignAdmin(String newAdminUid, long applicationId) {
-        String uid = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
-        Admin currentAdmin = AdminMapper.toEntity(adminService.findByUid(uid));
-        Admin newAdmin = AdminMapper.toEntity(adminService.findByUid(newAdminUid));
-        Application application = findApplicationById(applicationId);
-
-        Comment comment = new Comment();
-        comment.setApplication(application);
-        comment.setAdmin(currentAdmin);
-        comment.setText("The application was reassigned to admin: " + newAdmin.getId() + " by: " + currentAdmin.getId());
-        comment.setCreatedAt(LocalDateTime.now());
-
-        application.setManager(newAdmin);
-        application.getComments().add(comment);
-        newAdmin.getAssignedApplications().add(application);
-        currentAdmin.getAssignedApplications().remove(application);
-        try {
-            emailService.sendEmail("vrroom.leasing@gmail.com", currentAdmin.getEmail(),
-                    "New application assigned",
-                    "Dear manager, \n Admin:  "
-                            + currentAdmin.getName() + " " + currentAdmin.getSurname() + " "
-                            +currentAdmin.getEmail() + " reassigned to you a new application: "
-                            + application.getId());
-        }catch (Exception ignore){}
-
-        return "Application was successfully reassigned to: " + newAdmin.getId();
-    }
+//    public String reAssignAdmin(String newAdminUid, long applicationId) {
+//        String uid = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+//        Admin currentAdmin = AdminMapper.toEntity(adminService.findByUid(uid));
+//        Admin newAdmin = AdminMapper.toEntity(adminService.findByUid(newAdminUid));
+//        Application application = findApplicationById(applicationId);
+//
+//        Comment comment = new Comment();
+//        comment.setApplication(application);
+//        comment.setAdmin(currentAdmin);
+//        comment.setText("The application was reassigned to admin: " + newAdmin.getId() + " by: " + currentAdmin.getId());
+//        comment.setCreatedAt(LocalDateTime.now());
+//
+//        application.setManager(newAdmin);
+//        application.getComments().add(comment);
+//        newAdmin.getAssignedApplications().add(application);
+//        currentAdmin.getAssignedApplications().remove(application);
+//        try {
+//            emailService.sendEmail("vrroom.leasing@gmail.com", currentAdmin.getEmail(),
+//                    "New application assigned",
+//                    "Dear manager, \n Admin:  "
+//                            + currentAdmin.getName() + " " + currentAdmin.getSurname() + " "
+//                            +currentAdmin.getEmail() + " reassigned to you a new application: "
+//                            + application.getId());
+//        }catch (Exception ignore){}
+//
+//        return "Application was successfully reassigned to: " + newAdmin.getId();
+//    }
 }
 
 
