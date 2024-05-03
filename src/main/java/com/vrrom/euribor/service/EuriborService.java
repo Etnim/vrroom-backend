@@ -1,5 +1,6 @@
 package com.vrrom.euribor.service;
 
+import com.vrrom.email.exception.EmailServiceException;
 import com.vrrom.email.service.EmailService;
 import com.vrrom.euribor.dto.EuriborRate;
 import com.vrrom.euribor.exception.EuriborAPIException;
@@ -42,18 +43,21 @@ public class EuriborService {
                 .map(EuriborRate::getRate)
                 .onErrorResume(e -> {
                     log.error("Error retrieving rates for term {}: {}", term, e.getCause().getMessage());
-                    handleApiDown("Failed to retrieve EURIBOR rates for term " + term + ": ", e.getCause().getMessage());
+                    try {
+                        handleApiDown("Failed to retrieve EURIBOR rates for term " + term + ": ", e.getCause().getMessage());
+                    } catch (EmailServiceException ex) {
+                        log.error("Failed to send email: ", ex);
+                    }
                     return Mono.error(new EuriborAPIException("Unable to process request: ", HttpStatusCode.valueOf(502)));
                 })
                 .doOnSuccess(body -> log.info("Successfully retrieved EURIBOR rates for term {}: {}", term, body));
     }
 
-    private void handleApiDown(String endpointMessage, String errorMessage) {
-        String from = "vrroom.leasing@gmail.com";
+    private void handleApiDown(String endpointMessage, String errorMessage) throws EmailServiceException {
         String to = "vrroom.leasing@gmail.com";
         String subject = "API Down Alert";
         String text = endpointMessage + errorMessage;
-        emailService.sendEmail(from, to, subject, text);
+        emailService.notify(subject, text, to);
     }
 }
 

@@ -1,7 +1,7 @@
 package com.vrrom.admin.mapper;
 
-import com.vrrom.admin.Admin;
 import com.vrrom.admin.dtos.AdminDTO;
+import com.vrrom.admin.model.Admin;
 import org.springframework.stereotype.Component;
 
 @Component

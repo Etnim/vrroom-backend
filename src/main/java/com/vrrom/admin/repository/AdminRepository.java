@@ -1,6 +1,6 @@
 package com.vrrom.admin.repository;
 
-import com.vrrom.admin.Admin;
+import com.vrrom.admin.model.Admin;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 

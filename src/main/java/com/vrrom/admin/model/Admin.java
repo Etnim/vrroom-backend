@@ -1,4 +1,4 @@
-package com.vrrom.admin;
+package com.vrrom.admin.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.vrrom.application.model.Application;

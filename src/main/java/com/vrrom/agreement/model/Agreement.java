@@ -1,4 +1,4 @@
-package com.vrrom.agreement;
+package com.vrrom.agreement.model;
 
 import com.vrrom.application.model.Application;
 import jakarta.persistence.CascadeType;

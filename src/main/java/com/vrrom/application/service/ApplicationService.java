@@ -1,9 +1,10 @@
 package com.vrrom.application.service;
 
 import com.twilio.exception.ApiException;
-import com.vrrom.admin.Admin;
+import com.vrrom.admin.model.Admin;
 import com.vrrom.admin.service.AdminService;
-import com.vrrom.agreement.AgreementService;
+import com.vrrom.agreement.exception.AgreementException;
+import com.vrrom.agreement.service.AgreementService;
 import com.vrrom.application.dto.ApplicationPage;
 import com.vrrom.application.dto.ApplicationRequest;
 import com.vrrom.application.dto.ApplicationRequestFromAdmin;
@@ -29,6 +30,7 @@ import com.vrrom.customer.model.Customer;
 import com.vrrom.customer.service.CustomerService;
 import com.vrrom.dowloadToken.exception.DownloadTokenException;
 import com.vrrom.dowloadToken.service.DownloadTokenService;
+import com.vrrom.email.exception.EmailServiceException;
 import com.vrrom.email.service.EmailService;
 import com.vrrom.euribor.service.EuriborService;
 import com.vrrom.financialInfo.mapper.FinancialInfoMapper;
@@ -72,9 +74,10 @@ public class ApplicationService {
     private final AgreementService agreementService;
     private final EuriborService euriborService;
     private final MessageSender messageSender;
+    private final EmailService emailNotificationService;
 
     @Autowired
-    public ApplicationService(ApplicationRepository applicationRepository, EmailService emailService, AdminService adminService, CustomerService customerService, PdfGenerator pdfGenerator, ApplicationStatusHistoryService applicationStatusHistoryService, StatisticsService statisticsService, DownloadTokenService downloadTokenService, AgreementService agreementService, EuriborService euriborService, MessageSender messageSender) {
+    public ApplicationService(ApplicationRepository applicationRepository, EmailService emailService, AdminService adminService, CustomerService customerService, PdfGenerator pdfGenerator, ApplicationStatusHistoryService applicationStatusHistoryService, StatisticsService statisticsService, DownloadTokenService downloadTokenService, AgreementService agreementService, EuriborService euriborService, MessageSender messageSender, EmailService emailNotificationService) {
         this.applicationRepository = applicationRepository;
         this.emailService = emailService;
         this.adminService = adminService;
@@ -86,6 +89,7 @@ public class ApplicationService {
         this.euriborService = euriborService;
         this.messageSender = messageSender;
         this.agreementService = agreementService;
+        this.emailNotificationService = emailNotificationService;
     }
 
     public Application findApplicationById(long applicationId) {
@@ -267,11 +271,9 @@ public class ApplicationService {
         return customer;
     }
 
-    private void sendNotification(Application application, String subject, String message) {
+    private void sendNotification(Application application, String subject, String message) throws EmailServiceException {
+        emailNotificationService.notify(subject, message, application.getCustomer().getEmail());
         try {
-            try {
-                emailService.sendEmail("vrroom.leasing@gmail.com", application.getCustomer().getEmail(), subject, message);
-            } catch (Exception ignored) {}
             messageSender.sendMessage(subject + "Please check your email.", application.getCustomer().getPhone());
         } catch (ApiException e) {
             throw new ApplicationException("Notification sending failed", e);
@@ -305,7 +307,7 @@ public class ApplicationService {
         return pdfGenerator.generateAgreement(agreementInfo);
     }
 
-    public void updateApplicationStatus(long id, ApplicationStatus status) throws ApplicationStatusHistoryException {
+    public void updateApplicationStatus(long id, ApplicationStatus status) throws ApplicationStatusHistoryException, EmailServiceException {
         Application application = applicationRepository.findById(id)
                 .orElseThrow(() -> new ApplicationNotFoundException("Application not found", new Throwable("ID: " + id)));
         application.setStatus(status);
@@ -319,7 +321,7 @@ public class ApplicationService {
         }
     }
 
-    public void saveSignedAgreement(Long id, MultipartFile signedAgreement) throws ApplicationStatusHistoryException {
+    public void saveSignedAgreement(Long id, MultipartFile signedAgreement) throws ApplicationStatusHistoryException, AgreementException {
         Application application = applicationRepository.findById(id)
                 .orElseThrow(() -> new ApplicationNotFoundException("Application not found", new Throwable("ID: " + id)));
         application.setStatus(ApplicationStatus.SIGNED);

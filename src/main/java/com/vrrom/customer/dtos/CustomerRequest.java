@@ -35,6 +35,6 @@ public class CustomerRequest {
     @Pattern(regexp = "^\\+370[0-9]{8}$", message = "Phone should be valid")
     private String phone;
     @NotBlank(message = "Address is mandatory")
-    @Pattern(regexp = "^[0-9a-zA-ZĄąČčĘęĖėĮįŠšŲųŪūŽž\\s,.-]+$", message = "Address should be valid")
+    @Pattern(regexp =  "^[0-9a-zA-ZĄąČčĘęĖėĮįŠšŲųŪūŽž\\s,.-]+$", message = "Address should be valid")
     private String address;
 }
