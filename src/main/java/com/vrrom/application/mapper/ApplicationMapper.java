@@ -42,6 +42,7 @@ public class ApplicationMapper {
         application.setCreatedAt(LocalDateTime.now());
         application.setUpdatedAt(LocalDateTime.now());
         application.setStatus(ApplicationStatus.SUBMITTED);
+        application.setEuriborTerm(applicationRequest.getEuribor());
     }
 
     public static void toEntityFromAdmin(Application application, ApplicationRequestFromAdmin applicationFromAdmin, Admin admin) {
@@ -83,6 +84,7 @@ public class ApplicationMapper {
         response.setDownPayment(application.getDownPayment());
         response.setResidualValue(application.getResidualValue());
         response.setEuribor(application.getEuribor());
+        response.setEuriborTerm(application.getEuriborTerm());
         response.setAgreementFee(application.getAgreementFee());
         return response;
     }
