@@ -18,17 +18,17 @@ import java.time.LocalDate;
 @Setter
 @AllArgsConstructor
 public class CustomerRequest {
-
-    @PersonalId(value = 11, message = "personal Id should consist exactly 11 digits")
+    @Pattern(regexp =  "^[3-6][0-9]{2}(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])\\d{4}$", message = "Personal id should be valid")
+    @PersonalId(message = "personal Id should consist exactly 11 digits")
     private long personalId;
 
     @NotBlank(message = "Name is mandatory")
-    @Pattern(regexp = "^[A-Za-z]+$", message = "Name should contain only letters")
+    @Pattern(regexp = "^[A-Za-zĄąČčĘęĖėĮįŠšŲųŪūŽž\\-'\\s]+$", message = "Name should contain only letters")
     @Size(max = 25, message = "Name must not be longer than 25 characters")
     private String name;
 
     @NotBlank(message = "Surname is mandatory")
-    @Pattern(regexp = "^[A-Za-z]+$", message = "Name should contain only letters")
+    @Pattern(regexp = "^[A-Za-zĄąČčĘęĖėĮįŠšŲųŪūŽž\\-'\\s]+$", message = "Name should contain only letters")
     @Size(max = 25, message = "Name must not be longer than 25 characters")
     private String surname;
 
@@ -36,12 +36,13 @@ public class CustomerRequest {
     private String email;
 
     @Past(message = "Birthdate should be in the past")
-    @MinimumAge(value = 18, message = "Customer must be at least 18 years old")
+    @MinimumAge(message = "Customer must be at least 18 years old")
     private LocalDate birthDate;
 
     @Pattern(regexp = "^\\+370[0-9]{8}$", message = "Phone should be valid")
     private String phone;
 
     @NotBlank(message = "Address is mandatory")
+    @Pattern(regexp =  "^[0-9a-zA-ZĄąČčĘęĖėĮįŠšŲųŪūŽž\\s,.-]+$", message = "Address should be valid")
     private String address;
 }
