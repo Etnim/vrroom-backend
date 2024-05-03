@@ -93,7 +93,6 @@ public class Application {
     private List<Comment> comments;
     @OneToOne(mappedBy = "application", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Agreement agreement;
-
     @Column
     private double euribor;
 }

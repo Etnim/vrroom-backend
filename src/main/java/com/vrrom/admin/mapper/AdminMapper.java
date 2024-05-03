@@ -9,8 +9,7 @@ import java.util.ArrayList;
 @Component
 public class AdminMapper {
 
-    public static Admin toEntity(AdminDTO adminDTO) {
-        Admin admin = new Admin();
+    public static void toEntity(Admin admin, AdminDTO adminDTO) {
         admin.setName(adminDTO.getName());
         admin.setSurname(admin.getSurname());
         admin.setEmail(adminDTO.getEmail());
@@ -19,7 +18,6 @@ public class AdminMapper {
         admin.setUid(adminDTO.getUid());
         admin.setAssignedApplications(new ArrayList<>());
         admin.setComments(new ArrayList<>());
-        return admin;
     }
 
     public static AdminDTO toDTO(Admin admin) {

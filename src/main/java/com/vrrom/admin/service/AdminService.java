@@ -24,27 +24,8 @@ public class AdminService {
                 .orElseThrow(() -> new  AdminNotFoundException("Admin not found with ID: " + adminId));
     }
 
-    public AdminDTO findByUid(String uid) {
-        Admin admin = adminRepository.findByUid(uid);
-        if (admin == null) {
-            throw new AdminNotFoundException("Admin not found with UID: " + uid);
-        }
-        return AdminMapper.toDTO(admin);
-    }
-
-    public AdminDTO findByEmail(String email) {
-        Admin admin = adminRepository.findByEmail(email);
-        if (admin == null) {
-            throw new AdminNotFoundException("Admin not found with email: " + email);
-        }
-        return AdminMapper.toDTO(admin);
-    }
-
-    public boolean isSuperAdmin() {
-        String uid = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
-
-        AdminDTO adminDTO = findByUid(uid);
-        return adminDTO.getRole() == Admin.AdminRole.SUPER_ADMIN;
+    public Admin findByUid(String uid) {
+        return adminRepository.findByUid(uid) == null ? null : adminRepository.findByUid(uid) ;
     }
 
     public List<AdminDTO> findAll() {
