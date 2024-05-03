@@ -1,13 +1,82 @@
+html {
+    height: 100%;
+}
 
 body {
     font-family: 'Helvetica', sans-serif;
-    background-color: black;
+    flex-direction: column;
+    position: relative;
+    padding-bottom: 100px;
 }
-p {
+
+header {
     color: white;
-    margin: 5px 0;
+    padding: 10px 0;
+    display: block;
 }
+
+.logo {
+    display: block;
+    height: 60px;
+    margin-top: 10px;
+    margin-left: 10px;
+}
+
+footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: #42A9BF;
+    color: white;
+    text-align: center;
+    box-sizing: border-box;
+    height: 60px;
+}
+
+h1 {
+    color: #42A9BF;
+    text-align: center;
+    font-size: 24px;
+    margin: 20px 0;
+}
+
+h2 {
+    color: #42A9BF;
+    text-align: left;
+    font-size: 18px;
+    margin: 20px;
+}
+
+p {
+    font-size: 16px;
+    line-height: 1.5;
+    margin: 0 20px;
+}
+
 .highlight {
     color: darkred;
     font-weight: bold;
+}
+
+.class1, .class2 {
+    display: table;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.party {
+    display: table-cell;
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+.page-break {
+    page-break-before: always;
+}
+
+.signing {
+    display: table-cell;
+    padding: 10px;
 }

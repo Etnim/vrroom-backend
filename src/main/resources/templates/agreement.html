@@ -7,21 +7,86 @@
           th:href="@{src/main/resources/css/agreement.css}"/>
 </head>
 <body>
-<p>PID: <span th:text="${agreement.pid}"></span></p>
-<p>Name: <span th:text="${agreement.customerName}"></span></p>
-<p>Surname: <span th:text="${agreement.customerSurname}"></span></p>
-<p>Birth Date: <span th:text="${agreement.customerBirthDate}"></span></p>
-<p>Phone: <span th:text="${agreement.customerPhone}"></span></p>
-<p>Email: <span th:text="${agreement.customerEmail}"></span></p>
-<p>Address: <span th:text="${agreement.customerAddress}"></span></p>
-<p>Car make: <span th:text="${agreement.carMake}"></span></p>
-<p>Car model: <span th:text="${agreement.carModel}"></span></p>
-<p>Car year: <span th:text="${agreement.carYear}"></span></p>
-<p>Leasing Amount: <span th:text="${agreement.leasingAmount}"></span></p>
-<p>First Payment Date: <span th:text="${agreement.firstPaymentDate}"></span></p>
-<p>Leasing Year Period: <span th:text="${agreement.leasingYearPeriod}"></span></p>
-<p>Agreement Date: <span th:text="${agreement.agreementDate}"></span></p>
-<p>Monthly Payment: <span th:text="${agreement.monthlyPayment}"></span></p>
-<p>Interest Rate: <span th:text="${agreement.interestRate}"></span></p>
+<div class="header">
+    <img src="src/main/resources/templates/logo_copy_360.png" alt="Company Logo" class="logo"/>
+</div>
+<div>
+    <h1>Car Lease Agreement</h1>
+    <p>This Car Lease Agreement, hereinafter referred to as the "Agreement," is entered into on <span th:text="${agreement.agreementDate}"></span>, between:</p>
+
+    <div class="class1">
+        <div class="party">
+            <p><strong>Lessor:</strong><br/>
+                Vrroom<br/>
+                Gedimino pr. 50<br/>
+                Vilnius 01110<br/>
+                Lithuania
+            </p>
+        </div>
+        <div class="party">
+            <p><strong>Lessee:</strong><br/>
+                <span th:text="${agreement.customerName}"></span> <span th:text="${agreement.customerSurname}"></span><br/>
+                <span th:text="${agreement.customerBirthDate}"></span><br/>
+                <span th:text="${agreement.customerAddress}"></span><br/>
+                <span th:text="${agreement.customerPhone}"></span><br/>
+                <span th:text="${agreement.customerEmail}"></span>
+            </p>
+        </div>
+    </div>
+
+    <h2>1. Leasing details:</h2>
+    <p>1.1. The Lessor agrees to lease to the Lessee, and the Lessee agrees to lease from the Lessor, the following vehicle:</p>
+    <ul>
+        <li>Make: <span th:text="${agreement.carMake}"></span></li>
+        <li>Model: <span th:text="${agreement.carModel}"></span></li>
+        <li>Year: <span th:text="${agreement.carYear}"></span></li>
+    </ul>
+    <p>1.2. The parties agree that the leasing price of the vehicle will amount to <span th:text="${agreement.leasingAmount}"></span>.</p>
+    <p>1.3. The lease term shall commence on <span th:text="${agreement.agreementDate}"></span> and shall continue for a duration of <span th:text="${agreement.leasingYearPeriod}"></span> years, unless terminated earlier in accordance with the terms of this Agreement.</p>
+
+    <h2>2. Payment and payment terms:</h2>
+    <p>2.1. The Lessee agrees to pay the lease amount in monthly installments of <span th:text="${agreement.monthlyPayment}"></span>, beginning on <span th:text="${agreement.firstPaymentDate}"></span>.</p>
+    <p>2.2. The lease payment shall be due on the fourteenth of each month during the term of this Agreement.</p>
+
+    <h2>3. Interest Rate:</h2>
+    <p>3.1. The lease shall bear interest at the rate of <span th:text="${agreement.interestRate}"></span> per annum, calculated on the outstanding principal balance.</p>
+
+    <h2 class="page-break">4. Responsibilities of the Lessee:</h2>
+    <p>4.1. The Lessee shall be responsible for maintaining insurance coverage on the vehicle for the duration of the lease term.</p>
+    <p>4.2. The Lessee shall be responsible for all costs associated with the maintenance and repair of the vehicle.</p>
+
+    <h2>5. Default:</h2>
+    <p>5.1. The Lessee shall be in default under this Agreement if:</p>
+    <ul>
+        <li>The Lessee fails to make any payment when due and such failure continues for fourteen (14) days after the due date.</li>
+        <li>The Lessee breaches any other term or condition of this Agreement.</li>
+    </ul>
+
+    <h2>6. Governing Law:</h2>
+    <p>This Agreement shall be governed by and construed in accordance with the laws of Lithuania.</p>
+
+    <h2>7. Entire Agreement:</h2>
+    <p>This Agreement constitutes the entire agreement between the parties concerning the subject matter hereof and supersedes all prior and contemporaneous agreements and understandings, whether written or oral.</p>
+
+    <h2> Signing: </h2>
+    <p><strong>In witness whereof,</strong> the parties have executed this Agreement as of the date first above written.</p>
+    <div class="class2">
+        <div class="signing">
+            <p><strong>Vrroom</strong></p>
+            <p>Signature: <span>Vrroom</span></p>
+            <p>Date: <span th:text="${agreement.agreementDate}"></span></p>
+        </div>
+        <div class="signing">
+            <p><strong><span th:text="${agreement.customerName}"></span> <span th:text="${agreement.customerSurname}"></span></strong></p>
+            <p>Signature: _____________________</p>
+            <p>Date: <span th:text="${agreement.agreementDate}"></span></p>
+        </div>
+    </div>
+</div>
+<footer>
+    <p>Contact Us: +1234567890 | vrroom.leasing@gmail.com</p>
+    <p>Visit Us: Gedimino pr. 50, Vilnius 01110, Lithuania</p>
+    <p>© 2024 Vrroom.</p>
+</footer>
 </body>
 </html>
