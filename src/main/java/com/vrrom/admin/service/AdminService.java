@@ -1,11 +1,10 @@
 package com.vrrom.admin.service;
 
-import com.vrrom.admin.Admin;
+import com.vrrom.admin.dtos.AdminDTO;
 import com.vrrom.admin.exception.AdminNotFoundException;
 import com.vrrom.admin.mapper.AdminMapper;
-import com.vrrom.admin.dtos.AdminDTO;
+import com.vrrom.admin.model.Admin;
 import com.vrrom.admin.repository.AdminRepository;
-import com.vrrom.application.exception.ApplicationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 

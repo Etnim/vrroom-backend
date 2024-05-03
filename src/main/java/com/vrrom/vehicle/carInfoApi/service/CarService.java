@@ -2,6 +2,7 @@ package com.vrrom.vehicle.carInfoApi.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vrrom.email.exception.EmailServiceException;
 import com.vrrom.email.service.EmailService;
 import com.vrrom.util.SanitizationUtils;
 import com.vrrom.vehicle.carInfoApi.exception.CarAPIException;
@@ -27,13 +28,13 @@ public class CarService {
     final Logger logger = LogManager.getLogger(CarService.class);
 
     public CarService(RestTemplate restTemplate, EmailService emailService, ObjectMapper objectMapper) {
-        this.emailService = emailService;
         this.restTemplate = restTemplate;
+        this.emailService = emailService;
         this.objectMapper = objectMapper;
     }
 
     @Cacheable(cacheNames = "makesCache", unless = "#result == null || #result.isEmpty()")
-    public List<String> getMakes() throws CarAPIException {
+    public List<String> getMakes() throws CarAPIException, EmailServiceException {
         URI url = UriComponentsBuilder
                 .fromHttpUrl("https://vpic.nhtsa.dot.gov/api/vehicles")
                 .pathSegment("GetMakesForVehicleType")
@@ -46,7 +47,7 @@ public class CarService {
     }
 
     @Cacheable(cacheNames = "modelsCache", key = "#make")
-    public List<String> getModels(String make) throws CarAPIException {
+    public List<String> getModels(String make) throws CarAPIException, EmailServiceException {
         String sanitizedMake = SanitizationUtils.sanitizeCarMake(make);
         URI url = UriComponentsBuilder
                 .fromHttpUrl("https://vpic.nhtsa.dot.gov/api/vehicles")
@@ -59,7 +60,7 @@ public class CarService {
         return getCarInfo(url, "Model_Name");
     }
 
-    private List<String> getCarInfo(URI url, String fieldName) throws CarAPIException {
+    private List<String> getCarInfo(URI url, String fieldName) throws CarAPIException, EmailServiceException {
         try {
             ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, null, String.class);
             if (!response.getStatusCode().is2xxSuccessful()) {
@@ -82,12 +83,11 @@ public class CarService {
         }
     }
 
-    private void handleApiDown(String externalUrl, String errorMessage) {
-        String from = "vrroom.leasing@gmail.com";
+    private void handleApiDown(String externalUrl, String errorMessage) throws EmailServiceException {
         String to = "vrroom.leasing@gmail.com";
         String subject = "API Down Alert";
         String text = externalUrl + errorMessage;
-        emailService.sendEmail(from, to, subject, text);
+        emailService.notify(to, subject, text);
     }
 }
 

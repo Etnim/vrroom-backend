@@ -1,6 +1,6 @@
 package com.vrrom.comment;
 
-import com.vrrom.admin.Admin;
+import com.vrrom.admin.model.Admin;
 import com.vrrom.application.model.Application;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,13 +10,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter

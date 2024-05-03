@@ -1,7 +1,8 @@
 package com.vrrom.vehicle.carInfoApi.controller;
 
-import com.vrrom.vehicle.carInfoApi.service.CarService;
+import com.vrrom.email.exception.EmailServiceException;
 import com.vrrom.vehicle.carInfoApi.exception.CarAPIException;
+import com.vrrom.vehicle.carInfoApi.service.CarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,12 +22,12 @@ public class CarController {
     }
 
     @GetMapping("/makes")
-    public List<String> getCarMakes() throws CarAPIException {
+    public List<String> getCarMakes() throws CarAPIException, EmailServiceException {
         return carService.getMakes();
     }
 
     @GetMapping("/{make}/models")
-    public List<String> getCarModels(@PathVariable String make) throws CarAPIException {
+    public List<String> getCarModels(@PathVariable String make) throws CarAPIException, EmailServiceException {
         return carService.getModels(make);
     }
 }

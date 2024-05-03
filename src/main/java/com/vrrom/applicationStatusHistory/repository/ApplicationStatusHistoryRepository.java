@@ -1,6 +1,6 @@
 package com.vrrom.applicationStatusHistory.repository;
 
-import com.vrrom.admin.Admin;
+import com.vrrom.admin.model.Admin;
 import com.vrrom.application.model.Application;
 import com.vrrom.application.model.ApplicationStatus;
 import com.vrrom.applicationStatusHistory.model.ApplicationStatusHistory;

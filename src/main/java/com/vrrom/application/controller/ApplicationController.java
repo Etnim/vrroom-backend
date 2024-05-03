@@ -1,6 +1,7 @@
 package com.vrrom.application.controller;
 
-import com.vrrom.agreement.AgreementService;
+import com.vrrom.agreement.exception.AgreementException;
+import com.vrrom.agreement.service.AgreementService;
 import com.vrrom.application.dto.ApplicationPage;
 import com.vrrom.application.dto.ApplicationRequest;
 import com.vrrom.application.dto.ApplicationRequestFromAdmin;
@@ -14,6 +15,7 @@ import com.vrrom.application.service.ApplicationService;
 import com.vrrom.application.util.CustomPageBase;
 import com.vrrom.applicationStatusHistory.exception.ApplicationStatusHistoryException;
 import com.vrrom.dowloadToken.exception.DownloadTokenException;
+import com.vrrom.email.exception.EmailServiceException;
 import com.vrrom.util.exceptions.DatabaseException;
 import com.vrrom.util.exceptions.EntityMappingException;
 import com.vrrom.util.exceptions.PdfGenerationException;
@@ -111,7 +113,7 @@ public class ApplicationController {
 
     @PutMapping("/{id}/updateStatus")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> updateApplicationStatus(@PathVariable long id, @RequestParam ApplicationStatus status) throws ApplicationStatusHistoryException {
+    public ResponseEntity<String> updateApplicationStatus(@PathVariable long id, @RequestParam ApplicationStatus status) throws ApplicationStatusHistoryException, EmailServiceException {
         applicationService.updateApplicationStatus(id, status);
         return ResponseEntity.ok("Status updated successfully");
     }
@@ -131,7 +133,7 @@ public class ApplicationController {
     @PostMapping(value = "/{id}/agreement")
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Upload signed agreement")
-    public ResponseEntity<String> saveSignedAgreement(@RequestParam("file") MultipartFile signedAgreement, @PathVariable Long id) throws ApplicationStatusHistoryException {
+    public ResponseEntity<String> saveSignedAgreement(@RequestParam("file") MultipartFile signedAgreement, @PathVariable Long id) throws ApplicationStatusHistoryException, AgreementException {
         applicationService.saveSignedAgreement(id, signedAgreement);
         return ResponseEntity.ok("Status updated successfully");
     }
