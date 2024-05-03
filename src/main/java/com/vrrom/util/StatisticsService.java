@@ -51,7 +51,7 @@ public class StatisticsService {
             }
             return count > 0 ? Duration.ofSeconds(totalDuration / count) : Duration.ZERO;
         } catch (Exception e) {
-            throw new StatisticsException("Failed to calculate average time", e.getCause());
+            throw new StatisticsException("Failed to calculate average time ", e.getCause());
         }
     }
 
@@ -68,7 +68,7 @@ public class StatisticsService {
             Double averageSeconds = applicationStatusHistoryRepository.findAverageTimeFromSubmittedToAssignedByManagerAndDateRange(managerIdOpt.orElse(null), from, to);
             return averageSeconds != null ? Duration.ofSeconds(averageSeconds.longValue()) : Duration.ZERO;
         } catch (Exception e) {
-            throw new StatisticsException("Failed to calculate average time", e.getCause());
+            throw new StatisticsException("Failed to calculate average time ", e.getCause());
         }
     }
 }

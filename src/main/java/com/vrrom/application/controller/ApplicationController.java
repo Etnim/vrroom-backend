@@ -1,5 +1,6 @@
 package com.vrrom.application.controller;
 
+import com.vrrom.admin.service.AdminService;
 import com.vrrom.agreement.AgreementService;
 import com.vrrom.application.dto.ApplicationPage;
 import com.vrrom.application.dto.ApplicationRequest;
@@ -51,11 +52,13 @@ import java.time.LocalDateTime;
 public class ApplicationController {
     private final ApplicationService applicationService;
     private final AgreementService agreementService;
+    private final AdminService adminService;
 
     @Autowired
-    public ApplicationController(ApplicationService applicationService, AgreementService agreementService) {
+    public ApplicationController(ApplicationService applicationService, AgreementService agreementService, AdminService adminService) {
         this.applicationService = applicationService;
         this.agreementService = agreementService;
+        this.adminService = adminService;
     }
 
     @GetMapping
@@ -69,13 +72,13 @@ public class ApplicationController {
                                                                     @RequestParam(required = false) String managerFullName,
                                                                     @RequestParam(required = false) ApplicationStatus status,
                                                                     @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
-                                                                    @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
-                                                                    @RequestParam(defaultValue = "false") boolean isSuperAdmin) throws StatisticsException {
+                                                                    @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) throws StatisticsException {
+        boolean isSuperAdmin = adminService.isSuperAdmin();
         return applicationService.findPaginatedApplications(page, size, sortField, sortDir, customerId, managerId, managerFullName, status, startDate, endDate, isSuperAdmin);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping(value="/application")
+    @PostMapping(value = "/application")
     @Operation(summary = "Create application")
     public ApplicationResponseAdminDetails createApplication(@Valid @RequestBody ApplicationRequest applicationRequest) {
         return applicationService.createApplication(applicationRequest);
@@ -95,11 +98,12 @@ public class ApplicationController {
     public ApplicationResponseAdminDetails updateApplication(@PathVariable long id, @Valid @RequestBody ApplicationRequest applicationRequest) {
         return applicationService.updateApplication(id, applicationRequest);
     }
+
     @PutMapping(value = "/{adminId}/{applicationId}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Update application from admin request")
     public ApplicationResponseFromAdmin updateApplicationFromAdmin(@PathVariable long applicationId, @PathVariable long adminId, @Valid @RequestBody ApplicationRequestFromAdmin applicationRequest) {
-        return applicationService.updateApplicationFromAdmin(applicationId,applicationRequest, adminId);
+        return applicationService.updateApplicationFromAdmin(applicationId, applicationRequest, adminId);
     }
 
     @PutMapping("/{applicationId}/assignAdmin/{adminId}")
@@ -143,7 +147,6 @@ public class ApplicationController {
                     HttpHeaders headers = new HttpHeaders();
                     headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=agreement.pdf");
                     headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE);
-
                     return ResponseEntity.ok()
                             .headers(headers)
                             .body(agreement.getAgreementContent());
