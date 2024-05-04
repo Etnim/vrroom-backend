@@ -2,6 +2,7 @@ package com.vrrom.application.controller;
 
 import com.vrrom.agreement.exception.AgreementException;
 import com.vrrom.agreement.service.AgreementService;
+import com.vrrom.application.dto.ApplicationCustomerResponse;
 import com.vrrom.application.dto.ApplicationPage;
 import com.vrrom.application.dto.ApplicationRequest;
 import com.vrrom.application.dto.ApplicationRequestFromAdmin;
@@ -83,12 +84,19 @@ public class ApplicationController {
         return applicationService.createApplication(applicationRequest);
     }
 
-    @GetMapping(value = "/{id}")
+    @GetMapping(value = "/{id}/customer")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Get application")
     public ApplicationResponseAdminDetails getApplicationById(@PathVariable long id) {
         Application application = applicationService.findApplicationById(id);
-        return ApplicationMapper.toResponse(application);
+        return ApplicationMapper.toAdminDetailsResponse(application);
+    }
+    @GetMapping(value="/customer/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Get the application for user")
+    public ApplicationCustomerResponse getApplicationByIdForCustomer(@PathVariable long id) {
+        Application application = applicationService.findApplicationById(id);
+        return ApplicationMapper.toCustomerResponse(application);
     }
 
     @PutMapping(value = "/{id}")

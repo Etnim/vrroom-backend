@@ -91,6 +91,7 @@ public class Application {
 
     @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Comment> comments;
+
     @OneToOne(mappedBy = "application", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Agreement agreement;
 

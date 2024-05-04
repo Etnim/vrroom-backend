@@ -1,7 +1,6 @@
 package com.vrrom.application.service;
 
 import com.twilio.exception.ApiException;
-import com.twilio.rest.microvisor.v1.App;
 import com.vrrom.admin.model.Admin;
 import com.vrrom.admin.service.AdminService;
 import com.vrrom.agreement.exception.AgreementException;
@@ -108,7 +107,7 @@ public class ApplicationService {
             applicationRepository.save(application);
             applicationStatusHistoryService.addApplicationStatusHistory(application);
             sendNotification(application, "Application Created. ", "Your application was successfully created");
-            return ApplicationMapper.toResponse(application);
+            return ApplicationMapper.toAdminDetailsResponse(application);
         } catch (DataAccessException dae) {
             throw new ApplicationException("Failed to save application data", dae);
         } catch (Exception e) {
@@ -124,7 +123,7 @@ public class ApplicationService {
             applicationRepository.save(application);
             applicationStatusHistoryService.addApplicationStatusHistory(application);
             sendNotification(application, "Application Update", "Your application has been updated successfully.");
-            return ApplicationMapper.toResponse(application);
+            return ApplicationMapper.toAdminDetailsResponse(application);
         } catch (DataAccessException dae) {
             throw new ApplicationException("Failed to save application data", dae);
         } catch (Exception e) {
@@ -355,7 +354,7 @@ public class ApplicationService {
         applicationRepository.save(application);
         applicationStatusHistoryService.addApplicationStatusHistory(application);
         if (application.getStatus() == ApplicationStatus.WAITING_FOR_SIGNING) {
-            String baseUrl = "http://localhost:8080";
+            String baseUrl = "https://vrroom-backend.onrender.com";
             String token = downloadTokenService.generateToken(application);
             String encodedAgreementUrl = UrlBuilder.createEncodedUrl(baseUrl, "applications", token, "agreement");
             sendNotification(application, "Application Approved", "Your application has been approved successfully. Please click here to download your agreement: " + encodedAgreementUrl);

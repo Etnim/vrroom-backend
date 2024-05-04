@@ -4,6 +4,7 @@ import com.vrrom.admin.dtos.AdminDTO;
 import com.vrrom.admin.mapper.AdminMapper;
 import com.vrrom.admin.model.Admin;
 import com.vrrom.application.calculator.Calculator;
+import com.vrrom.application.dto.ApplicationCustomerResponse;
 import com.vrrom.application.dto.ApplicationRequest;
 import com.vrrom.application.dto.ApplicationRequestFromAdmin;
 import com.vrrom.application.dto.ApplicationResponseAdminDetails;
@@ -12,8 +13,8 @@ import com.vrrom.application.model.Application;
 import com.vrrom.application.model.ApplicationStatus;
 import com.vrrom.comment.Comment;
 import com.vrrom.comment.CommentMapper;
-import com.vrrom.comment.CommentResponse;
 import com.vrrom.customer.dtos.CustomerResponse;
+import com.vrrom.customer.dtos.CustomerResponseForAdmin;
 import com.vrrom.customer.mappers.CustomerMapper;
 import com.vrrom.customer.model.Customer;
 import com.vrrom.financialInfo.dtos.FinancialInfoResponse;
@@ -24,7 +25,6 @@ import com.vrrom.vehicle.mapper.VehicleMapper;
 import com.vrrom.vehicle.model.VehicleDetails;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 public class ApplicationMapper {
     public static void toEntity(Application application, ApplicationRequest applicationRequest, Customer customer, FinancialInfo financialInfo, VehicleDetails vehicleDetails, double euribor) {
@@ -41,6 +41,7 @@ public class ApplicationMapper {
         application.setDownPayment(calculator.getDownPayment(applicationRequest));
         application.setMonthlyPayment(calculator.getMonthlyPayment(applicationRequest, customer, euribor));
         application.setEuribor(euribor);
+        application.setEuriborTerm(applicationRequest.getEuribor());
         application.setCreatedAt(LocalDateTime.now());
         application.setUpdatedAt(LocalDateTime.now());
         application.setStatus(ApplicationStatus.SUBMITTED);
@@ -52,13 +53,13 @@ public class ApplicationMapper {
         application.setAgreementFee(applicationFromAdmin.getAgreementFee());
         application.setStatus(applicationFromAdmin.getApplicationStatus());
 
-        if(applicationFromAdmin.getComment() != null) {
+        if (applicationFromAdmin.getComment() != null) {
             Comment comment = CommentMapper.toEntity(applicationFromAdmin.getComment(), application, admin);
             application.getComments().add(comment);
         }
     }
 
-    public static ApplicationResponseFromAdmin toResponseFromAdmin(Application application){
+    public static ApplicationResponseFromAdmin toResponseFromAdmin(Application application) {
         return new ApplicationResponseFromAdmin(
                 application.getInterestRate(),
                 application.getAgreementFee(),
@@ -66,13 +67,39 @@ public class ApplicationMapper {
                 CommentMapper.toCommentResponses(application.getComments()));
     }
 
-    public static ApplicationResponseAdminDetails toResponse(Application application) {
-        CustomerResponse customer = CustomerMapper.toResponse(application.getCustomer());
+    public static ApplicationResponseAdminDetails toAdminDetailsResponse(Application application) {
+        CustomerResponseForAdmin customer = CustomerMapper.toAdminResponse(application.getCustomer());
         FinancialInfoResponse financialInfo = FinancialInfoMapper.toResponse(application.getFinancialInfo());
         VehicleResponse vehicles = VehicleMapper.toResponse(application.getVehicleDetails());
         AdminDTO admin = AdminMapper.toDTO(application.getManager());
 
         ApplicationResponseAdminDetails response = new ApplicationResponseAdminDetails();
+        response.setApplicationID(application.getId());
+        response.setApplicationStatus(application.getStatus().getApplicationStatusText());
+        response.setDateOfSubmission(application.getCreatedAt());
+        response.setAssignedManager(admin);
+        response.setCustomer(customer);
+        response.setFinancialInfo(financialInfo);
+        response.setVehicleDetails(vehicles);
+        response.setPrice(application.getPrice());
+        response.setYearPeriod(application.getYearPeriod());
+        response.setInterestRate(application.getInterestRate());
+        response.setDownPayment(application.getDownPayment());
+        response.setResidualValue(application.getResidualValue());
+        response.setEuribor(application.getEuribor());
+        response.setEuriborTerm(application.getEuriborTerm());
+        response.setAgreementFee(application.getAgreementFee());
+        response.setComments(CommentMapper.toCommentResponses(application.getComments()));
+        return response;
+    }
+
+    public static ApplicationCustomerResponse toCustomerResponse(Application application) {
+        CustomerResponse customer = CustomerMapper.toResponse(application.getCustomer());
+        FinancialInfoResponse financialInfo = FinancialInfoMapper.toResponse(application.getFinancialInfo());
+        VehicleResponse vehicles = VehicleMapper.toResponse(application.getVehicleDetails());
+        AdminDTO admin = AdminMapper.toDTO(application.getManager());
+
+        ApplicationCustomerResponse response = new ApplicationCustomerResponse();
         response.setApplicationID(application.getId());
         response.setApplicationStatus(application.getStatus().getApplicationStatusText());
         response.setDateOfSubmission(application.getCreatedAt());
