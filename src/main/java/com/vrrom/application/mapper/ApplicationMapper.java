@@ -41,6 +41,7 @@ public class ApplicationMapper {
         application.setDownPayment(calculator.getDownPayment(applicationRequest));
         application.setMonthlyPayment(calculator.getMonthlyPayment(applicationRequest, customer, euribor));
         application.setEuribor(euribor);
+        application.setEuriborTerm(applicationRequest.getEuribor());
         application.setCreatedAt(LocalDateTime.now());
         application.setUpdatedAt(LocalDateTime.now());
         application.setStatus(ApplicationStatus.SUBMITTED);
