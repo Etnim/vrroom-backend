@@ -20,6 +20,8 @@ public class SecurityConfig {
                         .requestMatchers("/cars/makes").permitAll()
                         .requestMatchers("/euribor/{term}").permitAll()
                         .requestMatchers("/applications/application").permitAll()
+                        .requestMatchers("/agreement/{token}").permitAll()
+                        .requestMatchers("/applications/{token}/agreement").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated()
                 )
