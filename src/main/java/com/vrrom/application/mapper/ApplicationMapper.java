@@ -39,6 +39,7 @@ public class ApplicationMapper {
         application.setDownPayment(calculator.getDownPayment(applicationRequest));
         application.setMonthlyPayment(calculator.getMonthlyPayment(applicationRequest, customer, euribor));
         application.setEuribor(euribor);
+        application.setEuriborTerm(applicationRequest.getEuribor());
         application.setCreatedAt(LocalDateTime.now());
         application.setUpdatedAt(LocalDateTime.now());
         application.setStatus(ApplicationStatus.SUBMITTED);
@@ -83,6 +84,7 @@ public class ApplicationMapper {
         response.setDownPayment(application.getDownPayment());
         response.setResidualValue(application.getResidualValue());
         response.setEuribor(application.getEuribor());
+        response.setEuriborTerm(application.getEuriborTerm());
         response.setAgreementFee(application.getAgreementFee());
         return response;
     }

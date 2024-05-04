@@ -29,6 +29,7 @@ public class ApplicationResponseAdminDetails {
     private int yearPeriod;
     private BigDecimal residualValue;
     private double interestRate;
+    private String euriborTerm;
     private double euribor;
     private BigDecimal agreementFee;
 }
