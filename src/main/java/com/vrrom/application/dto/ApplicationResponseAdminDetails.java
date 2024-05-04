@@ -1,9 +1,8 @@
 package com.vrrom.application.dto;
 
 import com.vrrom.admin.dtos.AdminDTO;
-import com.vrrom.comment.Comment;
 import com.vrrom.comment.CommentResponse;
-import com.vrrom.customer.dtos.CustomerResponse;
+import com.vrrom.customer.dtos.CustomerResponseForAdmin;
 import com.vrrom.financialInfo.dtos.FinancialInfoResponse;
 import com.vrrom.vehicle.dtos.VehicleResponse;
 import lombok.AllArgsConstructor;
@@ -24,7 +23,7 @@ public class ApplicationResponseAdminDetails {
     private String applicationStatus;
     private LocalDateTime dateOfSubmission;
     private AdminDTO assignedManager;
-    private CustomerResponse customer;
+    private CustomerResponseForAdmin customer;
     private VehicleResponse vehicleDetails;
     private FinancialInfoResponse financialInfo;
     private BigDecimal price;

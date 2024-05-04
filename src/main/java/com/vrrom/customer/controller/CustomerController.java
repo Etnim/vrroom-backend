@@ -1,7 +1,7 @@
 package com.vrrom.customer.controller;
 
 
-import com.vrrom.customer.dtos.CustomerResponse;
+import com.vrrom.customer.dtos.CustomerResponseForAdmin;
 import com.vrrom.customer.mappers.CustomerMapper;
 import com.vrrom.customer.model.Customer;
 import com.vrrom.customer.service.CustomerService;
@@ -28,8 +28,8 @@ public class CustomerController {
     @GetMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Get customer")
-    public CustomerResponse getCustomerById(@PathVariable long id) {
+    public CustomerResponseForAdmin getCustomerById(@PathVariable long id) {
         Customer customer = customerService.findCustomerById(id);
-        return CustomerMapper.toResponse(customer);
+        return CustomerMapper.toAdminResponse(customer);
     }
 }

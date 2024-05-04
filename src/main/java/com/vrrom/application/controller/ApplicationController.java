@@ -88,7 +88,7 @@ public class ApplicationController {
     @Operation(summary = "Get application")
     public ApplicationResponseAdminDetails getApplicationById(@PathVariable long id) {
         Application application = applicationService.findApplicationById(id);
-        return ApplicationMapper.toResponse(application);
+        return ApplicationMapper.toAdminDetailsResponse(application);
     }
 
     @PutMapping(value = "/{id}")
