@@ -91,8 +91,11 @@ public class ApplicationController {
         Application application = applicationService.findApplicationById(id);
         return ApplicationMapper.toAdminDetailsResponse(application);
     }
+
     @GetMapping(value="/{id}/customer")
-    @ResponseStatus(HttpStatus.OK)
+
+  
+
     @Operation(summary = "Get the application for user")
     public ApplicationCustomerResponse getApplicationByIdForCustomer(@PathVariable long id) {
         Application application = applicationService.findApplicationById(id);
