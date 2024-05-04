@@ -354,7 +354,7 @@ public class ApplicationService {
         applicationRepository.save(application);
         applicationStatusHistoryService.addApplicationStatusHistory(application);
         if (application.getStatus() == ApplicationStatus.WAITING_FOR_SIGNING) {
-            String baseUrl = "http://localhost:8080";
+            String baseUrl = "https://vrroom-backend.onrender.com";
             String token = downloadTokenService.generateToken(application);
             String encodedAgreementUrl = UrlBuilder.createEncodedUrl(baseUrl, "applications", token, "agreement");
             sendNotification(application, "Application Approved", "Your application has been approved successfully. Please click here to download your agreement: " + encodedAgreementUrl);
