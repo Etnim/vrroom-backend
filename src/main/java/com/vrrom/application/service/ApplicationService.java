@@ -31,7 +31,11 @@ import com.vrrom.customer.model.Customer;
 import com.vrrom.customer.service.CustomerService;
 import com.vrrom.dowloadToken.exception.DownloadTokenException;
 import com.vrrom.dowloadToken.service.DownloadTokenService;
+<<<<<<< Updated upstream
 import com.vrrom.email.exception.EmailServiceException;
+=======
+import com.vrrom.email.service.EmailNotificationService;
+>>>>>>> Stashed changes
 import com.vrrom.email.service.EmailService;
 import com.vrrom.euribor.service.EuriborService;
 import com.vrrom.financialInfo.mapper.FinancialInfoMapper;
@@ -76,10 +80,17 @@ public class ApplicationService {
     private final AgreementService agreementService;
     private final EuriborService euriborService;
     private final MessageSender messageSender;
+<<<<<<< Updated upstream
     private final EmailService emailNotificationService;
 
     @Autowired
     public ApplicationService(ApplicationRepository applicationRepository, EmailService emailService, AdminService adminService, CustomerService customerService, PdfGenerator pdfGenerator, ApplicationStatusHistoryService applicationStatusHistoryService, StatisticsService statisticsService, DownloadTokenService downloadTokenService, AgreementService agreementService, EuriborService euriborService, MessageSender messageSender, EmailService emailNotificationService) {
+=======
+    private final EmailNotificationService emailNotificationService;
+
+    @Autowired
+    public ApplicationService(ApplicationRepository applicationRepository, EmailService emailService, AdminService adminService, CustomerService customerService, PdfGenerator pdfGenerator, ApplicationStatusHistoryService applicationStatusHistoryService, StatisticsService statisticsService, DownloadTokenService downloadTokenService, AgreementService agreementService, EuriborService euriborService, MessageSender messageSender, EmailNotificationService emailNotificationService) {
+>>>>>>> Stashed changes
         this.applicationRepository = applicationRepository;
         this.emailService = emailService;
         this.adminService = adminService;
@@ -309,6 +320,14 @@ public class ApplicationService {
     private void sendNotification(Application application, String subject, String message) throws EmailServiceException, EmailServiceException {
         emailNotificationService.notify(subject, message, application.getCustomer().getEmail());
         try {
+<<<<<<< Updated upstream
+=======
+            try {
+                emailNotificationService.notify(application.getCustomer().getEmail(), subject, message);
+//                emailService.sendEmail("vrroom.leasing@gmail.com", application.getCustomer().getEmail(), subject, message);
+            } catch (Exception ignored) {
+            }
+>>>>>>> Stashed changes
             messageSender.sendMessage(subject + "Please check your email.", application.getCustomer().getPhone());
         } catch (ApiException e) {
             throw new ApplicationException("Notification sending failed", e);
