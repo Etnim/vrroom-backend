@@ -1,6 +1,8 @@
 package com.vrrom.application.dto;
 
 import com.vrrom.admin.dtos.AdminDTO;
+import com.vrrom.comment.Comment;
+import com.vrrom.comment.CommentResponse;
 import com.vrrom.customer.dtos.CustomerResponse;
 import com.vrrom.financialInfo.dtos.FinancialInfoResponse;
 import com.vrrom.vehicle.dtos.VehicleResponse;
@@ -11,6 +13,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -32,4 +35,5 @@ public class ApplicationResponseAdminDetails {
     private String euriborTerm;
     private double euribor;
     private BigDecimal agreementFee;
+    private List<CommentResponse> comments;
 }

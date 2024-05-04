@@ -12,6 +12,7 @@ import com.vrrom.application.model.Application;
 import com.vrrom.application.model.ApplicationStatus;
 import com.vrrom.comment.Comment;
 import com.vrrom.comment.CommentMapper;
+import com.vrrom.comment.CommentResponse;
 import com.vrrom.customer.dtos.CustomerResponse;
 import com.vrrom.customer.mappers.CustomerMapper;
 import com.vrrom.customer.model.Customer;
@@ -23,6 +24,7 @@ import com.vrrom.vehicle.mapper.VehicleMapper;
 import com.vrrom.vehicle.model.VehicleDetails;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class ApplicationMapper {
     public static void toEntity(Application application, ApplicationRequest applicationRequest, Customer customer, FinancialInfo financialInfo, VehicleDetails vehicleDetails, double euribor) {
@@ -86,6 +88,7 @@ public class ApplicationMapper {
         response.setEuribor(application.getEuribor());
         response.setEuriborTerm(application.getEuriborTerm());
         response.setAgreementFee(application.getAgreementFee());
+        response.setComments(CommentMapper.toCommentResponses(application.getComments()));
         return response;
     }
 }
