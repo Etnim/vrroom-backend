@@ -22,6 +22,7 @@ public class SecurityConfig {
                         .requestMatchers("/applications/application").permitAll()
                         .requestMatchers("/agreement/{token}").permitAll()
                         .requestMatchers("/applications/{token}/agreement").permitAll()
+                        .requestMatchers("/{id}/customer").permitAll() // Add this line
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated()
                 )
