@@ -1,6 +1,7 @@
 package com.vrrom.application.service;
 
 import com.twilio.exception.ApiException;
+import com.twilio.rest.microvisor.v1.App;
 import com.vrrom.admin.model.Admin;
 import com.vrrom.admin.service.AdminService;
 import com.vrrom.agreement.exception.AgreementException;
@@ -132,19 +133,24 @@ public class ApplicationService {
     }
 
     @Transactional
-    public ApplicationResponseFromAdmin updateApplicationFromAdmin(long applicationId, ApplicationRequestFromAdmin applicationRequest, long adminId) {
+    public ApplicationResponseFromAdmin updateApplicationFromAdmin(long applicationId, ApplicationRequestFromAdmin applicationRequest) {
         try {
+            String uid = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
             Application application = findApplicationById(applicationId);
-            Admin admin = adminService.findAdminById(adminId);
+            ApplicationStatus currentStatus = application.getStatus();
+            Admin admin = adminService.findByUid(uid);
             if (application.getManager() == null) {
                 throw new ApplicationException("Admin is not assigned to this application");
             }
-            if (application.getManager().getId() != adminId) {
+            if (application.getManager().getId() != admin.getId()) {
                 throw new ApplicationException("This admin is not assigned to this application");
             }
+
             ApplicationMapper.toEntityFromAdmin(application, applicationRequest, admin);
             applicationRepository.save(application);
-            applicationStatusHistoryService.addApplicationStatusHistory(application);
+            if(currentStatus != applicationRequest.getApplicationStatus()) {
+                applicationStatusHistoryService.addApplicationStatusHistory(application);
+            }
             sendNotification(application, "Application Update By Admin", "Your application has been updated by admin.");
             return ApplicationMapper.toResponseFromAdmin(application);
         } catch (DataAccessException dae) {

@@ -97,11 +97,12 @@ public class ApplicationController {
     public ApplicationResponseAdminDetails updateApplication(@PathVariable long id, @Valid @RequestBody ApplicationRequest applicationRequest) {
         return applicationService.updateApplication(id, applicationRequest);
     }
-    @PutMapping(value = "/{adminId}/{applicationId}")
+
+    @PutMapping(value = "/{applicationId}/admin")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Update application from admin request")
-    public ApplicationResponseFromAdmin updateApplicationFromAdmin(@PathVariable long applicationId, @PathVariable long adminId, @Valid @RequestBody ApplicationRequestFromAdmin applicationRequest) {
-        return applicationService.updateApplicationFromAdmin(applicationId,applicationRequest, adminId);
+    public ApplicationResponseFromAdmin updateApplicationFromAdmin(@PathVariable long applicationId, @Valid @RequestBody ApplicationRequestFromAdmin applicationRequest) {
+        return applicationService.updateApplicationFromAdmin(applicationId,applicationRequest);
     }
 
     @PutMapping("/{applicationId}/assignAdmin")

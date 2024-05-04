@@ -48,7 +48,7 @@ public class ApplicationMapper {
     public static void toEntityFromAdmin(Application application, ApplicationRequestFromAdmin applicationFromAdmin, Admin admin) {
         application.setInterestRate(applicationFromAdmin.getInterestRate());
         application.setAgreementFee(applicationFromAdmin.getAgreementFee());
-        application.setStatus(application.getStatus());
+        application.setStatus(applicationFromAdmin.getApplicationStatus());
 
         if(applicationFromAdmin.getComment() != null) {
             Comment comment = CommentMapper.toEntity(applicationFromAdmin.getComment(), application, admin);
