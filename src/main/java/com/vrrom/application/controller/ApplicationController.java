@@ -84,15 +84,18 @@ public class ApplicationController {
         return applicationService.createApplication(applicationRequest);
     }
 
-    @GetMapping(value = "/{id}/customer")
+    @GetMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Get application")
     public ApplicationResponseAdminDetails getApplicationById(@PathVariable long id) {
         Application application = applicationService.findApplicationById(id);
         return ApplicationMapper.toAdminDetailsResponse(application);
     }
-    @GetMapping(value="/customer/{id}")
-    @ResponseStatus(HttpStatus.OK)
+
+    @GetMapping(value="/{id}/customer")
+
+  
+
     @Operation(summary = "Get the application for user")
     public ApplicationCustomerResponse getApplicationByIdForCustomer(@PathVariable long id) {
         Application application = applicationService.findApplicationById(id);
