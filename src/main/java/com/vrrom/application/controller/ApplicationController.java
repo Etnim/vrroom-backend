@@ -1,5 +1,8 @@
 package com.vrrom.application.controller;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.vrrom.admin.model.Admin;
 import com.vrrom.agreement.exception.AgreementException;
 import com.vrrom.agreement.service.AgreementService;
 import com.vrrom.application.dto.ApplicationCustomerResponse;
@@ -15,6 +18,7 @@ import com.vrrom.application.model.ApplicationStatus;
 import com.vrrom.application.service.ApplicationService;
 import com.vrrom.application.util.CustomPageBase;
 import com.vrrom.applicationStatusHistory.exception.ApplicationStatusHistoryException;
+import com.vrrom.config.FirebaseConfig;
 import com.vrrom.dowloadToken.exception.DownloadTokenException;
 import com.vrrom.email.exception.EmailServiceException;
 import com.vrrom.util.exceptions.DatabaseException;
@@ -33,6 +37,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -55,6 +60,7 @@ public class ApplicationController {
     private final ApplicationService applicationService;
     private final AgreementService agreementService;
 
+
     @Autowired
     public ApplicationController(ApplicationService applicationService, AgreementService agreementService) {
         this.applicationService = applicationService;
@@ -72,8 +78,8 @@ public class ApplicationController {
                                                                     @RequestParam(required = false) String managerFullName,
                                                                     @RequestParam(required = false) ApplicationStatus status,
                                                                     @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
-                                                                    @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
-                                                                    @RequestParam(defaultValue = "false") boolean isSuperAdmin) throws StatisticsException {
+                                                                    @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) throws StatisticsException{
+        boolean isSuperAdmin = SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream().findFirst().get().getAuthority().equals("superAdmin");
         return applicationService.findPaginatedApplications(page, size, sortField, sortDir, customerId, managerId, managerFullName, status, startDate, endDate, isSuperAdmin);
     }
 
