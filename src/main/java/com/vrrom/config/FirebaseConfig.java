@@ -13,20 +13,16 @@ import java.util.Objects;
 
 @Configuration
 public class FirebaseConfig {
-
     @PostConstruct
-    public void initialize() throws IOException {
+    public void initialize() {
         try {
             GoogleCredentials credentials = GoogleCredentials.fromStream(
                     Objects.requireNonNull(getClass().getResourceAsStream("/firebase-admin-config.json"))
             );
-
             FirebaseOptions options = FirebaseOptions.builder()
                     .setCredentials(credentials)
                     .build();
-
             FirebaseApp.initializeApp(options);
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -36,5 +32,4 @@ public class FirebaseConfig {
     public FirebaseAuth firebaseAuth() {
         return FirebaseAuth.getInstance();
     }
-
 }
