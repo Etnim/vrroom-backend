@@ -7,6 +7,7 @@ import com.vrrom.applicationStatusHistory.repository.ApplicationStatusHistoryRep
 import com.vrrom.util.exceptions.StatisticsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -24,6 +25,7 @@ public class StatisticsService {
         this.applicationRepository = applicationRepository;
     }
 
+    @Transactional
     public Duration calculateAverageTimeFromSubmitToSignOrCancel(LocalDateTime start, LocalDateTime end, Optional<Long> managerIdOpt) throws StatisticsException {
         try {
             List<ApplicationStatusHistory> submittedHistories = applicationStatusHistoryRepository.findByStatusChangedAtBetweenAndManagerId(ApplicationStatus.SUBMITTED, start, end, managerIdOpt.orElse(null));
@@ -55,6 +57,7 @@ public class StatisticsService {
         }
     }
 
+    @Transactional
     public long countApplications(Optional<Long> managerIdOpt, LocalDateTime from, LocalDateTime to) throws StatisticsException {
         try {
             return applicationRepository.countByManagerIdAndDateRange(managerIdOpt.orElse(null), from, to);
@@ -63,6 +66,7 @@ public class StatisticsService {
         }
     }
 
+    @Transactional
     public Duration calculateAverageTimeFromSubmitToAssigned(Optional<Long> managerIdOpt, LocalDateTime from, LocalDateTime to) throws StatisticsException {
         try {
             Double averageSeconds = applicationStatusHistoryRepository.findAverageTimeFromSubmittedToAssignedByManagerAndDateRange(managerIdOpt.orElse(null), from, to);
