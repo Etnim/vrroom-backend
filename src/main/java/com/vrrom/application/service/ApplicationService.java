@@ -158,7 +158,7 @@ public class ApplicationService {
             throw new ApplicationException("An unexpected error occurred while updating the application", e);
         }
     }
-
+@Transactional
     public CustomPageBase<ApplicationPage> findPaginatedApplications(
             int pageNo,
             int pageSize,
